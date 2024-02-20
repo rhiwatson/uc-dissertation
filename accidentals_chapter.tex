@@ -1,0 +1,1359 @@
+\chapter{Accidental Coincidence Backgrounds in LZ}
+\label{chap:accidental}
+\section{Introduction}
+The primary LZ WIMP search analysis relies on identifying pairs of S1 and S2 pulses and analyzing joint distributions of these events.
+This is followed by an algorithm which identifies the category of event based on the number and order of types of pulses.
+% (\textit{e.g.} single scatters, multiple scatters, etc)
+When two energy deposits from different, unrelated sources occur in the same event window, this is intended to be sorted into the ``pileup" event category by the interaction finder.
+These events are identified by having multiple S1s occurring before the multiple S2s. 
+However, there are a variety of reasons why these pileup events could end up in the single scatter category, which would constitute a WIMP search background.
+The main concern is the situation in which an S1 with no associated S2 pairs up with an S2 with no associated S1 (\textit{i.e.} that the prompt and proportional scintillation are not causally related). 
+This event topology is known as an ``accidental coincidence" event, or accidental for short.
+The pulses that exist outside of single scatter pairs are known as ``isolated S1(2)."
+Isolated S2 pulses can arise from sources such as:
+
+\begin{itemize}
+    \item \textbf{Near-liquid-surface events}. 
+    The S1 and S2 are close enough in time that the pulses appear merged together.
+    Due to the properties of the pulse finder/classifier, this is typically identified as an S2.
+    \item \textbf{Near-energy threshold events}.
+    For the same energy, S1s are more likely to fluctuate below the three-fold PMT coincidence requirement than S2s are to fluctuate below the minimum number of electrons at the electroluminescence gap (5).
+    Therefore a population of events with one- or two-fold PMT coincidence S1s  paired with small S2s is expected.
+    \item \textbf{Grid electron emission}.
+    The cathode and gate grids will occasionally emit one or more electrons in a stochastic manner\cite{tomas_study_2018}.
+    These will occasionally be large enough to be classified as an S2.
+    Photoionization from large S1s can also contribute to this, causing scatters in the reverse field region to be reconstructed in the TPC.
+    \item \textbf{Electron/photon trains}. 
+    After a large S2 there is a long train of delayed electrons, which may persist over many event windows\cite{akerib_investigation_2020}.
+    These electron / photon trains are generally easy to identify from true events, but nevertheless confuse a na\"ive analysis.
+    \item \textbf{Above-anode gas events}.
+    These events occur when an energy deposit takes place above the anode grid wires and below the top array PMT faces.
+    The electrons experience highly distorted fields as they are drawn towards the anode wires. 
+    This results in S2s with distinct time profiles and top-bottom-asymmetry(TBA).
+\end{itemize}
+
+Some of the above sources have mitigation strategies, while others are more pernicious.
+Sources of isolated S1s include, but are not limited to:
+\begin{itemize}
+    \item \textbf{Reverse-field region} events.
+    Deposits below the cathode produce S1s, without the possibility of S2 production due to the field lines pointing upwards. 
+    These S1s typically can be identified by having top-bottom-asymmetry(TBA) near -1.
+    \item \textbf{Charge loss events near the wall}.
+    Events near the wall, where the electric field experiences significant fringing (see Chapter \ref{chap:fields}), can have missing or diminished S2 areas. 
+    \item \textbf{Electroluminescence}. 
+    The high field regions around the grid wires can generate electroluminescence in the liquid or gas\cite{aprile_measurements_2014,bodnia_electric_2021}. 
+    This can also occur near the gaps in the field shaping cage PTFE meant to accommodate the low-activity resistors.
+    \item \textbf{Stinger S1s} following single electrons.
+    Single electrons will frequently experience a varying electric field between the liquid level and the anode wires in locations where the gate and anode wires are anti-aligned.
+    This occasionally results in a situation where many photons are generated at the start, and a short time later a small number of photons arrive.
+    This can result in a separate identified ``S1" pulse. These are referred to as \textit{stingers} and are efficiently removed by requiring single electrons to be well separated from the S1 pulses.
+    This phenomenon can also result in the SE pulse, or the SE+S1 being classified as an ``Other" pulse, which is the software's fall-through case.
+    \item \textbf{Charge loss from impurities}.
+    While unlikely, events with S2s near threshold may conceivably lose sufficient charge while drifting over long drift lengths.
+    This effect is subdominant in SR1 due to the long electron lifetime (5-8~ms, where the full drift length is 0.955~ms).
+\end{itemize}
+
+Isolated S1 and isolated S2 sources have the potential to pile up, and if the false drift time is within the boundaries which define the fiducial volume, then this may appear as a WIMP search background.
+The na\"ive rate of accidental events, assuming zero correlation between pulse rates, is given by
+
+\begin{equation}
+    R_{\text{acc}} = R_{S1}R_{S2} dT_{\text{max}}~,
+\end{equation}
+\noindent
+where $R_{S1}$ is the rate of isolate S1(2) pulses and $dT_{\text{max}}$ is the length of the fiducial drift time window which would result in a single scatter.
+Since the S1s and S2s are uncorrelated, they will not lie only in the nuclear recoil band in S1 vs. $\log_{10} (S2)$ space.
+The rate $R_{\text{acc}}$ can be reduced by two main strategies. 
+The first is selecting against the individual isolated pulses using pulse shape characteristics. 
+The second is to target the joint distributions of S1 and S2s.
+
+The primary tasks which I contributed to for the accidental coincidence background analysis are 1) simulations of isolated S1 sources, 2) estimation of isolated S1 rate in SR1, 3) development of selection criterion targeting accidental events, and 4) estimation of the accidental probability distribution function for SR1.
+Additional considerations were also calculated, such as isolated S1 pulses appearing in otherwise valid single scatters, reducing the effective acceptance of nuclear recoils.
+I show a predicted rate of isolated S1s of $0.5-1.0$~Hz using the SR1 grid conditions in specialized datasets after applying the selection criteria, and an estimated rate of 0.653~$\pm$~.008~Hz using SR1 data itself.
+The selection criteria described in the following sections were able to bring down the isolated pulse rates by a factor of between 3 and 10, varying depending on the time period of the data. 
+Combined with isolated S2 pulses, and unphysical drift time events in SR1, an overall accidental coincidence rate of 1.2~$\pm$~0.3 events were anticipated for the SR1 exposure.
+Within the NR band a mere 0.18~$\pm$~.04 events are expected.
+This model was incorporated into the SR1 WIMP search PLR result\cite{aalbers_first_2022}.
+
+\section {Sources of Isolated Pulses}
+
+\subsection{Dark Count Pileup}
+\label{sec:pileup}
+
+The original explanation of isolated S1s, considered from early on in the development of TPCs, is dark rate pileup.
+Each PMT has a characteristic ``dark current"\cite{noauthor_photomultiplier_2007}, which are pulses resulting from stochastic electron emission from the photocathode, without any impinging photon.
+The pure dark count pileup rate is the probability of finding $N_c$ PMTs firing within a coincidence time window $T_c$:
+%
+\begin{equation}
+    R_\text{pileup} = \text{Bin}(N_c; r T_c, N_{PMT}) / T_c ~,
+    \label{eq:dark_count_pileup}
+\end{equation}
+\noindent
+where Bin(k,p,n)$=\genfrac(){0pt}{}{n} { k}p^k(1-p)^{n-k}$ is the binomial distribution, $N_c$ is the minimum PMT coincidence requirement, $r$ is the rate per tube, $T_c$ is the S1 coincidence window, and $N_{PMT}$ is the number of PMTs.
+
+The single photoelectron (SPE) rate is estimated from the data. 
+The Hamamatsu 11410-20 photomultiplier tubes \cite{noauthor_photomultiplier_2007} are specified to have 10~nA of dark current at room temperature, which with a single photoelectron gain of $5\times 10^6$, translates to approximately 12.5~kHz of dark pulses.
+However, dark pulses are a result of thermionic emission, and are heavily temperature dependent \cite{nikkel_demonstration_2007}, thereby being suppressed at LXe temperature.
+Additionally, there exists some evidence for PTFE florescence \cite{shaw_ultraviolet_2007}, suggesting that the SPE rate should rise following large S2s.
+This effect was seen in commissioning data, and is particularly strong during high activity calibrations.
+The data quality selection criteria described in Section \ref{sec:dq_cuts} will have an impact, biasing the SPE towards the values which pass those cuts.
+I collect the SPE rate from the pre-S1 region of single scatter events in SR1 passing the electron/photon train holdoff.
+This is estimated on a per-event basis by the number of SPEs divided by the time difference between the detected S1 and the beginning of the event window(at $-2$~ms).
+A histogram of these rates is shown below in Fig \ref{fig:spe_rate}, along with the calculated pileup rates for 3-, 4-, and 5-fold coincidence requirements.
+A lower coincidence requirement results in a lower energy threshold for the WIMP search, at the cost of higher pileup rates, resulting in more accidental coincidences and single scatter to multiple scatter contamination.
+The expectation value for SPE rate across the entire TPC is 20.2~kHz, or 41~Hz per tube.
+
+There is no definitive coincidence window for S1s in LZ.
+Rather, the requirement is set implicitly by the width of the difference-of-Gaussians (DoG) pulsefinder.
+However, an effective value of 150~ns can approximate the requirement.
+Evaluating for $N_{PMT}$ = 494, $N_c=3$, $T_c$ = 150~ns, $r$ = 41~Hz into Eq. \ref{eq:dark_count_pileup}, one obtains an SPE pileup rate of 30.6~mHz.
+Because the pileup rate is highly nonlinear, I also calculate the expectation value.
+The sustained rate cut discussed in Sec. \ref{sec:dq_cuts} establishes an effective upper bound of 40~kHz, which I used as the upper bound for the integral.
+This weighted average comes out to 45.6~mHz of 3-fold coincidences due to the dark rate.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/Preceding_SPE_Rate.pdf}
+    \caption[A histogram of total SPE rate preceding S1s in single scatters passing the livetime-impacting data quality cuts]%
+    {A histogram of total SPE rate preceding S1s in single scatters passing the livetime-impacting data quality cuts (black line) (e.g. e-train / muon vetoes, see Sec. \ref{sec:dq_cuts}, Ref. \cite{aalbers_background_2022}), with dark pileup rates indicated.
+    The linear scale on the left indicates the probability density of SPE rates for event windows, and the logarithmic scale on the right indicates the pileup rate.
+    The pileup rate (blue, orange, and green) grows sharply with the minimum coincidence (approximately a factor of 1000 for each additional PMT), and slightly more slowly as a function of the SPE rate itself (approximately two orders of magnitude between 10 and 100~kHz). }
+    \label{fig:spe_rate}
+\end{figure}
+
+\subsection {Reverse Field Region}
+The reverse field region (RFR) of LZ, below the cathode grid, directs electrons downwards, away from the liquid surface.
+This eliminates the possibility of S2 production, resulting in a population of isolated S1s with identical spectrum to the fiducialized LZ background (following TBA corrections).
+This is an unavoidable feature of the design of the TPC, but only really becomes an issue at low S1 areas.
+By virtue of being so low in the detector, these events can typically be removed quite effectively by the top-bottom-asymmetry(TBA) selection criteria, discussed in Section \ref{sec:tba_cut}.
+Only at S1 areas below approximately 40~phd (see Fig. \ref{fig:cathode_tba}) do the fluctuations of the photon partitioning become significant enough to see RFR S1s appear to come from inside the forward field region (FFR) of the TPC.
+
+It is challenging to specifically calibrate this region.
+Event sources which are intended to be uniform are known to depend on the details of the LXe flow, which is not well known in the RFR.
+While I map out the isolated S1 TBA below, from which confidence intervals of TPC height can be constructed, obtaining the low-S1 contribution is a challenge.
+To obtain an estimate for this rate, I use the cathode rate in SR1 as a proxy.
+Selecting SR1 events with $S2 \in [600, 31000]$~phd and using the same accidentals-targeting criteria as discussed in Sec. \ref{sec:dq_cuts}, the rate of events from near the cathode may be estimated.
+An additional section of wall, equal to half the height of the RFR (13.7~cm $\sim$ 89~$\mu s$) was used to estimate the volumetric rate of WS ROI events.
+The rate calculated from this region can be doubled to provide a proxy for the RFR contribution, as this value is interpreted as half the activity of the cathode.
+Assuming that half the activity of the cathode is lost to the RFR, and that the entire bottom grid is identical in activity to the cathode, I take the correction factor to be $3$.
+Using this, I find the \textit{a priori} data driven estimate for the RFR contribution to be 0.128~mHz.
+The cathode events, along with TBA confidence intervals, are shown in Fig. \ref{fig:cathode_tba}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/Cathode_TBA.png}
+    \caption[A 2D histogram of top-bottom asymmetry and S2 area of cathode events within the WS ROI.]%
+    {A 2D histogram of top-bottom asymmetry and S2 area of cathode events within the WS ROI.
+    Events are taken between 900 and 955 $\mu s$.
+    The binomial confidence interval is indicated with the red curves.
+    As expected from binomial fluctuations, the TBA band widens as S1 $\rightarrow 0$.}
+    \label{fig:cathode_tba}
+\end{figure}
+
+\subsection {Field Fringing}
+\label{sec:fringing}
+
+As discussed in Chapter \ref{chap:fields}, the electric field near the PTFE walls is heavily distorted, resulting in regions of charge loss, which may either be partial or complete.
+In the case of complete charge loss, this results in an isolated S1 pulse, which can go on to form an accidental coincidence.
+In some ways these events are similar to the RFR events, but are slightly more challenging due to their TBAs aligning with physical TPC heights.
+
+I estimate this rate using  a combination of simulations and a data-driven approach.
+The wall events were simulated with $^{210}$Po recoils initiated on the walls of the PTFE, using a custom generator written by graduate student Eric Morrison.
+The 103~keV $^{206}$Pb recoils were paired with the $5.4$~MeV $\alpha$-recoils.
+Depth profiles within the PTFE were also implemented, with the attenuation of the $^{206}$Pb nuclei calculated.
+I made the additional contribution of modelling the small gaps between the PTFE panels, as discussed in Chapter \ref{chap:sims}.
+Generating 2.3M events through \textit{BACCARAT}, the spectrum of $^{206}$Pb recoils was extracted and normalized to the rate to the number of 5.6~MeV $^{210}$Po $\alpha$ recoils.
+I find that ratio to be 0.325 $S1 <100$ phd events for every detected 5.4~MeV $\alpha$-recoil.
+
+The next step is to estimate the volume of charge loss zones near the PTFE wall.
+To do this, I examine a dataset of large S1 events selected from SR1, which contains the $\alpha$ recoils.
+These events are shown in Fig \ref{fig:sr1_alpha}.
+Due to photoionization on the gate, this dataset actually contains the complete charge loss events.
+I select the charge loss as all events with $S2 <1800$~phd and drift time $<$ 6~$\mu s$, which is indicated in the plot.
+Each $\alpha$ peak was selected from the TBA-corrected S1 areas.
+Events with S1 TBA between $-0.7$ and $-0.15$, and drift time $< 951\;\mu \mathrm{s}$ were selected in order to not be close to the grids.
+Because the distribution of $^{222}$Rn and $^{218}$Po events is not perfectly uniform in the detector due to the low-flow region in the middle of the detector, only events with $S2_R>60$~cm were chosen. 
+The 5.59~MeV $^{222}$Rn alpha was selected as events with corrected S1 area $cS1\in [36100, 39000]$~phd, and the $^{218}$Po peak was chosen as $cS1 \in [39000, 41000]$~phd.
+``Good" S2s were selected as those between $\log_{10}(\mathrm{S2}/\mathrm{phd}) \in [5.2, 5.6]$.
+The complete charge loss fractions were found to be $r_{Rn}=0.0134\pm 0.0004$ and $r_{Po}=0.0127\pm0.0004$.
+These are largely consistent with the ratio predicted from simulations.
+Assuming 50\% total loss of events between 725~mm and 728~mm, a loss ratio of $r_{sim}=0.0128$ is expected.
+In physical terms this is 3.1~liters over which charge is not collected.
+
+Examining SR1 data allows one to make a prediction for the fringe background.
+Single scatters are selected from SR1 data with $S1<100$~phd.
+A preliminary anti-accidentals cut is applied to remove accidental coincidences unlikely to be from this fringing effect, namely the high single channel (fraction of detected photons in a single PMT), anti-stinger (proximity to single electron pulses), and area fraction time (95-5)$<350$~ns (eliminates pulses inconsistent with the xenon triplet lifetime).
+Identical top-bottom asymmetry requirements (between $-0.7$ and $-0.15$) and $S2_R>60$~cm selections are applied to keep the ratios the same as the $\alpha$s in the previous step.
+The rate in this pseudo-ROI region was found to be 2.3~mHz.
+When applying the $r_{Po}$ ratio, this predicts a rate of 0.0605~mHz of isolated S1 background from field fringing effects.
+The spectrum of these events are shown in Fig. \ref{fig:field_fringing_spectrum}.
+
+A similar method was used to predict just the $^{206}$Pb nuclear recoil contribution.
+The $\approx$5.4~MeV $^{210}$Po rate was estimated using 11.1~ms event window, randomly triggered datasets taken prior to SR1 (more details in Chapter \ref{chap:fields}) to be $0.54$~Hz.
+This was found by applying a cut of $cS1\in [34000,36100]$ on specifically charge loss events ($S2 < 1800$~phd).
+Due to the concentration of this source on the wall due to plate out, it dominates the nearby Radon peak.
+Using the prediction from the simulations for the lead recoils in the ROI, I obtain a prediction of 0.176~mHz, dominating the S1-only rate predicted by the SR1 single scatters.
+
+
+
+
+
+
+% Number of Po210 alphas: 554047
+% Number of Pb206 recoils: 238559
+% Pb206 recoils < 100 phd: 180148
+
+
+% 101071/348066
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/SR1_Alphas.png}
+    \caption[A 2D histogram of S1 and TBA-corrected S1 areas from an SR1 $\alpha$ skim.]%
+    {A 2D histogram of S1 and TBA-corrected S1 areas from an SR1 $\alpha$ skim. Events are taken between S1 TBA -0.7 and -0.15. The red line indicates the approximate dividing line between partial and complete charge loss events.
+    At these energies, the complete charge loss events still result in S2s due to photoionization on the grids.}
+    \label{fig:sr1_alpha}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/SR1_ROI_background.pdf}
+    \caption[The field fringing background spectrum as predicted by SR1 single scatters with S2$_R>60$~cm. ]%
+    {The field fringing background spectrum as predicted by SR1 single scatters with S2$_R>60$~cm. 
+    The rate is scaled by the loss fraction inferred by the  $^{218}$Po $\alpha$-charge loss S1s observed in the long random data ($r_{\mathrm{Po}}=0.0128$).}
+    \label{fig:field_fringing_spectrum}
+\end{figure}
+
+\subsection{Summary}
+
+These predicted contributions which are on the scale of mHz are insufficient to explain the entirety of the $\mathcal{O}$(1) Hz isolated S1 background observed in SR1.
+The remaining sources, which dominates all others, are likely due to the grids themselves.
+Electroluminescence in LXe can start at 412~kV/cm\cite{aprile_measurements_2014}, which is achievable in the vicinity of the grids.
+Activity on the anode grid can also contribute, and likely dominates due to deployment in gas.
+This hypothesis is supported by the relative independence of isolated S1 rate on drift field and large dependence on the anode voltage, discussed in Section \ref{sec:grid_scan}.
+
+\begin{table}
+\centering
+\begin{tabular}{|cc|}
+\hline
+     Source & Rate [mHz]  \\
+     \hline
+     Dark Pulse Pileup & 45.6  \\
+     Reverse Field Region & 0.128 \\
+     Field Fringing &  0.176\\
+     \hline
+\end{tabular}
+\label{tab:sources_acc}
+\caption {Summary of the contributions to Isolated S1 pulses in LZ.}
+\end{table}
+\afterpage{\FloatBarrier}
+\section {Analysis of SR1 Data}
+\subsection{Rate estimation}
+
+A short recap of a typical event topology within the WIMP search ROI:
+\begin{itemize}
+    \item 2~ms of pre-trigger window. A typical event has the S1 contained within this region. 
+    \item A trigger at $t=0$. The WIMP search settings are tuned such that this should only occur for S2s, or more rarely extremely large S1s from MeV scale $\alpha$ decays.
+    Single electrons can also initiate a trigger, which is not usually a problem, only resulting in the S2 pulse appearing to the right, inside the post-trigger window.
+    There is a stochastic single electron background in LZ, in addition to occasional photoionization electrons from the grids, induced by large S1s.
+    \item 2.5~ms of post-trigger window. This region is meant to capture additional S2s from multiple scatters, as well as to encapsulate a large part of the electron train before the next event can come online.
+    Large S2s typically have electron trains spanning multiple event windows, though.
+\end{itemize}
+
+The isolated S1 rates were estimated with a particular mode known as "long random."
+Here, instead of the normal event window of 4.5~ms length, an 11.1~ms event window was utilized.
+This affords a $>90$\% livetime (integrated duration of event windows divided by time measured by a clock on the wall), with multiple drift lengths in each event window.
+Correlations between pulses can be investigated, which presents an advantage for developing selection criteria.
+
+Within the 11.1~ms window, S1 pulses which are 1 full drift length (955~$\mu s$) from any S2 are considered.
+Additionally, the first and last full drift length from the boundaries are removed from consideration in order to both be conservative and to maintain the necessary context for future analysis.
+It is assumed that S1s would not be observed if they occur coincident in time with single-electrons or Other pulses, so these pulse durations were subtracted from the livetime.
+If an S2 was observed, no further pulses were considered in the rest of the event window, as it is assumed to be biased.
+All pulses skimmed from this dataset have passed through the data quality selections, such as the e-train veto.
+Isolated S1s are required to be \textit{prominent} (either the largest S1, or a sufficient height/width ratio), and to pass the OD and Skin vetoes.
+Because of the small S2 grid emission background, the S2s were divided into two categories, ``noise" and ``regular," based in a cut of $S2_{\text{raw}} > 600$~phd, which corresponds to the SR1 analysis threshold.
+``Noise" S2s nearby an S1 do not have an effect on the ``isolation" and are treated identically to single electrons.
+
+The clipping of the edges of the windows limits the exposure for a fixed data taking time, but it guarantees that the context surrounding an S1 can be analyzed.
+I count the number and total area of all the categories of pulses in the preceding window, as well as the drift window looking forwards and backwards.
+This enables analysis of the correlation between features like SPE rate and isolated S1 rate.
+
+The spectrum of isolated S1 pulses, and the effect of the various isolated S1 (iS1) cuts, is shown in Fig. 
+\ref{fig:presr1-longrandom-pdf}.
+The distribution is strongly peaked towards the threshold, and the rate within the SR1 ROI of $S1c \in [3,80]$ is 0.76~Hz.
+Extending the lower boundary, while keeping the 3-fold coincidence nets a rate, after all cuts, of 1.04~Hz.
+The effect of changing the threshold is illustrated in Fig. \ref{fig:presr1-threshold}, which shows the integrated iS1 rate as a function of coincidence requirement and minimum S1 area.
+
+These data were taken over a 24 hour period following grid biasing, and are therefore slightly erratic.
+This can be seen in Fig. \ref{fig:presr1-trend}.
+In order to test the time dependence of isolated S1s within the SR1 dataset, ``pre-drift" regions were explored.
+These examined pulses more than one drift length away from the S2 trigger, and therefore each trigger added approximately 1ms of exposure.
+While this dataset does have some bias, it does provide a high precision real time monitoring of the rate.
+This is shown alongside the Pre-SR1 dataset in Fig. \ref{fig:presr1-trend}, along with an exponential fit to the data, which yields a time constant of 790 days.
+The error bars are determined by Poisson fluctuations.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/Accidentals/PDF_Random_PreSR1.pdf}
+    \caption[The isolated S1 spectrum obtained from long random data.]%
+    {The isolated S1 spectrum obtained from long random data.
+    The HSC cut  removes a broad band across the ROI, while the stinger cut targets primarily the iS1s near threshold.
+    Other data quality cuts eliminate small isolated pulses individually but cumulatively lead to a more manageable isolated S1 rate.}
+    \label{fig:presr1-longrandom-pdf}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/Accidentals/Threshold_Random_PreSR1.pdf}
+    \caption[Isolated S1 rate as a function of the lower bound in \textit{Top}: S1 area, \textit{Bottom}: coincidence threshold, with stacked analysis selection criteria.]%
+    {Isolated S1 rate as a function of the lower bound in \textit{Top}: S1 area, \textit{Bottom}: coincidence threshold, with stacked analysis selection criteria.
+    While raising the threshold does decrease the isolated S1 rate, the rate of change makes it a costly choice for the WIMP search. 
+    This is in stark contrast to the pileup predictions, which indicated that even a change of $N=3 \rightarrow N=4$ would almost entirely eliminate the isolated S1s.}
+    \label{fig:presr1-threshold}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45 \textwidth]{Assets/Accidentals/Rate_Time2.5Hz_PreSR1HSX.pdf}
+    \includegraphics[width = 0.45 \textwidth]{Assets/Accidentals/rate_over_time.pdf}
+    \caption[The isolated S1 rate plotted over long timescales.]%
+    {
+    The isolated S1 rate plotted over long timescales.
+    \textit{Left}: The evolution of the isolated S1 rate in the Pre-SR1 dataset. Short timescale spikes are seen superimposed over a longer timescale downwards trend.
+    \textit{Right}: The time evolution of the SR1 pre-drift single scatter iS1 rate. The  iS1 rate is following the application of the stinger, HSC, and pulse shape cuts.}
+    \label{fig:presr1-trend}
+\end{figure}
+\subsection{Selection Criteria}
+\label{sec:dq_cuts}
+
+
+\begin{enumerate}
+    \item \textbf{E-train and muon veto}: after large S2s a series of electrons arrives, typically spanning several event windows. A background of single photons is also apparent, which extends further than the single electron background.
+    The veto works by calculating a hold off region which dynamically varies based on the \textit{Progenitor} S2 area.
+    The length was tuned by members of the grids team to decay down to the quiescent background of 40~Hz single photoelectrons, which takes times on order of tens of milliseconds.
+    The muon veto works in a similar fashion, but sets a fixed holdoff time of 20s after a muon is detected. 
+    The muons are determined by a skin+OD coincidence.
+    \item \textbf{Hot spot exclusions/High S1 Rates}: automatically detected regions of time with high S2 rates.
+    A separate cut was tuned for regions of high S1 rates.
+    \item \textbf{Bad buffer}: event buffers are filled on a non-synchronized per-channel basis. 
+    Large events may not have all channels become available at the same time for the next trigger.
+    This cut removes events where all of the buffers are not available at the start of the event window.
+    \item \textbf{Excess Area}: catches issues where pulses are misclassified. In a perfect event very little light is detected before the main S2 outside of the main S1. This cut removes events where too much area is found in pulses before the S1 and between the S1 and S2.
+    \item \textbf{Sustained Rate}: catches events where the electron/photon (e$^-$/ph) trains did not perfectly estimate the decay. 
+    If an event has greater than 40~Hz of single photon rate in any 0.5~ms window, the event is rejected.
+    \item \textbf{OD Burst}: rejects events with a large amount of electronics noise.
+    \item \textbf{WIMP Search ROI}: Single Scatter, S1 and S2 Area, Fiducial Volume. 
+    These are the core cuts for the WS, selecting events that are WIMP-like.
+    Internally these are divided up into separate cuts but are alike in purpose.
+    \item \textbf{Detector Vetoes}: OD and Skin detectors detect neutrons and Compton scatters. Coincidences between the Skin and OD detectors and the S1 will disqualify an event. The area thresholds and coincidence time window are tuned to remove backgrounds without excessive loss of livetime.
+    \item \textbf{S1 Prominence}: Occasional double S1 pulses are found in the pre-trigger region.
+    Typically the smaller S1 is not classified as ``prominent." This can indicate a potential pileup event.
+    The S1 prominence cut removes events with S1 pulses separated 750~ns in time from the prominent S1.
+    \item \textbf{Stinger}: Due to the nonuniform  in the extraction region electric field resulting from nonaligned gate and anode grids, single electrons frequently produce electroluminescence in an initial burst, followed by a small number of photons separated by a $\mu s$ or so. 
+    This cut removes S1s which occur within 2~$\mu$s of a single electron, or an ``other" pulse which is larger than the S1 itself.
+    \item \textbf{High single channel} (HSC): Removes events which contain too much light in a single PMT.
+    These pulses are more likely to be the result of electroluminescence from the electrode grids.
+    \item \textbf{S1 Pulse Shape}: discriminates between isolated S1s and scintillation S1, removing the isolated S1s.
+    The time profile scintillation light is the combination of the exponential decay of the excimers, the reflection off of the PTFE walls, Rayleigh scattering, and the PMT and electronics chain impulse response. 
+    Isolated S1s result from a variety of phenomenon that generally result in a more stochastic burst of photons, generating \textit{e.g.} longer pulses with larger first central moments. 
+    Features such as this can be exploited to discriminate against the isolated S1s.
+    \item \textbf{S1 Photon Timing}: Similar to the S1 Pulse shape cuts, but is based on a novel RQ calculated from the timing distribution of photon hits.
+    \item \textbf{S1 TBA vs. Drift Time}: Removes events based on the correlation between top-bottom-asymmetry of the S1 pulse and the height in the detector.
+    Events which occur closer to one PMT array or the other tend to collect more light in the nearby array.
+    \item \textbf{S2 Width vs. Drift Time}: similar to the S1 TBA vs. drift time, diffusion of the electrons clouds as they drift towards the liquid surface lead to a correlation which can be exploited to remove accidental coincidences.
+    \item \textbf{S2 Shape}: narrow, early peak, rise time.
+    These separate requirements target near-liquid-surface S2s which can be merged with S1s. 
+    These pulses have on average a mush more steep rise time, along with an relatively higher prompt fraction compared to S2s which occur within the fiducial volume.
+    \item \textbf{S2 XY quality}: Poor $\chi^2$ returned from the likelihood minimization program Mercury\cite{lux_collaboration_position_2018} are indicative of grid noise. 
+    \item \textbf{S2 TBA}: above-anode S2s constitute a population of isolated S2s, contributing to accidental rates.
+    This cut removes S2s with $TBA > 0.6$.
+\end{enumerate}
+
+\afterpage{\FloatBarrier}
+\subsection {High-Single Channel Pulses}
+\subsubsection{Background}
+It was observed in 11.1~ms event window, randomly triggered data that isolated S1 pulses tended to show an increased amount of light in one PMT, relative to low-energy calibration sources such as DD neutrons and CH$_3$T injection.
+S1 scintillation photons are generated far from the arrays, and have the opportunity to reflect off the PTFE walls and liquid surface before reaching a photocathode face.
+As such, most position information is almost completely lost, and the light is evenly distributed across the PMTs in a particular array (though the light is not equally partitioned between the top and bottom arrays themselves).
+Backgrounds which cause these pulses include Cerenkov photons within the quartz windows of the PMT, and electroluminescence on the anode grid, which occurs close enough to the top array to 
+have several photons impinge on a single tube.
+
+\subsubsection{Cut Development}
+
+Since there are 494 TPC PMTs, it is unlikely for photons to pile up in a particular tube until the pulse area becomes quite large.
+In statistics, this is known as the "birthday problem," \textit{i.e.} the probability that among a group of $N$ people, any two have the same birthday.
+The coincidence probability is given by\cite{williamson_revisiting_2009}:
+\begin{align}
+    P(x,k,N) = (\text{No. of ways to select x PMTs})  \nonumber \\
+    \times(\text{ No. of ways to assign x photons to k PMTs})  \nonumber\\ 
+    /\ (\text{No. of possibilities for N photons})  \nonumber\\
+    = \frac{\genfrac(){0pt}{}{N}{ x} x! S(K,x) }{ N^K} = \frac{(N)_x S(K,x) }{ N^K}~,
+\end{align}
+
+where $S(k,x)$ is the Stirling number of the second time and $(N)_x=N\cdot(N-1)\cdot..\cdot(N-x+1)$ is the falling factorial.
+The probability for the maximum number of photons per PMT $x$ is slightly simpler:
+
+\begin{equation}
+    P(x,k,N) = 1- [1- \genfrac(){0pt}{}{k}{x} (\frac{1}{N})^x (1- \frac{1}{N})^{k-x}]^N~.
+\end{equation}
+
+Evaluating for $N=494$, $x=3$, and $k=10$, this evaluates to $P(3,10, 494) = 4.8\times10^{-4}$.
+As such, unless a particular energy deposit is in close proximity to a PMT (which breaks the assumption that all tubes are equally likely to receive a photon), it is unlikely to produce pulses with large fractions of their pulse are in one tube.
+The variable in the analysis is referred to as the $\mathrm{MaxChannelArea}$.
+
+A selection criterion based on the Max Channel Area was written.
+Since the fluctuations are highly heteroskedatic, it was easier to work within the $\text{MaxChannelArea}$, $S1$ space, rather than with the ratio of the two.
+The decision boundary was chosen as:
+\begin{equation}
+    \text{MaxChannelArea}  < \max\{1+ S1_{\text{raw}}^{0.4}, 0.05 \times S1_{\text{raw}}\}\times  (1+ 0.6 \times \exp[\frac{dT - dT_{\text{max}}}{30 \quad \mu s}] ) 
+    \label{eq:hsc_cut_def}
+\end{equation}
+\noindent
+The $1+ S1_{\text{raw}}^{0.4}$ power law expression encodes the low-area dependence of the max channel area on S1 area.
+Above approximately 40~phd, the fixed ratio of 5\% was found to fit $^{83m}$Kr contours better than the power law.
+The drift time independent portion of the criterion, $\text{MaxChannelArea} < S1^{0.4}+1$, was developed based off of rejecting isolated S1 pulses from randomly triggered events while maintaining good acceptance($99.3$\% of deuterium-deuterium fusion neutrons) of low energy calibration events, and it shown in Fig. \ref{fig:hsc_cut_is1}.
+It is clear that two lobes exist, and the HSC cut targets the upper lobe, which extends in some cases to large S1 areas.
+The boundary was chosen to allow through events at the intersection of the two lobes, and was chosen with the help of low energy calibration sources.
+
+The DD neutron generator creates 2.45~MeV neutrons \cite{stott_advances_1997}, which are aimed through a conduit at the top of the detector.
+Using the trigger input into the DD generator, applying the NR band, and selecting the XY path of the beam, a very clean set of DD events may be curated.
+Tritium $\beta$ decays, with an endpoint of 18.6~keV, from injected $CH_3T$ gas, provide low energy electron recoils uniformly throughout the TPC.
+An advantage of the tritium calibration for this purpose was the relatively smaller event rate.
+Due to PTFE fluorescence, high event rate time periods, such as those during the DD calibration, have an artificially high isolated S1 rate.
+As a result, obtaining a clean ``real" dataset to compare against is challenging for NRs.
+However, the tritium and DD bands do not differ significantly, as indicated in Fig. \ref{fig:hsc_cut_dev}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/Accidentals/HSC_Cut_IS1.png}
+    \caption[A 2D histogram of the maximum channel area vs.
+    S1 area distribution of isolated S1 pulses, taken in the ``long random" mode.]%
+    {A 2D histogram of the maximum channel area vs.
+    S1 area distribution of isolated S1 pulses, taken in the ``long random" mode.
+    The High Single Channel cut used in the first science run is indicated.
+    An obvious two-band structure is observed.}
+    \label{fig:hsc_cut_is1}
+\end{figure}
+
+
+The drift time scaling expression similarly fits $^{83m}$Kr calibration data, and encodes the moderate dependence of $\text{MaxChannelArea}$ on drift time.
+As expected from a na\"ive solid angle calculation, deposits near the bottom of the detector, near the bottom array, observe a larger max channel area on average.
+This effect is more moderate near the top array due to the different collection efficiencies.
+These dependencies can be seen in the max channel ratios shown in Fig. \ref{fig:max_channel_krypton}.
+The events were selected from calibration data based on the following criteria:
+
+\begin{itemize}
+    \item Single Scatters: \textit{i.e.} an event containing 1 prominent S1 followed by 1 prominent S2.
+    \item Passes E-Train Veto, OD and Skin Vetoes
+    \item S1 $\in$ [120, 300]~phd.
+    \item S2 $\in$ [12000, 50000]~phd.
+    \item S2 radius $<$ 70~cm.
+    \item Drift Time $\in$ [60, 955]~$\mu s$.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/dd_3sigma.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/tritium_3sigma.png}
+    \caption[The drift time independent HSC cut development. Curves are shown for $\text{MaxChannelArea}<S1^{0.4}+1$.]%
+    {The drift time independent HSC cut development. Curves are shown for $\text{MaxChannelArea}<S1^{0.4}+1$.
+    DD calibration reaches lower in energy, but is located towards the top of the detector, leading to a potential bias.
+    The tritium data subtends the entire TPC volume, allowing for a cross check of this effect.
+    3$\sigma$ quantiles are shown, indicating the high signal acceptance of these cuts.}
+    \label{fig:hsc_cut_dev}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/Kr83m_DriftTime_MaxChannelRatio.png}
+    \caption[Maximum channel area ratio vs. drift time histogram for $^{83m}$Kr calibration, with the High Single Channel selection criterion indicated in dashed red.]%
+    {Maximum channel area ratio vs. drift time histogram for $^{83m}$Kr calibration, with the High Single Channel selection criterion indicated in dashed red.
+    The drift time dependence is evident at larger drift times / near the cathode, and the implemented cut is shown in red.
+    }
+    \label{fig:max_channel_krypton}
+\end{figure}
+
+\subsubsection{DPE Effect}
+The high single channel pulses are believed to be distinct from S1 scintillation light.
+Resulting from either electroluminescence or Cerenkov light, or a combination therefor, these pulses exhibit different characteristics.
+Most importantly, these pulses have a suppressed double-photoelectron (DPE effect\cite{akerib_extending_2020}).
+As shown in Fig. \ref{fig:dpe_hsc}, single scatter S1s which fail the HSC cut have a different distribution of per-channel areas than those which pass the HSC cut (i.e. real S1s).
+
+The plot is a histogram of nonzero pulse areas for each PMT for the two pulse categories, subject to $S1_{\text{raw}}<10$~phd in order to eliminate pileups.
+The events which pass the HSC cut are additionally required to have drift times within the TPC, i.e. less than 951~$\mu\mathrm{s}$.
+For the HSC pulses, the channel with the largest area is removed from the histogram.
+A double-Gaussian function is fit to the data, and the ratio of areas is computed.
+
+Two possibilities were considered: a constrained and unconstrained fit.
+The constraint concerned whether the second peak's mean and variation were fixed to twice that of the SPE peak values.
+For an unconstrained fit, I find that the non-HSC (\textit{i.e.} true scintillation pulses which pass the cut) pulses have a DPE fraction of $0.3 \pm 0.04$, whereas the HSC pulses have a DPE fraction of $1.3 \pm 0.5$. 
+This unconstrained fit is what is shown in the figure, and is not consistent with the mean $\mu$ of the second Gaussian being twice that of the first, for HSCs, but is consistent for non-HSCs.
+For the constrained fit, the DPE ratios were $0.275\pm 0.006$ and $0.180 \pm .009$ for non-HSCs and HSCs, respectively.
+This corresponds to an $8.8\sigma$ result of a Z-test, indicating a statistically significant suppression of double-photoelectrons.
+
+A suppression of the DPE effect may be due to the HSCs being a result of Cerenkov photons.
+Simulations of Cerenkov events in the PMT quartz windows indicate a different time signature, and higher max channel fraction than NRs in the TPC.
+Cerenkov photons tend to be in the visible spectrum, 100s of nm in wavelength.
+This lower energy can result in a suppressed DPE effect relative to the 175~nm\cite{fujii_high-accuracy_2015} VUV scintillation light.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7 \textwidth]{Assets/Accidentals/DPE_effect.png}
+    \caption[A histogram of the individual channel areas for low coincidence HSC and non-HSC pulses.]%
+    {A histogram of the individual channel areas for low coincidence HSC and non-HSC pulses.
+    This data was taken from early on in the first LZ science run in December 2021.
+    The fitted Gaussians shown here are the result of the unconstrained fit.
+    The shaded region indicates the data which was used for the minimization.
+    A reduced DPE effect is evident in the distribution of pulses failing the HSC cut.
+    Note that the first peak is not located at 1.0 phd, due to the phe-to-phd unit conversion.}
+    \label{fig:dpe_hsc}
+\end{figure}
+
+\subsubsection{PMT Distribution}
+As HSCs are believed to result at least partially from Cerenkov in the quartz windows of the PMTs, I examined the contribution of each channel to the HSC rate.
+I find that certain PMTs are over-represented in HSCs. 
+I do not find a similarly sharp distribution in the distribution for non-HSC pulses.
+The elevated rate PMTs are distributed along the outer edge of the top array.
+
+HSC pulses do not exhibit a strong correlation between the identity of the maximum channel PMT and activation of nearby channels.
+The rate of HSCs decayed over time, similar to the non-HSC pulses. 
+However they decayed significantly faster, being approximately six times lower at the end of SR1 than at the beginning.
+
+Following the conclusion of SR1 a test was performed whereby one of the problematic PMTs was debiased and more long random data were acquired.
+Due to the aforementioned decay in HSC rate, this ended up having an inconclusive result.
+The rate, post-stinger cut, was 1.655 and 1.691~Hz for the post-SR1 data, PMT on/off respectively.
+A slightly higher rate of pulses present in the PMT-OFF data may be due to the distortion of the above-anode fields as a result of turning off the PMT.
+The HSC cut acceptance increases between these two configurations from 79\% to 84\%, indicating that this had the desired effect of attenuating this particular kind of iS1.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/Accidentals/HSC_contrib.png}
+    \caption[Histogram of channel contributions to the HSC pulses. 
+    The lower indices before(after) the break at 300 are the top(bottom) array.]%
+    {Histogram of channel contributions to the HSC pulses. 
+    The lower indices before(after) the break at 300 are the top(bottom) array.
+    There are certain PMTs which are more problematic for high single channels than others, particularly PMT 239.}
+    \label{fig:hsc_contrib}
+\end{figure}
+
+\subsection{Top Bottom Asymmetry}
+\label{sec:tba_cut}
+Accidental events have no correlation between the S1 and S2 pulses.
+As such, any RQs which depend on the joint distribution will differ from a true  recoil.
+The XY-position dependent corrections for S1 pulse area are subdominant to the drift time, and the S1 centroids are not typically localized enough to utilize in the analysis.
+The primary joint RQ which can be exploited for distinguishing true and accidental nuclear recoils is the correlation between top-bottom asymmetry and drift time.
+
+The top bottom asymmetry is defined as 
+\begin{equation}
+    TBA \equiv \frac{A_{\text{top}} - A_{\text{bottom}}}{A_{\text{top}} + A_{\text{bottom}}} = 2 \frac{A_{\text{top}}}{A_{\text{top}}+A_{\text{bottom}}} -1~.
+\end{equation}
+
+The two arrays have different geometric packing of the circular PMT cross sections.
+The bottom arrays is a hexagonal packing, while the top array is a concentric series of circles, which results in more PMTs in the same solid angle on the bottom array.
+At the liquid-gas boundary, total internal reflection may occur for incident angles to the normal $ \theta_c \geq \arcsin n_{\text{gas}}/n_{\text{liquid}} \approx 46$ degrees.
+These two phenomena result in a larger light collection efficiency for the bottom array, and therefore a bias towards lower TBA for all heights within the LXe.
+
+The TBA-drift time correlation in the WIMP search ROI was found with CH$_3$T calibration data. 
+The Tritium decays were selected with $S2 \in [10^{3.2},10^{4.4}]$~phd, and $S1 
+\in [10, 80]$ phd.
+Additional anti-accidental selection criteria were a max channel area cut : $\text{MaxChArea} < S1^{0.4} +1$, and a drift time selection of $dT \in [50,850]$~$\mu \mathrm{s}$ which eliminated the impact of the grid events.
+The data were then binned into drift time bins and a fourth-order polynomial was fit to the means of the bins.
+The $\chi^2$ minimization was performed on a normalized drift time coordinate $\tilde{t} = dT / 955$~$\mu \mathrm{s}$ in order to avoid floating point precision errors.
+The resulting relationship is:
+\begin{equation}
+  TBA(\tilde{t}) = -0.0427  -0.544\;\tilde{t} -0.826\;\tilde{t}^2  + 0.906\;\tilde{t}^3 -0.263\; \tilde{t}^4
+\end{equation}
+\noindent
+From this, a prediction of the top area fraction $P_T  =\frac{A_{\text{top}}}{A_{\text{bottom}}} $ can be obtained for any given drift time.
+
+The observed top area fraction then experiences binomial fluctuations. 
+Larger S1 areas have smaller fractional fluctuations around their expectation values, while S1 near threshold undergo more severe fluctuations.
+A binomial distribution with observed success rate $\hat{p}$ after $n$ trials has a confidence interval of
+\begin{equation}
+    p = \hat{p} \pm \sqrt{\frac{\hat{p} (1-\hat{p}}{n}}\;
+\end{equation}
+\noindent
+However, this is just the asymptotic formula, valid for when the central limit theorem may be applied ($n \geq 10$). 
+Below that point, this equation overcovers the results\cite{sakakibara_comparison_2014}.
+The confidence interval with more accurate coverage is obtained by integrating the probability distribution function $f(k;p,n) =  \genfrac(){0pt}{}{n}{k} (1-p)^{n-k} p^k$.
+The result, known as the Clopper-Pearson interval, is:
+
+\begin{equation}
+    B(\alpha/2, k, n-k+1) \leq p \leq B(1- \alpha/2,k+1, n-k)\;,
+\end{equation}
+\noindent
+where $\alpha$ is the significance level and $B(c;a,b)$ is the $c$th quantile of the beta distribution with degrees of freedom $a$ and $b$.
+A review of several methods of calculating Binomial confidence intervals is found in Ref. \cite{sakakibara_comparison_2014}.
+A comparison of the two methods, along with a full error propagation of the ratio of two Poisson fluctuating variables, is shown in Fig. \ref{fig:clopper_pearson} for an expected TBA of 0.
+The overcoverage of the Wald (normal approximation) interval is clear below around 20~phd.
+Above 20~phd the two methods become largely indistinguishable, but the Wald interval is more mathematically (and computationally) simple to calculate.
+The resulting cut efficiencies are shown in Fig \ref{fig:tba_dt_intervals}.
+In the case of the isolated S1s, the cut acceptance was found by iterating over an array of drift times, evaluating the acceptance of the drift time for all pulses as if they were found at that drift time, and averaging over the imputed drift times.
+The Wald and Exact intervals both accept 95\% or more tritium events across the entire range.
+For isolated S1s, the Wald interval removes more pulses between 10 and 60 phd (for the same $\alpha$), but is outperformed by the Clopper-Pearson interval below around 5 phd.
+Due to the spectrum of isolated S1s skewing heavily towards lower areas, this makes the choice of using the exact interval easy.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/Accidentals/clopper_pearson.png}
+    \caption[Analytic TBA vs. S1 area calculations, with confidence intervals calculated with several methods, indicated for $\hat{p}=0.5$. ]%
+    {Analytic TBA vs. S1 area calculations, with confidence intervals calculated with several methods, indicated for $\hat{p}=0.5$. 
+    The fluctuations happen over the top area fraction, and are converted back into $TBA= 2\hat{p}-1$.
+    Note that the Wald confidence intervals are almost identical to the full error propagation when selecting the $\alpha$ appropriately.}
+    \label{fig:clopper_pearson}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/Accidentals/DT_TBA.pdf}
+    \caption[The TBA-drift time cut efficiencies as a function of S1 pulse area for 3$\sigma$ confidence interval selections.]%
+    {The cut efficiencies as a function of S1 pulse area for 3$\sigma$ confidence interval selections.
+    The tritium calibration data is compared against the isolated S1 long random data.
+    The isolated S1s have been pre-selected against the high single channel(HSC) and stinger (no single electrons or others in the preceding 2$\mu s$.
+    Also compared is the choice of the exact (Clopper-Pearson) and Wald intervals.}
+    \label{fig:tba_dt_intervals}
+\end{figure}
+
+\subsection{S1 Pulse Shape}
+
+Isolated S1 pulses were additionally filtered with pulse shape parameters, a criterion which I developed.
+While the probability of 4 or more photoelectrons piling up to form a pulse is vanishingly small, other processes may lead to a pulse shape which differs from the typical scintillation signal.
+Because iS1 pulses are peaked near the 3-fold coincidence threshold, it is not possible in general to utilize asymptotic formulae.
+As a result,  a generic exponential + constant parameterization which accommodates the heteroskedacity of the data is utilized:
+
+\begin{equation}
+    t = A + B\exp(S1 \cdot C)\;.
+    \label{eq:expconst}
+\end{equation}
+
+As many features related to pulse shape are selected as possible, and generally apply an upper and lower boundary.
+These parameters were manually tuned rather than optimized automatically, and an example is shown for the full-width-at-half-maximum (FWHM) RQ in Fig. \ref{fig:fwhm_shapecut}.
+Calibration DD events were used as a ``signal" dataset to choose the parameters.
+This causes an issue for the top-bottom-asymmetry(TBA) parameter, as the DD data was skewed towards the top of the detector.
+This provides a high-statistics estimate of the upper TBA contour, but does not encapsulate the lower contour.
+This contour can be calculated analytically using the relationship between TBA and drift time at large S1s.
+I calibrated this contour by ``calibrating" from events near the cathode, which are more likely to be real events over accidentals than events in the fiducial volume because of xenon self-shielding.
+In order to be conservative, and since a drift time-TBA criterion was already present, the lower boundary of TBA was not utilized for the shape cut.
+The parameters are tabulated in Table \ref{tab:s1onlyshape}.
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+        Parameter &Units& A & B &C  \\
+        \hline
+        AFT$_{75}$-AFT$_{50}$ (upper) & ns & 130 & 70 & -0.05\\
+        AFT$_{75}$-AFT$_{50}$ (lower)& ns &  50 & -50 & -0.1\\
+        AFT$_{95}$-AFT$_5$ &ns & 350 & 0 & 0\\
+        fwhm (upper) &ns& 210 & 110 & -0.1\\
+        fwhm (lower) & ns& 80 & -80 & -0.05\\
+        promptFrac50 (upper) & 1 & 0.45& 0.5 & -.07\\
+        promptFrac50 (lower) & 1 &  0.2& -0.15& -.04\\
+        promptFrac100 (upper) & 1 & 0.8& 0.3 & -.07\\
+        promptFrac100 (lower) & 1 &  0.4& -0.15& -.04\\
+        rms (upper) & ns & 80& 20& -0.05\\
+        rms (lower) & ns& 30 & -30 & -0.04\\
+        TBA (upper) & 1 & 0.35 & 1 &  -0.05\\
+        TBA (lower) & 1 &  -0.75 & -1.25 &  -0.05\\
+        
+        \hline
+    \end{tabular}
+    \caption{S1-only shape selection criteria; parameters for Eq. \ref{eq:expconst}.}
+    \label{tab:s1onlyshape}
+\end{table}
+
+When tritiated methane CH$_3$T calibration data became available, this dataset became the standard by which data quality selection criteria were evaluated.
+The S1 shape cut, when applied to the tritium dataset, shows a similarly high acceptance of "real" S1s, and minimal dependence on drift time, as demonstrated in Fig. \ref{fig:ch3t_shapecut}
+
+\begin{figure}
+    \centering
+    \includegraphics[height=0.8\textheight]{Assets/Accidentals/fwhm_shapecut.png}
+    \caption[S1 shape decision boundaries for the FWHM RQ, as a function of S1 area.]%
+    {S1 shape decision boundaries for the FWHM RQ, as a function of S1 area.
+    The top plot indicates a proxy for the ``signal" which is contained.
+    The middle two indicate iS1 backgrounds to be removed.
+    The bottom plot shows the fraction of events in each S1 bin which fall between the indicated selection (dotted red).
+    Isolated S1s are efficiently removed above 40 phd with $<$ 5\% loss across all bins for the DD data.}
+    \label{fig:fwhm_shapecut}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.47 \textwidth]{Assets/Accidentals/ch3t_shapecut.png}
+    \includegraphics[width=0.47 \textwidth]{Assets/Accidentals/ch3t_dt.png}\\
+    \includegraphics[width=0.7 \textwidth]{Assets/Accidentals/DD_iS1_shapecuts.pdf}
+    \caption[The S1 shape cut acceptance, as applied to the tritiated methane injection calibration dataset, and the iS1 pulses from Pre-SR1 data.]%
+    {The S1 shape cut acceptance, as applied to the tritiated methane injection calibration dataset, and the iS1 pulses from Pre-SR1 data.
+    The iS1 pulses have passed through the anti-accidentals selections such as HSC and stinger cuts.
+    The effectiveness of the overall cut can be seen by comparing the asymptotic value here to the value for e.g. the fwhm cut along in Fig. \ref{fig:fwhm_shapecut}.
+    \textit{Top, left}: CH$_3$T conditional acceptance vs S1 area.
+    \textit{Top, right}: CH$_3$T conditional acceptance vs drift.
+    \textit{Bottom}: DD and iS1 acceptance vs drift time.
+    }
+    \label{fig:ch3t_shapecut}
+\end{figure}
+
+
+\afterpage{\FloatBarrier}
+\section{Isolated S1 Locations}
+
+After the HSC, TBA, and stinger cuts, a population of isolated S1s still remains. 
+These events are likely due to grid activity, based on the results of the grid electrode scan discussed in Section \ref{sec:grid_scan}.
+While not directly exploitable for selection criterion, the sources of isolated S1s may provide clues for future mitigation strategies on the hardware side.
+S1s, as opposed to S2s, do not carry much positional information, besides at the upper and lower portions of the TPC, where the hit patterns of the photons are more localized.
+This is caused by the fact that photons typically reflect off the PTFE walls, the liquid-gas boundary, as well as Raleigh scatter within the TPC, erasing information on the deposit location.
+The primary handles on location are the top-bottom-asymmetry (TBA) and the centroids of the PMT hit patterns.
+Mercury is not run over S1s, therefore a likelihood-minimization procedure is not utilized.
+
+In addition to TBA, another handle on the location of pulses within the detector is the ``spread", taken to be the square root of the trace of the covariance matrix of the PMT hit pattern:
+\begin{equation}
+    \Sigma_{ij} = \frac{1}{N}\sum_k^N (X_{ik} - \bar{X_i})(X_{jk}-\bar{X_{j}})
+    \label{eq:covar}\;.
+\end{equation}
+\noindent
+Events occurring near the PMT arrays will have a more concentrated hit pattern, i.e. smaller ``spread."
+This variable is slightly correlated with TBA, as ween in Fig. \ref{fig:cov_tba}.
+The pulses which pass and fail the HSC cut are presented separately, and all pulses have passed through the stinger selection criterion.
+HSC pulses appear at more extreme TBA, indicating that the grids are likely to be sourcing those pulses.
+Confidence intervals around particular drift times were constructed which appear to trace the TBA-S1 distributions of HSC and non-HSC pulses, as illustrated in Fig. \ref{fig:tba_bands}.
+There, the TBA for HSCs were constructed using channels \textit{other than} the maximum channel, to avoid bias.
+HSC pulses appear to be concentrated in a sharp band around drift time 500 $\mu s$, along with more diffuse distributions at larger TBA.
+Non-HSC pulses are more evenly distributed, but have an overdensity suggestive of a maximum drift time of $100\;\mu s$.
+
+The top array centroid patterns are likewise differentiated between the HSCs and non-HSC pulses. 
+With the HSC pulses, a circular pattern is present along the outer edge of the array, with a bright spot in the middle which is indicative of a diffuse pattern across the array.
+The non-HSCs are biased towards the top of the detector, as evidenced by the radial symmetry of the bottom array centroids.
+In the top array, non-HSCs show three distinct blobs, with one consistent with a diffuse pattern averaged too the center.
+The brightest region is apparent at (-40, 0)~cm.
+Interestingly, the HSC pulses show a ring like pattern in the bottom array at radius $\sim 30$~cm (though the physical source is likely at the wall, due to the averaging process reverting towards the center).
+A bright spot is evident at a particular spot at the edge.
+% After some review of the isolated S2 and S2 noise by other members of the accidentals background team, it was determined that this could be due to light production from the resistor chain pockets. 
+Combined with the evidence from the TBA distribution, as well as the unexplained bend in the estimated wall position around that region of the TPC, signs point to some manner of short or conducting path existing in the vicinity.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/Cov_Toparray.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/Cov_Bottomarray.png}
+    \caption[Histograms of PMT hit pattern spreads vs top-bottom-asymmetry, presented for top array (left) and bottom array(right), and for HSC pulses (top) and non-HSC pulses (bottom).]%
+    {Histograms of PMT hit pattern spreads vs top-bottom-asymmetry, presented for top array (left) and bottom array(right), and for HSC pulses (top) and non-HSC pulses (bottom).
+    The $y$-axis is the square root of the trace of the covariance matrix $\sigma = \sqrt{\Sigma_{xx} + \Sigma_{yy}}$.
+    All pulses have photon count $>$5 in the respective arrays.
+    Note the concentration of pulses with high single channels near the top and bottom of the TPC.}
+    \label{fig:cov_tba}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/HSCFail_TBA_Area.png} 
+     \includegraphics[width=0.45\textwidth]{Assets/Accidentals/HSCPass_TBA_Area.png}
+    \caption[TBA-Area bands for HSC cut failing (left) and passing(right) isolated S1s from the Pre-SR1 dataset.]%
+    {TBA-Area bands for HSC cut failing (left) and passing(right) isolated S1s from the Pre-SR1 dataset.
+    The HSC failing pulses (i.e. they have a high single channel) partially converge on a band around 500~$\mu s$ drift time, approximately halfway up the TPC.
+    The HSC passing pulses (likely scintillation) converge on locations slightly more evenly distributed throughout the detector, but appear to not exist above drift times of $100\;\mu s$.}
+    \label{fig:tba_bands}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/presr1_hscpass_topcentroid.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/presr1_hscfail_topcentroid.png}\\
+     \includegraphics[width=0.45\textwidth]{Assets/Accidentals/presr1_hscpass_bottomcentroid.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/presr1_hscfail_bottomcentroid.png}
+    \caption[Heatmaps of the PMT array hit centroids for isolated S1s from the Pre-SR1 long random acquisition. ]%
+    {Heatmaps of the PMT array hit centroids for isolated S1s from the Pre-SR1 long random acquisition. 
+    Left column: passes HSC cuts. Right column: fails HSC cuts.
+    Top row: top array. Bottom row: bottom array.
+    The pulses all pass the stinger cut and have S1 area $>$ 20~phd.
+    }
+    \label{fig:topcentroids_presr1}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Creation of accidentals model}
+\subsection{Introduction}
+While subdominant to other background sources in SR1 such as $\beta$-decays leaking into the nuclear recoil band, accidental coincidence events are particularly challenging due to their bias towards the low-energy region, making it more likely to appear not only in the WIMP search ROI, but in a region which favors a light WIMP mass.
+Therefore the accidentals S1/S2 spectrum must be incorporated into the complete backgrounds model.
+I contributed to the production and deployment of an applicable version of this model for SR1.
+This constituted a background in the WIMP Search ROI of 1.2~$\pm$~0.3 events\cite{aalbers_first_2022}.
+% The PLR allowed the normalization of this quantity to float, and nonetheless returned $1.2 \pm 0.3$ accidental events in the fit.
+
+\subsection{Isolated Pulse Extraction}
+\label{sec:is1_selection}
+
+While long-random data is suitable for gathering large statistics of isolated pulses in a short amount of time, as well as examining long correlations between pulses it can obfuscate the effects of the shorter buffer windows in the SR1 data.
+It also blinds us to the potential time evolution of isolated rates, or particular effects that appeared after the detector settled into stability.
+Therefore, the pulses which are selected for construction of the accidentals probability density function are drawn from the SR1 WIMP search data itself.
+
+
+
+\textit{Prominent} pulses are identified within the event window.
+This is meant to be a finer selection than the initial pulse finding code, aiming to remove improper pulse boundaries.
+The decision is made by comparing the height/width ratio of S1(2)s against the largest S1(2) within the event, and the particular decision boundary differs between the two species.
+Depending on the number and ordering of prominent pulses the event is classified as one of several \textit{interactions}:
+\begin{enumerate}
+    \item Single Scatters: 1 or 2 prominent S1s preceding 1 prominent S2. If there is only one prominent S1 then the interaction is considered for the WIMP search. The double S1 events are a result of, for example, $^{83m}$Kr events into this interaction type.
+    \item Multiple Scatters : 1 prominent S1 followed by 2 or more prominent S2s. This topology captures neutrons and Compton scatters
+    \item Pileup: 2 or more S1s followed by 2 or more S2s. As the name implies, these are meant to capture non-causally related energy deposits.
+    \item Other scatters: everything else, including events where the pulses are in the wrong order. Because of the random/heartbeat triggers, this topology included both S1-only and S2-only events.
+\end{enumerate}
+
+The isolated S1 and S2 populations are selected from other scatters. 
+Isolated S1s are selected from the pre-trigger window of random trigger types, whereas isolated S2s are selected from S2-triggered others.
+In both cases, the preceding(or following) drift length is scanned for the opposing pulse type to ensure that a single scatter was not misclassified due to a complicated topology.
+The choice of pre-trigger S1s is crucial, as it is possible for larger S1 pulse areas to trigger an event acquisition. 
+This would end up biasing the S1 spectrum downwards in the post-trigger region, as these events would not end up in the random trigger category.
+Only the pre-trigger window is considered in order to mitigate this bias.
+No such concern exists for the S2s as they are meant to trigger an event.
+
+Since the pulses in these dataset have already passed through both the physics and livetime cuts, namely the e-train and muon vetoes, these events are representative of pulses which would eventually survive into the subsequent data quality cuts.
+Since this dataset is partially meant to evaluate the cut efficacy (in particular the drift time-TBA cuts), further pre-selection is not performed.
+The exception is the OD and Skin vetoes.
+These cuts are adequately evaluated using calibration sources, so it would needlessly inflate the size of this dataset to include pulses which would be guaranteed to be removed.
+
+
+
+\subsection{Chopstitch}
+\label{sec:chopstitch}
+The \textit{chopstitch} method was originally developed for the event salting framework for the LZ WIMP search\cite{mount_lux-zeplin_2017}.
+In that context, the S1 and S2 pulses from a known single scatter source (such as from CH$_3$T calibration) are used  to construct a new spectrum of events.
+These synthetic events are then injected into the data stream, the analyzers being blind to their source as a bias mitigation technique.
+Only after all selection criteria are frozen are the chopstitch events are ``unsalted" and removed from the dataset.
+The number of salt events, and the spectrum are meant to be unknown, but similar to an actual WIMP model in order to mitigate the most amount of bias.
+
+It is crucial for salting that the pulses which are selected for salting are subject to certain constraints, otherwise they will be unnaturally easy to remove from the final dataset.
+Primarily these constraints are related to the effect of drift time on the S1 and S2 pulses. 
+For S1s, drift time is correlated with top-bottom-asymmetry(TBA), and for S2s longer drift times result in more longitudinal diffusion, making the pulse longer and more Gaussian in shape. 
+
+For accidentals, much of these concerns evaporate, as the accidentals are by definition uncorrelated S1s and S2s.
+Therefore, assembling the accidentals probability density function requires \textit{removing} the constraints of the salting framework.
+Taking the pulses collected in \ref{sec:is1_selection}, 30030261 single scatter events were constructed from 66592 S1s and 387197 S2s, of which 28,945,817 passed the preliminary selection criteria such as sustained rate cuts.
+These events were passed through the data quality cuts listed in Section \ref{sec:dq_cuts}.
+
+The chopstitch-accidentals events are efficiently removed with the data quality cuts.
+Between 99\% and 99.8\% of events are removed (varying a a function of S1 area), as indicated in Fig. \ref{fig:chopstitch_dqeval}.
+The acceptance rises for S1 and S2 near threshold, and is given by the number of events which pass the data quality cuts, divided by the number of events which are classified as single scatters.
+In total 5503 events pass all cuts, which presented some problems.
+This quantity of events has high enough that a probability distribution function had to be estimated for the ROI, but sparse enough that the high-energy regions would be challenging to fill.
+The chopstitch-accidentals dataset gradually grew in size as this problem was realized, but eventually it was realized that it would be challenging to scale the statistics by a sufficient factor.
+Therefore, a smoothing technique was used to interpolate the data.
+
+The first step in this process was to verify that the S1 and S2 spectra are separable.
+While the inputs to the chopstitch data are uncorrelated, it was unknown whether the full analysis chain would introduce a bias.
+For instance, the prominence algorithm depends on all pulses in the event, which leads to some events being misclassified.
+The OD and Skin Vetoes are applied on the S1s before the S1 selection, so the non-coincidence requirements with the S1 should theoretically have no effect, if the chopstitch S1 is the same as the S1 which is identified for the single scatter.
+The OD and skin channels in chopstitch data are taken from the S1 channel alone.
+However, the default prominence algorithm is acausal in that it makes a determination of S1 prominence based on pulses which come later in the event window.
+This can alter the decision criteria, and therefore the vetoes may remove events by accident.
+This turns out to be a small effect, with the skin veto removing 122, and the OD veto 518, single scatter chopstitch-accidentals events, for an inefficiency of 1.99 ~$\pm$ ~0.08 $\times 10^{-4}$.
+Combined with other phenomena, effects such as these could produce unintended correlations.
+
+To test for these possibilities, I performed two tests.
+First, I calculated the Pearson correlation coefficient from the covariance matrix $\Sigma_{ij}$:
+\begin{equation}
+    \rho_{12} = \frac{\Sigma_{12}}{\sqrt{\Sigma_{11} \Sigma_{22}}}\;.
+\end{equation}
+\noindent
+The S1c, $\log$S2c estimators have correlations of  $\rho=-0.001$, with a $p-$value of 0.462, which fails to reject the null hypothesis of no correlation. 
+
+The possibility of more complicated behaviours was explored using the G-test\cite{mcdonald_john_handbook_2014}.
+This consists of dividing the data into course bins in both dimensions, and calculating the expected counts in each bin $E_{ij}$ assuming perfect separability $E_{ij}=\frac{S1_i S2_j}{N}$, where $S1(2)_i$ is the number of events found in $S1(2)$ bin number $i$.
+Then, the G-test statistic is given by:
+\begin{equation}
+    G = \sum_i O_i \log \frac{O_i}{E_i}\;,
+\end{equation}
+\noindent
+where $O_i$ is the observation in bin $i$ and $E_i$ is the expectation for the same.
+This quantity is distributed like a $\chi^2$ with degrees of freedom equal to (number of rows-1)$\times$(number of columns -1).
+Using 3 rows and 3 columns, evenly dividing  the WIMP search ROI $S1_c \in [3,80]$, $\log_{10} S2_c \in [2.75, 4.5]$, I obtain G=1.9, for a  $p-$value of = 0.167.
+This similarly fails to reject the null hypothesis that S1 and S2 are separable in chopstitch-accidentals data.
+
+From here, the 2D probability density distribution could be constructed.
+1D Histograms were constructed in $S1_c$ and $\log_{10}S2_c$ spaces and combined.
+Due to the aforementioned sparsity, Poisson fluctuations in the histogram bins $\sigma_i = \sqrt{N_i}$ become significant for larger areas, which poses a problem for analysis.
+This is a particular worry for S1s, as there are only a few dozen surviving events above $S1_c=60$~phd.
+One possible way to mitigate this effect would be to have non-uniform bins. 
+However, this would pose a logistical issue when trying to add this pdf to the less sparse datasets that comprise the rest of the PLR.
+Another method would be to transport the data, calculate the histograms, then transform back, possibly followed by an interpolation step.
+
+Rather than implement those techniques, the S1 and S2 histograms were transformed in slightly different ways.
+For both, a particular threshold was chosen such that below which the raw bin content would be used, and above which a smoothed value would replace it.
+In the case of the S1s, the smoothing technique was a power law fit.
+This favored a power law exponent of $x\propto S1^{-2.1}$, for a $\chi^2/NDOF=1.3$, shown in Fig. \ref{fig:chopstitch_histograms}.
+For the S2, since the data was significantly less sparse, and had no obvious analytic form, a kernel-density-estimator\cite{hastie_elements_2001} was used instead.
+The cutoff thresholds were 16 and 2012 phd for the S1 and S2 spectra, respectively. 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/s1_accidentals.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/S2_accidentals.png}
+    \caption[The total chopstitch cut acceptances as a function of corrected S2 area (left) and corrected S1 area (right).]%
+    {The total chopstitch cut acceptances as a function of corrected S2 area (left) and corrected S1 area (right).
+    ``Conditional CombinedGroup" here indicates that the acceptances are calculated according to the number of events passing the S1 and S2-based selections, divided by the number of events passing the ``previous" livetime-impacting cuts such as \textit{sustained rate} and the vetoes.}
+    \label{fig:chopstitch_dqeval}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/S1_hist.pdf}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/S2_hist.pdf}
+    \caption[Chopstitch 1D histograms for corrected S1 and S2 areas, which form the inputs to the outer product which becomes the complete ``accidentals pdf."]%
+    {Chopstitch 1D histograms for corrected S1 and S2 areas, which form the inputs to the outer product which becomes the complete ``accidentals pdf."
+    Note the location where the spectrum transitions from the bin content (blue) to the fit(S1) or KDE (S2) values.}
+    \label{fig:chopstitch_histograms}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{Assets/Accidentals/chopstitch_energy.pdf}
+%     \caption{The reconstructed ``energy" spectrum of the chopstitch-accidentals events. 
+%     This ends up being somewhat WIMP-like, but with a flatter tail.}
+%     \label{fig:chopstitch-energy}
+% \end{figure}
+
+\subsection{UDT Normalization}
+
+While the PLR will allow the overall normalization of the chopstitch-accidentals dataset to float to best fit the SR1 data, it is advantageous to check the results against expectations, particularly with the low number of events.
+The main purpose of the exercise is to account for potential effects which only appear at the event level, such as unanticipated biases in the classification code.
+Taking the iS1 and iS2 estimated rates from Pre-SR1 long random data (1.04~Hz and 7.41$\times 10^{-2}$~Hz, respectively), one obtains a rate of 7.32$\times 10^{-7}$~Hz, corresponding to 3.8 events in SR1.
+Note that the 1.04 number is for the S1 pulse area range [0, 80] phd.
+Then, using the SR1 range of S1$\geq3$ phd, one obtains 2.8 events within SR1.
+To constrain/initialize the values for the PLR, the rate of ``unphysical drift time" or UDT events are used.
+These events are otherwise typical single scatters that were found to have drift lengths exceeding that of the cathode.
+The cathode in SR1 was identified at 951 $\mu s$ as an obvious overdensity of events at all radii, as shown in Fig. \ref{fig:udt_def}.
+
+Since UDT events are by definition known accidentals, they are a low-systematic estimator on the accidental rate in SR1.
+Due to these enlarged drift times, proxies for certain reduced quantities were required, such as the drift time being imputed by subtracting one full drift length.
+By imputing their drift times into the physical region, applicable data quality cuts may be applied, and an estimate for the true accidental coincidence background is found.
+The rate was found to be 1.2$\pm 0.3$ events within the WIMP search region of interest.
+The outer product, along with the UDT events, is shown in Fig. \ref{fig:chopstitch_pdf},
+
+My contribution to this portion of the analysis was cross-checking the validity of the UDT events against the chopstitch-accidentals dataset.
+Similar to that case, I evaluate the correlation coefficient and G-test.
+The $\rho$ of the UDT events in S1$_c$ vs. $\log$S2$_c$ space is $\rho$= -0.0346, $p = 0.543$.
+For the G-test, $G= 6.57$, $p = 0.828$, which indicates that, like the chopstitch data, the UDT events do not have statistically significant correlation between the two pulses introduced by the processing stages.
+I did find an inconsistency between the overall spectra of the UDT events and the chopstitch. 
+The chopstitch events seemingly stretch lower in S2 area than the UDT events.
+It is possible that this is an artifact of the method of correcting the event areas using a proxy drift time.
+The G-test when taking the chopstitch as expected and the UDT events as observed yields $p=0.007$.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/Accidentals/chopstitch_raw_pdf.png}
+    \caption[The chopstitch-accidentals pdf, before smoothing. ]%
+    {The chopstitch-accidentals pdf, before smoothing. 
+    The unphysical drift time (UDT) events from SR1 are overlaid with red points.}
+    \label{fig:chopstitch_pdf}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width= 0.7 \textwidth]{Assets/Accidentals/accidentals_pdf.png}
+    \caption[The smoothed accidentals PDF, with SR1  data overlaid. ]%
+    {The smoothed accidentals PDF, with SR1  data overlaid. 
+    The UDT events are largely consistent with the predictions from the accidentals PDF.
+    NR and ER bands are overlaid to indicate the approximate impact on the WIMP search.
+    A single UDT point in the NR, passing all selection criteria (besides fiducialization) is visible. }
+    \label{fig:accidentals_pdf}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/Accidentals/udt_regions.pdf}
+    \caption[Single Scatter drift time spectrum in LZ, indicating the difference between physical and unphysical drift times.]%
+    {Single Scatter drift time spectrum in LZ, indicating the difference between physical and unphysical drift times.
+    Events beyond 2~ms are due to events where the S2 is not the triggering pulse.
+    This scenario occurs for especially large S1s, or when a background grid emission electron triggers an event.}
+    \label{fig:udt_def}
+\end{figure}
+\section{Grid Voltage Scan}
+\label{sec:grid_scan}
+\subsection{Overview and Results}
+After the conclusion of SR1, a campaign was conducted to determine optimal fields for SR2.
+The nominal voltages were lower in magnitude than the requirement voltages, and were chosen for being sufficiently high while maintaining stability.
+Three scenarios were considered: changing the drift field, changing the extraction region field, and shifting the voltages uniformly up and down while maintaining the fields.
+I was responsible for investigating the impact of these new configurations on the isolated S1 rates, which became an input into the overall accidentals rate.
+The configurations explored were, in the notation Anode/Gate/Cathode in kV:
+\begin{enumerate}
+    \item +4/-4/-32 : SR1 fields
+    \item +4/-4/0: Zero drift field
+    \item +4/-4/-20: Reduced drift field
+    \item +4/-4/-39 : Increased drift field
+    \item +4.5/-4.5/-32 : Increased extraction field. This also decreases the drift field marginally.
+    \item +3.5/-3.5/-32 : Decreased extraction field
+    \item +5/-3/-31 : Asymmetric voltages, increased anode voltage.
+    \item +2/-6/-34 : Asymmetric voltage, decreased anode voltage.
+\end{enumerate}
+
+
+One challenge of this analysis was the overall instability of rates as a result of changing the grid configurations, particularly the anode.
+Increasing the anode in particular lead to erratic behavior in the system which at times took hours to calm down to a quiescent value which could be analyzed.
+Also apparent was the appearance and disappearance of hot spots on increased electron emission from the grids at specific locations.
+Occasionally new hot spots flared up, and other times regions would quiet down for periods of time before increasing in rate.
+
+These flare ups were dealt with by an analyzer monitoring the S1 filter crossing rate and adding regions of time to a database to filter out of the overall livetime.
+The filter crossing rate is defined by the online FPGA software which has the ability to serve as an event trigger.
+Isolated S1 rates were still elevated, even with these changes, and therefore I added additional time periods to remove elevated regions where possible.
+This process proceeded by analyzing the iS1 rate as described above, but binning the results into 30 minute exposure windows.
+This provides sufficient temporal information to see the decay of light after altering the voltages.
+
+In some cases stability was never reached over the course of the test. 
+While all the voltages listed above yielded definitive results, some cases were not able to acquire a quiescent value.
+A particular loss was a completely unbiased dataset with 0/0/0 voltages, as well as a dataset with zero extraction but still had drift fields.
+
+The bursts themselves have interesting phenomena worth commenting on.
+Pulses found within the burst regions appear to occupy an intermediate region of max channel area vs total S1 area, between HSCs and the band mapped by DD and tritium.
+The top array centroids appear to be concentrated in a circular pattern around the edge, which is different than the patterns which appear in the other isolated S1 datasets.
+Bursts increase the rate across all areas, but in particular at low S1.
+
+The general conclusion of the tests, from an isolated S1 perspective, is that the drift field is not a driver of accidental rates, as seen by the fact that the +4/-4/0 dataset did not considerably alter the iS1 rates.
+This can be seen in Table \ref{tab:grid_scan_results}.
+It is somewhat less conclusive, but the extraction region field by itself does not appear to drive the rates, either.
+Rather, the anode voltage appears to be the largest determining factor for the voltages, based on the high rates associated with the 4.5/-4.5/-32 and +5/-3/-31 configurations.
+The associated spectra for those configurations is shown in Fig. \ref{fig:anode_spectrum}.
+
+\begin{table}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llllrrrr}
+\toprule
+{} & Anode  & Gate & Cathode &   Rate &   Rate &  Rate (Time Excl.) &   Rate (Time excl.)\\
+Range &  &  &  & 3-80 phd & 0-80 phd & 3-80 phd & 0-80 phd \\
+Units & kV & kV & kV & Hz & Hz & Hz & Hz \\
+\midrule
+PreSR1    &     4 &    -4 &      -32 &             0.760 &              1.040 &              - &             - \\
+PostSR1   &     4 &    -4 &      -32 &             0.670 &              0.876 &              - &              - \\
+20 kV Cathode  &     4 &    -4 &      -20 &             0.368 &              0.517 &             - &               - \\
+0 kV Cathode  &     4 &    -4 &       0 &             0.364 &              0.450 &              - &               - \\
+7kV Extraction (Sym)&   3.5 &  -3.5 &      -32 &             1.305 &              1.511 &              0.501 &               0.647 \\
+Asymmetric Up   &     5 &    -3 &      -31 &             4.729 &              5.435 &             - &               -\\
+Asymmetric Down   &     2 &    -6 &      -34 &             1.167 &              1.619 &              0.333 &               0.478 \\
+Mid-Campaign SR1   &     4 &    -4 &      -32 &             3.787 &              4.371 &              0.801 &               1.039 \\
+9kV Extraction (Sym) &   4.5 &  4.5 &      -32 &             3.081 &              3.530 &              - &              - \\
+39 kV Cathode   &     4 &    4 &      -39 &             0.473 &              0.631 &             - &               - \\
+End of Campaign SR1 &     4 &    4 &      -32 &             0.374 &              0.521 &              - &               - \\
+\bottomrule
+\end{tabular}}
+\label{tab:grid_scan_results}
+\caption {Results of the electrode grid scan as applied to the isolated S1 rates. 
+All rates are presented after the relevant cuts, and potential changes to the ROI and extra exclusion regions are tabulated.
+A general trend towards lower values was seen over the course of the test.}
+\end{table}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Assets/Accidentals/ExtraExclusions_['Aug32kV', 'Final32kV', 'Aug32kV9E', 'July32kV'].pdf}\\
+       \includegraphics[width=0.6\textwidth]{Assets/Accidentals/ExtraExclusions_['Aug32kV', 'Final32kV', 'Aug31kV', 'Aug34kV'].pdf}
+    \caption[Differential iS1 rates vs corrected S1 area for various datasets over the WIMP search ROI.]%
+    {Differential iS1 rates vs corrected S1 area for various datasets over the WIMP search ROI.
+    These datasets illustrate the impact of grid configurations consisting of changing the anode on the iS1 rate.}
+    \label{fig:anode_spectrum}
+\end{figure}
+\subsection{Light Bursts}
+
+Following changes to the electrode configurations, the rates were elevated for a period of time.
+I selected regions of time for exclusion to estimate the rates above, as shown in Fig \ref{fig:decay}.
+For certain datasets no quiescent value was obtained, and therefore the overall rate was significantly higher than the others.
+During these burst events, pulses appear with maximum channel area between that of HSCs and non-HSCs, as shown in Fig \ref{fig:maxchannel_burst}.
+This new species appears in a ring surrounding the upper rim of the TPC.
+
+Isolated S1 pulses which occur during these erratic periods have different hot spot locations, even for the non-HSC pulses, as shown in Figure \ref{fig:is1_hotspots}.
+These patterns did not shift around for the SR1 field configurations.
+This indicates that isolated S1s could be in some way related to transient asperities on the grids \cite{watson_study_2022}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45\textwidth]{Assets/Accidentals/Rate_Time_Aug34kV.pdf}
+    \includegraphics[width = 0.45\textwidth]{Assets/Accidentals/Rate_Time_Aug32kV.pdf}
+    \caption[The decay of the isolated S1 rate following  particular alterations to the grid voltages.]%
+    {The decay of the isolated S1 rate following  particular alterations to the grid voltages.
+    These elevated rates were typically associates with changes to the electrodes, particularly increases to the anode grid.
+    Periods of elevated rates(many $\sigma$ from baseline) were removed where the transition was clear, in order to estimate the quiescent rate. 
+    Occasionally no stable rate was obtained.}
+    \label{fig:decay}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/july0kV7ext_maxch.png}
+        \includegraphics[width=0.45\textwidth]{Assets/Accidentals/BurstEventMidHSC.png}
+    \caption[Accidentals data isolated S1 distributions during a flare-up.]%
+    {\textit{Left}: The max channel vs S1 distribution during a dataset with an elevated S1 rate.
+    \textit{Right}: The top centroid distribution of the intermediate max channel pulses.
+    these are pulses which are above the HSC cut boundary $S1^{0.4} +1$, but below the fixed ratio $0.7 S1$.
+    They are concentrated in a ring around the top array.}
+    \label{fig:maxchannel_burst}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/Aug31kV_Top.png}
+      \includegraphics[width=0.45\textwidth]{Assets/Accidentals/Aug32kV9E_Top.png}
+
+    \caption[Isolated S1 hotspots in two different grid configurations. ]%
+    {Isolated S1 hotspots in two different grid configurations. 
+    S1s with area $>$20~phd are shown. 
+    Changes to the gate and anode evidently activate or deactivate different features or asperities.}
+    \label{fig:is1_hotspots}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Machine Learning}
+\subsection{Problem}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/Signal_spectrum.pdf}
+
+    \caption[The reweighted S1 spectrum which provides the negative samples for the boosted decision trees.]%
+    {The reweighted S1 spectrum which provides the negative samples for the boosted decision trees.
+    The tritium dataset becomes similar in distribution to a 40~GeV/c$^2$ WIMP.}
+    \label{fig:tritium_amli_spectrum}
+\end{figure}
+
+
+For the SR1 WS selection criteria I hand-tuned the pulse shape cuts to provide discrimination against iS1 pulses based on a number of RQs.
+Likewise, a similar cut was developed by a member of the grids team to select on photon timing parameters.
+Looking forward, I initiated a process of automating this procedure using boosted decision trees (BDTs).
+These BDTs were additionally tuned on a weighted spectrum, made to look like a variety of WIMP masses.
+This provided more relevant information as it forces the model to place higher importance on low energy events than higher energy events.
+A demonstration of this procedure is illustrated in Fig. \ref{fig:tritium_amli_spectrum}, where a combined AmLi + CH$_3$T calibration dataset is used to build a WIMP-like training set.
+
+For the positive samples I use the high statistics, pre-SR1 long random dataset which I extracted above.
+Since this model is meant to remove events based on pulse shape parameters, those cuts were not used to generate the training set.
+The stinger and HSC selection criteria were applied before training so that the BDT does not learn cuts which are already close to optimal.
+
+
+I used the following features for the BDT:
+
+\begin{enumerate}
+    \item \textbf{Photon Timing}: channel photon mean, channel photon standard deviation.
+    \item \textbf{Likelihood ratio}: An alternative method for folding the photon arrival times of an S1 into a single quantity.
+    This tests the likelihood that the photon times, as measured by the channel peak times, are distributed according to an exponential distribution, relative to a uniform distribution.
+    The exponential distribution of decay time $\tau$ is compared against a flat distribution of length $L$, both with the observed photons $N$.
+    The likelihood ratio is given by: 
+    \begin{equation}
+        - \log \frac{ \mathcal{L}_{\mathrm{exp}}}{\mathcal{L}_{\mathrm{flat}}} = N(\frac{\langle t \rangle }{\tau} + \log \tau - \log L )\;,
+    \end{equation}
+    where $\langle t \rangle = \sum_i t_i$ is the mean of the photon arrival times.
+    Maximizing the likelihood requires an estimator $\hat \tau = \langle t \rangle$.
+    However, the best discrimination power is now found by comparing against a general exponential distribution, as we have an expectation for the decay time from the convolution of the triplet decay time(24~ns) and the electronics Gaussian shaping.
+    As such, $\tau=80$~ns is used, found by a receiver-operating curve analysis to be optimal.
+    \item \textbf{Pulse length proxies} : Area fraction times (75\% - 25\%), (95\%-5\%), pulse end-start.
+    ``Area fraction time"(AFT) refers to the time it take for a pulse to integrate to a given quantile of the total area.
+    \item \textbf{Prompt fractions}: the number of photoelectrons seen in a fixed window from the pulse start.
+    Windows of (-50,50, 100,200, 500, 1000, 2000) ns were used as features.
+    \item \textbf{Pulse distributions}: Full-width-at-half-max (FWHM), root-mean square (RMS), peak time and skewness, based on area fraction time (AFT): 
+    \begin{equation}
+    \mathrm{Skew} \equiv \frac{AFT_{75}+AFT_{25} - 2\times AFT_{50} }{AFT_{75}- AFT_{25} }\;.
+    \end{equation}
+    \item \textbf{Pulse areas}: height, photonCount.
+    \item \textbf{Pulse locations}: top-bottom asymmetry (TBA), PMT spreads, PMT centroids.
+\end{enumerate}
+
+
+\subsection{Decision Tree Learning}
+
+A \textit{Classification and Regression Tree} (CART) is fundamentally a series of yes or no questions arranged into a binary tree structure\cite{breiman_classification_2017}.
+The leaf nodes of these trees provides the classification of the input features.
+When grown to arbitrary depth, each leaf node is associated with a particular member or members of the training set and provide a binary output.
+Frequently decision trees are grown to shallower depths, in which case they output the  proportion of positive training values which are sorted into that node.
+
+The training of the decision tree proceeds by recursively choosing optimal split boundaries over individual features. 
+Any split is evaluated against the ``information gain" between the stages\cite{burkov_hundred-page_2019}, $\Delta H = H_{k+1} - H_k$, where the entropy $H$ is defined as:
+\begin{equation}
+    H \equiv -\sum_i^C p_i\log p_i~,
+    \label{eq:info}
+\end{equation}
+\noindent
+where the sum runs over the classes (in the binary case there are only two, and $p_i$ is the probability of an element of the set belonging to class $i$.
+Every split occurs by iterating over features and sorting the data into groups based on whether that feature is larger or smaller than a certain value.
+The entropy, being extrinsic, is therefore $H_{k+1} = \frac{N_>}{N}H_> + \frac{N_<}{N}H_<$.
+
+Decision trees are a low bias, high variance machine learning method, meaning that low training error may be associated with high testing/validation error.
+For this reason, two strategic prongs are used to reduce the variance: regularization and ensemble methods.
+Regularization refers to additional terms added to the information gain in order to confer a "cost" to more complex models.
+For DTs, the weights of the leaves are usually the input to penalty term, which could be a sum (L1) or a sum of squares (L2).
+Ensemble methods utilize a weighted sum of many decision trees, and two popular methods are boosted decision trees (BDT) and random forests\cite{louppe_understanding_2015}. 
+Boosting is an iterative technique, where multiple stages of shallow trees are trained on the residuals of the previous step.
+The later epochs are discounted by a geometric \textit{learning rate} and may also have a regularization term on the number of trees trained.
+Random forests (RF) are shallow trees which are trained in parallel, with each tree observing a randomly assigned subset of the data and features.
+
+For this work I evaluate both RF and BDTs and evaluate them against the baseline model discussed in the previous sections.
+I also examine a logistic model for completeness, even though a linear decision boundary is not expected to perform well.
+
+The hyperparameters of the models (e.g. the regularization terms) require optimization.
+The datasets are O(10$^5$), and therefore dividing the events into training and testing sets would have created issues, especially considering the paucity of events near threshold.
+In its place, for the purpose of hyperparameter tuning, I use 5-fold stratified grid search cross-validation.
+This technique involves scanning over each hyperparameter, and dividing the data into 5 equal-sized \textit{folds}, training on 4 folds, and evaluating some metric over the fifth.
+This process is repeated until all folds have been left out once, and the mean of the results gives an estimation of the quality of that set of hyperparameters.
+The \textit{stratification} refers to the restriction that each fold should have an identical ratio of positive to negative classifications.
+For this work, I chose the area under the receiver operating curve (AUC) as the score.
+Additionally, I utilized a custom scorer, whereby the AUC was only integrated from 0 to 0.1 in false positive rate, in order not to select an optimal value that sacrificed too much signal.
+
+The models were trained using the sklearn interface for XGBoost \cite{chen_xgboost_2016}.
+The hyperparameters that I scanned over were:
+\begin{enumerate}
+    \item \textbf{BDT}: max\_depth, learning\_rate, colsample\_bytree
+    \item \textbf{Random Forest}: max\_depth, subsample, colsample\_bynode
+    \item \textbf{Logistic}: L1 and L2 penalty terms
+\end{enumerate}
+\subsection{Results}
+
+A model was trained for each WIMP mass.
+Unless otherwise stated, I quote the results for the $m_{\chi}=$~40~GeV/c$^2$ trained model.
+The BDT and RF models outperform the baseline RMS model, improving the iS1 identification from 18\% to 60\% at the same false positive rate (FPR).
+The random forest outperforms the BDT at extremely low FPR, but becomes comparable at higher FPR, as shown in Fig. \ref{fig:roc_curve}.
+The acceptance as a function of S1 falls sharply for the iS1 pulses, from a peak of 0.6 to 0 at the upper end, as shown in Fig. \ref{fig:s1_acc}.
+The Tritium+AmLi data is very flat across the range 0-60 phd, with $>95$\% acceptance.
+Weighting the negative samples according to a WIMP spectrum has a large effect at the upper end of the ROI.
+
+Changing the weighting of the negative samples to match different WIMP spectra effects the characteristics of the surviving iS1 pulses. 
+As shown in Fig. \ref{fig:wimp_bdt}, the BDT automatically selects the upper bound  of the data, and removes pulses above that threshold.
+Due to the iS1 spectrum being peaked near the threshold, which is a feature similar to WIMPs, the resulting iS1 rate does not vary by a large amount across the WIMP masses scanned.
+The surviving iS1 rate hovers around 0.75 $\pm0.1$~Hz for this model.
+Note that the baseline value, indicated in Fig. \ref{fig:bdt_mass_scan}, is 1.27~Hz, which is higher than the value quoted above.
+This is due to integrating the area out to a slightly larger value for this test (115 phd vs 80) for this test.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width= 0.7\textwidth]{Assets/Accidentals/BDT_loss.pdf}
+    \caption[Boosting stages for the BDT training.]%
+    {Boosting stages for the BDT training.
+    A depth of 30-40 stages is optimal for preventing overtraining with these settings.}
+    \label{fig:boosting}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/All_Training.pdf}
+    \caption[Receiver-operating characteristic for the pulse shape cuts.]%
+    {Receiver-operating characteristic for the pulse shape cuts.
+    ``RMS" represents a flat cut on chPhotonRMS, which is the RQ used in the Photon Timing selection criterion. 
+    There, RMS values greater than 80ns are removed.
+    This results in a false positive rate of 3.8\%. }
+    \label{fig:roc_curve}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/Tritium_acc.pdf}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/IS1_acc.pdf}
+    \caption[Event acceptance vs S1 area for the BDT and RF models.]%
+    {Acceptance vs S1 area for the BDT and RF models.
+    The random forest and boosted decision trees perform similarly for signal (reweighted calibration ERs), while the BDT removes slightly more iS1s appear throughout a wide range of areas. }
+    \label{fig:s1_acc}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/10GeV_BDT.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/40GeV_BDT.png}
+    \caption[WIMP mass results. A smaller simulated WIMP mass results in more large-area iS1s being removes, as expected.]%
+    {WIMP mass results. A smaller simulated WIMP mass results in more large-area iS1s being removes, as expected.
+    However, the low-area events are not removed with the same efficiency, possibly due to the effectively reduced number of training samples.}
+    \label{fig:wimp_bdt}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Accidentals/mass_scan.png}
+    \caption[Scan over simulated WIMP masses for the BDT selection criterion.]%
+    {Scan over simulated WIMP masses for the BDT selection criterion. 
+    The BDT threshold was chosen to set FPR=0.03.
+    The dependence of WIMP mass over this range is limited, but it is unknown if this will continue to higher and lower masses.}
+    \label{fig:bdt_mass_scan}
+\end{figure}
+
+
+\subsection{Feature Importance}
+
+Decision trees are frequently referred to as a ``black box" method, where the intuitive reason why any particular classification was chosen it not readily available.
+While the trees may be walked down, with dozens of boosting stages this becomes far more abstract.
+Interpretability is frequently separated into ``local" and ``global" methods.
+Global methods provide information about which features were most useful to the training of the overall model.
+Local methods provide the information about the decision boundary for a particular data point.
+A global method which is readily available is the ``gain," which yields the information gained (Eq. \ref{eq:info}) on average with splits that use the particular feature.
+Another method is the \textit{permutation score} which finds the change in the loss function as a result of shuffling the values of a feature, removing any information that it provides without altering the model.
+
+
+A mixed local and global method for interpretability which is commonly used is the \textit{Shapley} values\cite{strumbelj_explaining_2014}.
+Shapley values are a game-theoretic method for determining the share of a prize each member of a team should receive.
+In machine learning, the ``players" are the features, and each ``game" is a row in the data matrix.
+Essentially, various teams, or \textit{coalitions} S are tested for their worth.
+Successful predictions become part of the \textit{value} of the coalition  $V(S)= \sum_{i=0}^{|S|} \hat{y}_i \log y + (1-\hat{y}_i )\log (1-y)$.
+The Shapley values are then the expected increase in value for coalitions including the feature:
+
+\begin{equation}
+    \phi_j (V) = \sum_{S \subset \{1..p\} / \{j\}} \frac{|S|! (p - |S| - 1)!}{p!} (V(S \cup \{j\}) - V(S))\;.
+\end{equation}
+
+The value function can be evaluated over the entire dataset, or individual points.
+For the XGBoost BDT, the gains and Shapley values are shown in Fig. \ref{fig:feature_importances}.
+The broad conclusion is that the number of PMT hits and the top-bottom asymmetry are the best discriminants of scintillation / isolated S1s.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width= 0.6\textwidth]{Assets/Accidentals/BDT_gain.pdf}
+        \includegraphics[width= 0.35\textwidth]{Assets/Accidentals/Shapley_BDT.pdf}
+    \caption[Feature importance values for the isolated S1 classifying boosted decision tree.]%
+    {Feature importance values for the isolated S1 classifying boosted decision tree.
+    \textit{Left}: XGBoost outputs sorted by average information gain across nodes.
+    \textit{Right}: Shapley values averages across the samples of the test dataset.
+    }
+    \label{fig:feature_importances}
+\end{figure}
+
+\afterpage{\FloatBarrier}
+
+\section{Single Scatter Contamination}
+The scenario of isolated S1s pairing with isolated S2s is not the only possibility for these pulses.
+Isolated S1s may also pile up with an otherwise good single scatter, causing it to appear like a double S1.
+The same situation may occur for isolated S2s, flipping the event to a multiple scatter.
+This causes a small loss of signal acceptance which can be accounted for.
+
+Pulses are categorized as being "prominent" or not as a method of mitigating spurious splits done by the pulse finder.
+The algorithm consists of assuming that the largest S1 or S2 is prominent, and comparing the other pulses of the same type against them.
+Decisions are based on the height-to-width ratio of the smaller pulse, and the ratio of areas.
+Therefore, in order to cause a misclassification of the event topology, the accidental pulse must also pass this "prominent" algorithm.
+
+I analyzed the isolated S1 spectrum in this space, and compared it against simulated WIMP spectra, extracting the ``contamination rate."
+Since WIMP spectra below 100~GeV/c$^2$ vary based on the reduced mass of the target, I scan over the mass of the simulated WIMP.
+The simulations were performed using the LZ fast chain, LZLAMA+DMCalc.
+
+The rate is calculated according to the following formula:
+\begin{equation}
+    R_{\text{contam}} = T_{\text{pretrigger}} \int dx \int_a^b R(x) P(x, S1')dS1'\;,
+\end{equation}
+\noindent
+where $ T_{\text{pretrigger}} $ is the pre-trigger length of the event (2 ms), $x$ abstractly represents the isolated S1 variables, $R(x)$ is the isolated S1 rate, and $P(x, S1)$ indicates whether $x$ is considered prominent.
+When the isolated S1 exceeds the area of the "real" S1 then it is assumed that it always passes the prominence cut (otherwise, it confounds the analysis by "stealing" the S1 from the otherwise good event).
+The way this works is illustrated in Fig. \ref{fig:contamination_rate}.
+
+The resulting contamination rate ends up demonstrating a $\mathcal{O}$(0.1) dependence on the WIMP mass, being worse at low masses (since the S1s are on average smaller, making the isolated S1s more likely to be the larger pulse).
+Over the masses considered, all contamination probabilities are less than one percent.
+I examined several isolated S1 datasets, including the random triggers in SR1.
+The Pre-SR1 dataset has a higher rate of iS1, and thereby has a worse contamination rate.
+The isolated S2 rate was estimated by fellow graduate student Ryan Smith, and is an input to this estimate.
+For a  40~GeV/c$^2$ WIMP I predict a contamination probability of $0.0037$.
+
+\begin{figure}
+    \centering
+     \includegraphics[width=0.45\textwidth]{Assets/Accidentals/iS1_contamination.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Accidentals/rate_vs_mass.pdf}
+    \caption[Accidentals single scatter contamination]%
+    {\textit{Left}: The prominent cut boundaries overlaid on the isolated S1 histogram. Gray regions indicate pulses which would result in a contamination, which white regions would be deemed ``non-prominent." The red lines are the boundaries for different ``largest real S1" areas.
+   \textit{Right}: Single Scatter contamination rate for several datasets. 
+   The elevated iS1 rate in the Pre-SR1 data (which decayed away over the course of SR1) lead to an increased likelihood of contamination, flipping single scatters to multiple.}
+    \label{fig:contamination_rate}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Summary}
+
+Over the course of the commissioning, SR1 data taking, and beyond, I worked to characterize the isolated S1 spectrum, which is an input to the accidental coincidence background in LZ.
+I found that the rate exceeded expectations from the irreducible sources such as PMT dark pulses and the RFR.
+A hypothesis, supported by the data, is that the anode grid produces these isolated S1s.
+Isolated S1s were found to come in several flavors, one begin a ``high single channel" with properties consistent with a longer wavelength light pulse.
+This rate slowly decayed over time from a rate of approximately 1~Hz in the WIMP search ROI to a value of $<$0.4~Hz near the end of the post-SR1 / pre-SR2 calibration campaign.
+I developed selection criteria which reduced the isolated S1 rate by a factor of four in SR1.
+This aided significantly in making the accidental background subdominant in the SR1 analysis.
+Future improvements to the analysis can be achieved by  deploying machine learning models, some examples of which were discussed in this work.

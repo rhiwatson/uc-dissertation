@@ -1,0 +1,526 @@
+\chapter{The LUX-ZEPLIN Experiment}
+\label{chap:lz}
+\section{Overview}
+
+LUX-ZEPLIN (LZ) is the result of a merger between the LUX\cite{the_lux_collaboration_improved_2020} and ZEPLIN\cite{akimov_zeplin-iii_2007} dark matter direct detection experiments.
+It is primarily sensitive to WIMP dark matter, but performs other searches such as for neutrinoless double beta decay.
+Located at the 4850 level of the Sanford Underground Research Facility in Lead, South Dakota, USA, the overhead rock provides the equivalent of 4300 meters of water\cite{mount_lux-zeplin_2017}, which shields against cosmic ray flux.
+
+LZ is a xenon-based dual phase time projection chamber (TPC), detecting energy deposits using prompt scintillation from electronic excited states (a.k.a the S1 light pulse) and a delayed proportional scintillation from ionized electrons (a.k.a. the S2 light pulse).
+The detector consists of two concentric, sealed low-radioactivity titanium containers, the inner and outer cryostat vessels (ICV and OCV, respectively), with an evacuated volume between.
+Inside the ICV is 10 tonnes of xenon, 7 tonnes of which is contained within the field shaping cage separating the TPC from the outer ``skin" region\cite{akerib_lux-zeplin_2020}.
+Surrounding the OCV are acrylic tanks filled with liquid scintillator, serving as an additional neutron veto known as the Outer Detector (OD).
+The entirety of the OCV and OD is immersed in a large water tank which provided additional shielding against muons and radioactivity from the surrounding cavern.
+
+Several inlets and outlets exist in the system.
+Xenon is continuously circulated through a purification system, and tested for purity using a cold trap-based mass spectrometer system\cite{akerib_lux-zeplin_2020}.
+The high voltage establishing the electric field is generated externally and is routed through the water tank and cryostat vessels (more details found in Chapter \ref{chap:chv}).
+Radioactive sources can be raised and lowered through \textit{source tubes} in order to calibrate the detector response, and an evacuated conduit exists to collimate neutrons from a deuterium-deuterium fusion generator.
+
+In this chapter I elaborate on the subsystems of LZ, provide an overview of the data collection and analysis, explain the WIMP search and its backgrounds, and enumerate the additional physics that LZ may search for.
+
+
+\section{Time Projection Chambers}
+LZ is a particular example of a class of detectors called Time Projection Chambers (TPCs), which consist of a set of parallel wire grids and a scintillating detection medium.
+An energy deposit creates a prompt scintillation signal, along with liberated electrons, which drift through the electric field some distance to the surface, where the charges are read out.
+The time between the two signals provides an estimate of the distance along the field line the deposit occurred, which, when combined the drifted location the electron cloud provides three-dimensional position reconstruction.
+The prompt scintillation signal (S1) is detected through a single-photon sensitive light detector, such as a photomultiplier tube (PMT) or silicon photomultiplier (SiPM).
+The ionization signal is detected through one of two methods: amplifying the charge detected on the anode wires, or the proportional scintillation (S2) as the electrons are extracted through a high electric field gap.
+Typically the first method relies on a secondary induction grid oriented perpendicular to the anode, in order to achieve XY position reconstruction.
+The second method usually occurs within a gas gap placed between the gate and anode grids.
+Using the S2 signal has the advantage of having electron amplification, producing dozens of detected photons for every extracted electron, and this is the method that LZ adopts.
+These principles are illustrated in Fig. \ref{fig:time_projection_chamber}.
+
+In rare event searches, the rate typically scales with the number of target nuclei in the detector.
+This leads these TPCs to use a liquid detection medium to exploit the increased density.
+However, when detecting S2s this leads to an additional technical challenge of maintaining a stable liquid level in the electroluminescence region.
+LZ achieves this through a \textit{weir}, which causes the liquid to flow off the sides of the TPC into the circulation system.
+
+Of the 7 tonnes of active liquid xenon (LXe) in the LZ TPC, approximately 5.6 tonnes are encapsulated in the inner fiducial volume (see Section \ref{sec:fiducial}).
+The TPC detector in LZ consists of two PMT arrays located at the top and bottom, with a total of 494 3-inch Hamamatsu R11410\cite{noauthor_photomultiplier_2021} tubes, and four woven wire mesh grids.
+The grids are labelled as the:
+\begin{enumerate}
+    \item Bottom, which protects the bottom array PMTs and establishes the Reverse Field Region (RFR) where electrons drift downwards, away from the anode.
+    In the LZ coordinate system its height is $z=-137$~mm.
+    \item Cathode, biased to a large negative voltage. It establishes the electric field in the Forward Field Region (FFR), where electrons drift towards the anode and can be detected. The cathode defines the origin of the LZ coordinate system at $z=0$~mm.
+    \item Gate, located at a height of $z=1456$~mm, just below the liquid level of $z=1461$~mm. This is biased to a small negative voltage and establishes the electroluminescence (EL) region, where S2s occur. The voltage is chosen to provide 100\% transparency to drifting electrons.
+    \item Anode, located $z=1469$~mm, just above the liquid level. The voltage is generally chosen to be slightly positive, and symmetric with the gate voltage about zero.
+\end{enumerate}
+
+LZ lacks a grid directly below the top grid.
+The heights describe the location of the frames holding the grids, but external forces such as gravity and the electric fields cause the grids to deflect upwards or downwards on millimeter scales.
+This causes the effective LL gap, and electric field, to vary as a function of radius.
+The net effect is an approximately 50\% larger single electron S2 size at the center of the detector than the edges.
+
+The field between the grids is made uniform by a series of titanium field shaping rings.
+Encapsulating the rings is a PTFE wall, which provides structure.
+The  inner radius of the PTFE is 728~mm.
+Surrounding the TPC is the hermetically sealed inner cryostat vessel (ICV) and outer cryostat vessel (OCV).
+Both are constructed of ultrapure titanium \cite{akerib_identification_2017}, and the ICV and OCV are separated by a vacuum for thermal insulation.
+A large, sealed water tank contains the OCV and associated piping, which provides additionally shielding to muons and rock gammas.
+The cathode high voltage feedthrough (see Chapter \ref{chap:chv}) connects through these volumes to transport power from the high voltage power supply located in the Davis cavern.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/LZ/LZ_cartoon2.png}
+    \caption[The cross section and primary operating principle of LUX-ZEPLIN's time projection chamber. ]%
+    {The cross section and primary operating principle of LZ's time projection chamber. 
+    Rendering by Nicolas Angeledes.
+    A cartoon of the resulting waveform S1 and S2 is indicated on the right hand side.}
+    \label{fig:time_projection_chamber}
+\end{figure}
+
+\section{Xenon}
+\subsection{Advantages of Xenon}
+
+Xenon was chosen for LZ for a number of positive qualities.
+\begin{itemize}
+    \item \textbf{High density}:
+    Liquid xenon has a density of 2.85 g/~cm$^3$ at the LZ operating temperature of 174 K. 
+    This is advantageous for spin-independent (SI) couplings as more nucleons are packed into the same volume, keeping instrumentation costs down.
+    \item \textbf{High A, Z}:
+    The large atomic number of natural xenon ($A_{\text{ave}}= 131.293$) is similarly advantageous for SI couplings.
+    The coherent enhancement of the scattering cross section $\sigma \propto A^2$ gives it an edge over similar noble liquids.
+    The large $Z$ also increases its electromagnetic stopping power, which gives it a \textit{self-shielding} effect, where external backgrounds are stopped over short distances.
+    This enables fiduicialization, where the extremely radio-quiet center of the volume is selected for analysis.
+    \item \textbf{Chemistry}:
+    As a noble element, Xenon does not readily form stable molecules with other elements.
+    This allows it to be chemically purified to extremely high purity.
+    LZ accomplishes this using a getter system, which removes electronegative impurities.
+    The resulting purity was observed between 5--8~ms\cite{aalbers_first_2022}, which implies an oxygen equivalent impurity of between 60 and 90 parts per trillion\cite{bakale_effect_1976}.
+    Note that this technique does not remove the radio-isotopes of $^{85}$Kr and $^{39}$Ar, which were constrained in the background model to 144 ppq and 890 ppt\cite{aalbers_background_2022}.
+    \item \textbf{High Scintillation Yield}:
+    Xenon has a low effective work function (13.7 eV\cite{dahl_physics_2009}) for producing a single quanta on average.
+    The energy threshold is primarily set by the number of coincident PMT hits, and therefore a higher scintillation yield is preferable.
+    LXe has a scintillation yield $L_y$ at the 122~keV $^{57}$Co $\gamma$-ray line of 63 photons/~keV\cite{lenardo_global_2015}.
+    By comparison, LAr has a $W-$value for scintillation of 19.5 eV\cite{doke_absolute_2002}, and a $W-$value for ionization of 23.6 eV\cite{miyajima_average_1974}.
+    \item \textbf{No problematic radioisotopes}:
+    Xenon has several stable isotopes: $^{124}$Xe, $^{126}$Xe,$^{128}$Xe, $^{129}$Xe, $^{130}$Xe, $^{130}$Xe, $^{131}$Xe, $^{132}$Xe, $^{134}$Xe, $^{136}$Xe.
+    Of these, there are no isotopes with half-lives with lifetimes long enough to not decay away during commissioning, but short enough to have high activity.
+    The $^{124}$Xe isotope undergoes $2EC$\cite{aprile_observation_2019} with a $t_{1/2}=1.8\times 10^{22}$y, and $^{136}$Xe undergoes $2\beta$ decays with a $t_{1/2}$ of $2.165\times 10^{21}$y\cite{albert_improved_2014}, and the  $^{134}$Xe is thought to have an (as of yet unobserved) $2\beta$-decay with $t_{1/2} > 8.7\times 10^{20}$y\cite{collaboration_searches_2017}.
+    Between the extremely long half lives and the high Q-values of the decays, these do not pose a significant impediment to the LZ WIMP search result, with 24.3 expected electron recoils (ERs) in the ROI during the first science run (SR1)\cite{aalbers_first_2022}.
+    Argon, by comparison, has the cosmogenically activated $^{39}$Ar with $t_{1/2}=268$~yr and Q-value 565~keV.
+    This leads to a typical event rate of 1 Bq/kg.
+    Xenon does have short-lived cosmogenic activation isotopes $^{37}$Ar and $^{127}$Xe, which contribute to the early science runs\cite{aalbers_cosmogenic_2022}, and are incorporated into the background model.
+    \item \textbf{Particle ID}:
+    LXe responds differently to electron recoils and nuclear recoils. 
+    The partitioning of the quanta into ionization and excitation channels varies between the two particle types.
+    This allows efficient ($>99.5\%$) rejection of ER backgrounds for the NR WIMP search.
+\end{itemize}
+
+Xenon does have some acceptable downsides.
+It is highly expensive, owing to its rarity, fluctuating around \$10/liter.
+The decay time of the singlet and triplet lifetimes are not as disparate as Argon, so pulse shape discrimination is not as exploitable.
+Its scintillation yield is also highly dependent on energy and electric field strength, making energy reconstruction more complicated, in general requiring the additional ionization channel to be effective at low energies. 
+
+\subsection{Microphysics}
+Xenon responds to energy deposits with electronic excitation and ionization.
+Excitation results in the formation of metastable molecules known as excimers.
+The $\text{Xe}_2^\star$ dimer consists of two electronic states, the $^1\Sigma_u^+$ and $^3\Sigma^+_u$ states, known as the ``singlet" and ``triplet" states.
+These states de-excite to the ground state $^1\Sigma^+_g$ after some time by emitting a 175~nm VUV photon\cite{fujii_high-accuracy_2015}.
+The triplet state's transition to the ground state is forbidden, so it has a larger lifetime than the singlet.
+The dimer lifetimes are $3$~ns and $24$~ns, respectively \cite{mock_modeling_2014}.
+
+The initial quanta of excimers $N_{ex}$ and free electrons $N_i$ may result in different number of photons $n_\gamma$ and drifting electrons $n_e$.
+The free electrons have the ability to recombine with a Xe$^+$ ion and form a dimer, leading to one fewer $n_e$ and one greater $n_\gamma$.
+The dimers can also undergo processes such as \textit{Penning quenching} and \textit{Penning ionization}, whereby the excitation energy is lost to heat or ionization.
+The following processes are possible:
+
+\begin{align}
+    \text{Xe}^\star + \text{Xe} \rightarrow \text{Xe}_2^\star\\
+    \text{Xe}_2^\star \rightarrow 2 \text{Xe} + \gamma (\text{scintillation})\\
+     \text{Xe}^+ + \text{e}^- \rightarrow \text{Xe}^{\star \star}\\
+    \text{Xe}^{\star \star} + \text{Xe} \rightarrow \text{Xe}^\star  + \mathrm{Xe} + \text{heat}\\
+      \text{Xe}^\star + \text{Xe}^\star  \rightarrow \text{Xe} + \text{Xe}^+ + \text{e}^- \rightarrow 2 \text{Xe} + \gamma(\text{Biexcitonic/Penning quenching}) \;,
+\end{align}
+
+where Xe$^{**}$ is a doubly excited state.
+The recombination probability depends on many factors, including the external electric field and the initial density of ions.
+At high energies, the charge and light yields are well described by the \textit{Doke-Birks} model\cite{doke_absolute_2002}:
+
+\begin{equation}
+r = \frac{A(\mathcal{E}) dE/dx }{1 + B(\mathcal{E}) dE/dx} +C~,
+    \label{eq:dokebirks}
+\end{equation}
+\noindent
+where $r$ is the recombination fraction of ionized electrons, $A$, $B$ are empirical parameters, $C=1-A/B$, and $\mathcal{E}$ is the magnitude of the electric field. 
+The linear energy transfer (LET, $\frac{dE}{dx}$), diminishes for electron recoils (ER) as a function of energy, and therefore lower energy recoils are predicted to have lower charge yields due to recombination than xenon nuclear recoils (NRs).
+While this model holds at electron recoils with energy greater than 50~keV, it breaks down in the WIMP search region of interest.
+Experimentally, ERs below $\sim 30 \mathrm{~keV}$ demonstrate a rise in charge yield $Q_Y = N_e/E$ as $E$ approaches 0.
+This behaviour can be modelled by the Thomas-Imel Box model\cite{sorensen_nuclear_2011, thomas_recombination_1987}, given by
+
+\begin{align}
+    r = 1 - \frac{\ln(1 + \xi) }{\xi}\\
+    \xi = \frac{N_i \alpha}{4 a^2 v}~,
+\end{align}
+\noindent
+where $a$ is the size of the "box" the electrons are contained within, $v$ is the velocity of the electrons, and $\alpha$ is a parameter fit to the data which controls the recombination rate as a function of ion and electron densities. 
+This model is applicable when the length of the track is comparable to the thermalization distance of the electrons, 4.6~$\mu$m.
+Both models for the partition of energy into ions and excimers are included in the NEST simulation package\cite{lenardo_global_2015}, used by LZ and other liquid noble element experiments.
+
+WIMPs will scatter preferentially off nuclei, and most background sources will scatter off electrons.
+LZ uses the ratio of S1 to S2 light to distinguish the two types of recoils.
+In principle, low energy electron and nuclear recoils should be difficult to distinguish, as their $\langle dE/dx\rangle$ places them in the regime of the Thomas-Imel Box model.
+However, empirically electron recoils deposit the vast majority of their energy into ionization initially, $N_i / (N_i + N_{ex}) = 0.96$, while nuclear recoils partition their energy almost equally between ionization and excitation, $N_i = N_{ex}$. 
+Under the recombination model above, this results in lower S2 to S1 ratios for NRs, and a corresponding separation of bands in Log(S2) vs S1 space as shown in Fig. \ref{fig:recoil_bands}.
+The bulk electric field decreases the recombination fraction for a given recoil type.
+
+In addition to the aforementioned quenching of S1 light from increased electric fields, nuclear recoils experience another form of quenching, whereby a large portion of their recoil energy goes into random atomic motion, rather than observable ionization and scintillation signals.
+This quenching is described by Lindhard theory\cite{lindhard_range_1963, sorensen_nuclear_2011}:
+\begin{equation}
+    \mathcal{L}_{\mathrm{eff}} = \frac{k g(\epsilon)}{1 + k g(\epsilon)}~,
+\end{equation}
+\noindent
+where $k = 0.1394$\cite{lenardo_global_2015} is a proportionality constant between the electronic $\langle dE / dx \rangle $ and the velocity of the recoiling nucleus, $g(\epsilon)$ is the ratio of  electronic stopping power to nuclear stopping power, and $\epsilon$ is the deposited energy.
+This leads to a discrepancy  between $E_{e}$, the reconstructed energy assuming $\mathcal{L}_{eff}=1$,  and  $E_{nr}$, the physical nuclear recoil energy.
+After calculating the Lindhard factor, predicted nuclear recoil energy spectra are commonly displayed in "electron-equivalent" energy units, $\mathrm{~keV}_{ee}$.
+The WIMP search region of interest for LZ exists between 1$\mathrm{~keV}_{ee}$ and 30$\mathrm{~keV}_{ee}$.
+\section{Backgrounds and Mitigation}
+\subsection{Sources}
+
+Ultimately, the LZ WIMP search depends on keeping background events low in the energy region of interest.
+While the PLR (Section \ref{sec:plr}) helps by looking at the distribution of S1 and S2 events in the TPC, the sensitivity is still determined in part by the amount of events in the NR band seen during the exposure.
+Sources of non-WIMP events include\cite{aalbers_background_2022}:
+
+\begin{itemize}
+    \item \textbf{Detector ERs}: detector components produce $\beta$ and $\gamma$ rays from trace radioactive elements $^{60}$Co, $^{40}$K, and the $^{238}$U and $^{232}$Th chains. 
+    These events appear along the boundary of the TPC and are removed with a fiducial cut.
+    \item \textbf{Radon Progeny ERs}: Radon, being a noble element, dissolves into the Xe and can not be removed by gettering.
+    While $^{220}$Rn has a half life of 3.6 days, the $^{222}$Rn isotope is worrisome due to the violation of secular equilibrium, with its progeny $^{210}$Pb having a $22.3$~yr half life\cite{bruenner_radon_2021}. 
+    The lead plates out on the surfaces, leading to $\beta$-decays later on.
+    In both chains unstable Pb and Bi undergo $\beta$-decay, which in principle is not problematic as long as the decays can be tagged by an associated $\gamma$-ray(for Pb) or prompt daughter $\alpha$ (for Bi).
+    However, $^{214}$Pb and $^{212}$Pb will occasionally either $\beta$-decay directly to the ground state, or emit a $\gamma$-ray which escapes without photoionization.
+    These situations are colloquially referred to as ``naked" and ``semi-naked" betas, and constitute a large portion of the ER background dispersed throughout the TPC.
+    The $\alpha$ decays are not a concern due to their high energies, placing them well outside the WIMP search ROI (typically $\mathcal{O}(10^4)$ phd S1s, where the upper limit for the analysis was 80 phd).
+    \item \textbf{Intrinsic Xenon Decays}
+    As mentioned above, Xenon has some radioisotopes, namely $^{124}$Xe, $^{127}$Xe, and $^{136}$Xe. 
+    The $^{127}$Xe is a cosmogenic activation product and decays via electron capture with a $t_{1/2}=36.3$~d, while the others are $2\nu2\beta$ decays with long half lives.
+    Another activation isotope, $^{37}$Ar, is present, but unlike $^{127}$Xe its rate can not be constrained by K-shell decays, and therefore in the first science run (SR1) result its rate was allowed to float with a flat prior\cite{aalbers_first_2022}.
+    
+    \item \textbf{Neutrinos}
+    Solar neutrinos contribute a uniform background of ERs, and their flux and scattering rate are constrained by other measurements.
+    Coherent neutrino-nucleus scattering ($CE\nu NS$) from $^8$B contributes a nuclear recoil background which is similar in energy to a low-mass WIMP.
+    
+    \item \textbf{Accidentals}
+    
+    Discussed more in Chapter \ref{chap:accidental}, this background is a result of uncorrelated S1-only and S2-only signals randomly pairing up to appear in the WIMP search ROI.
+    Multiple sources contribute to this background, and its rate is constrained by unphysical drift time (UDT) events with reconstructed Z below the cathode.
+    
+    \item \textbf{Neutrons}
+    Radiogenic neutrons can elastically scatter in the TPC, mimicking a WIMP signal.
+    Due to the effectiveness of the outer detector, and the propensity of the neutrons to multiple scatter, these do not constitute a large background source. 
+\end{itemize}
+
+The naked $\beta$ decays and detector ER constitute approximately 222 of the estimated 333 background events.
+
+\subsection{Recoil Discrimination}
+Many of the LZ backgrounds are the result of recoiling electrons, rather than recoiling xenon nuclei.
+LZ passively collects ERs as it runs, and calibrates NRs using, among other sources, a collimated  deuterium-deuterium (DD) fusion source.
+The DD neutrons elastically scatter in the LXe, forming a wide band of energies.
+Tritiated methane CH$_3$T is injected to populate the ER band down to low energies.
+For a given observed S1 signal, ERs have a higher S2 area on average than NRs.
+
+The bands are defined using the quantiles of the data.
+The probability that an ER has a downwards fluctuation in S2/S1 ratio and ends up in the nuclear recoil band is known as the "leakage fraction" and exceeds 99.5\%. 
+While this serves as a useful metric for analyzers, the final result uses the profile likelihood ratio (PLR), discussed in Section \ref{sec:plr}.
+The ER recoils are not removed with a specific cut, but the background pdf is fit to the data, naturally informing the leakage into the NR.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/LZ/recoil_bands.png}
+    \caption[$\log_{10} (S2c)$ vs. $S1c$ areas for different calibration sources, demonstrating particle identification.]%
+    { $\log_{10} (S2c)$ vs. $S1c$ areas for different calibration sources, demonstrating particle identification.
+    The electron and nuclear recoil bands constructed from LZ tritium(ER, blue) and DD(NR, orange) calibration data. 
+    Figure taken from the LZ SR1 result paper\cite{aalbers_darwin_2016}.
+    Note the larger separation of the bands as the recoil energy increases.
+    }
+    \label{fig:recoil_bands}
+\end{figure}
+\subsection{Multiple Scatters}
+
+Compton scatters and fast neutrons can scatter multiple times in the detector.
+Dark matter will scatter at most once in the detector, owing to its extremely small scattering cross section (until masses around $10^{16}$~GeV/c$^2$, where there are unexcluded cross sections which unexcluded cross-sections which may lead to multiple scatters- see Chapter \ref{chap:tracks}).
+Most backgrounds are  due to relativistic particles, and result in merged S1 signals, so the determination of single vs multiple results from the number of detected S2s.
+As such this selection criterion is most effective for particles with vertical trajectories, as the vertical resolution is around $\sigma_Z=2$~mm.
+
+\subsection{Fiducialization}
+\label{sec:fiducial}
+The detector materials constitute a source of backgrounds from trace U-238 and Th-232,
+leading to enhanced backgrounds near the boundaries of the TPC.
+By removing events near the gate, cathode, and PTFE walls, the detector ER backgrounds will range out while the signal remains.
+This does not by itself mitigate the backgrounds from dispersed backgrounds such as Pb-214/Pb-212 betas without associated gammas, and Ar-37/Xe-127 activation peaks. 
+The fiducial volume (FV) is a cylinder with cutouts for the cathode and gate rings, which contribute higher backgrounds.
+The upper and lower boundaries are 2~cm from the cathode wires, and 13~cm from the gate wires.
+The nominal radius is 6.1~cm from the TPC wall, but drift times below 200 $\mu $s are cut 7.7~cm from the wall, and drift times exceeding 800~$\mu s$ are cut to 6.5~cm from the wall.
+
+\section{Veto System}
+\label{sec:veto}
+\subsection{Skin}
+The increased standoff distance of the cathode high voltage feedthrough from the cathode ring (discussed further in Chapter \ref{chap:chv}) allows for the volume of the xenon between the PTFE wall and the ICV to be instrumented with additional PMTs.
+These 131 additional sensors are referred to as the ``skin" detector, and are divided into the  ``barrel" around the outer radius, and the ``dome" beneath the TPC PMT array.
+The ICV in the barrel region surrounding the sides is coated with PTFE to increase light collection.
+As the ICV is grounded, there exists non-trivial electric fields within the skin region, which affects the light yield observed there.
+This additional detector serves as a $\gamma$-ray veto, as well as an additional high-$Z$ shield against external backgrounds. 
+Nuclear de-excitations from $^{127}$I were observed with coincident Skin pulses 80\% of the time\cite{aalbers_first_2022}.
+
+\subsection{OD}
+
+The outer detector (OD) serves a similar function to the Skin, \textit{i.e.} it removes events with one scatter in the TPC and additional scatters elsewhere, but its operation is highly specialized for neutron tagging.
+It consists of acrylic tanks enveloping the OCV within the water tank, instrumented with 120 8" Hamamatsu R5912 PMTs, and filled with 17.3 tonnes of Gadolinium-loaded liquid scintillator (GdLS)\cite{turner_optical_2021}.
+A total of 23 kg of Gd was loaded into the scintillator, for a concentration by mass of 1.3 parts-per-thousand\cite{haselschwardt_liquid_2019}.
+
+A neutron may scatter numerous times before thermalizing, after which it captures on the Gd, which has an extremely large capture cross section of 48,890 $\pm$ 104 barns\cite{mughabghab_thermal_2003}.
+The nucleus then emits a cascade of $\gamma$-rays with total energy of 8~MeV.
+It is these ERs which are used to tag the neutrons: any energy deposit above 200~keV$_{ee}$ within 1.2~ms of the single-scatter S1 causes the OD veto to fail.
+AmLi calibrations were used to estimate the tagging efficiency at $\eta =88.5\%$\cite{aalbers_first_2022}.
+
+The OD veto also serves as an effective muon veto.
+The high light yield of the linear alkyl-benzene and the high $\langle \frac dE dx \rangle$ of minimally ionizing muons leads to 20,000+ photons detected within the OD.
+This muon tagging also aids in the form of a \textit{muon veto}, which removes regions of time after muons pass through the TPC where the electron/photon noise is elevated.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/LZ/Figure1a.jpg}
+    \caption[  CAD rendering of the LZ water tank and detector.]%
+    {
+    CAD rendering of the LZ water tank and detector.
+    The TPC is shown in the middle, with the cathode high voltage feedthrough extending to the left, DD conduit extending right, and calibration source tubes running vertically.
+    The GdLS contained within acrylic tanks is visible in green, surrounded by the OD PMTs.
+    Figure taken from Ref. \cite{akerib_projected_2020-1}.
+    }
+    \label{fig:lz_schematic}
+\end{figure}
+
+\section{Calibrations}
+
+The detector response particular to LZ was characterized.
+In particular the S1 and S2 photon gains $g_1$, $g_2$ have to be estimated at each point in the detector, the ER and NR bands were mapped out, and the PMT single detected photo areas (phd) had to be measured in order to have a uniform gain across the PMT arrays.
+Note that due to the 175~nm scintillation light, the PMT photocathode will occasionally emit more than one photoelectron (phe)  for every photon\cite{faham_measurements_2015}.
+Due to this, there is a conversion between the two units, with $1\mathrm{~phd} \approx (1+r) \mathrm {~phe}$.
+The DPE fraction is approximately $20$\%.
+
+The PMT gains were calibrated using an array of blue LEDs. 
+These are flashed such that, on average, one in every ten flashes results in a PMT hit.
+The areas of the response pulses are histogrammed to identify the single and double
+photoelectron peak.
+
+For $g_1$ and $g_2$ the Doke-plot method was utilized\cite{baudis_measurement_2021}.
+The energy of any particular event is given by 
+\begin{equation}
+    E = W \left( \frac{S1}{g_1} + \frac{S2}{g_2} \right) ~,
+\end{equation}
+\noindent
+where $W$ is the effective work function, $S1$ and $S2$ are in phd, and $g_1$,$g_2$ are the photon gains per quanta.
+Sources of known energy are plotted in $S2/E$ vs. $S1/E$ space.
+Sufficient quantity of monoenergetic sources plot out the following line: 
+
+\begin{equation}
+    \frac{S2}{E} = \frac{g_2}{W} +  \frac{g_2}{g_1} \cdot \frac{S1}{E}~.
+\end{equation}
+
+With only 2 degrees of freedom, the line cannot simultaneously determine $g_2$ and $W$.
+A common value in the literature for the effective work function is  $W=$13.7~eV\cite{dahl_physics_2009}, but recent measurements have indicated $W=11.5$~eV\cite{collaboration_measurement_2020, baudis_measurement_2021}.
+In SR1 a value of $W=13.5$~eV was used, and the tuned $g_1$ and $g_2$ values were verified with an independent minimization procedure using NEST\cite{szydagis_review_2021}.
+For LZ, many peaks of known energy are present but the $^{83m}$Kr (41.5~keV), $^{129m}$Xe ( 126~keV), and $^{131m}$Xe (164~keV) peaks are prominent enough to use for this analysis.
+The values were determined to be $g_1=0.1136$~phd/photon, and $g_2=$47.07~phd/e\cite{aalbers_first_2022}.
+An example of an application of the Doke-plot method is shown in Fig. \ref{fig:dokeplot} for another experiment\cite{baudis_measurement_2021}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/LZ/dokeplot_baudis.png}
+    \caption[A Doke plot, taken from \cite{baudis_measurement_2021}, which determined $W=11.5$~eV.]%
+    {A Doke plot, taken from \cite{baudis_measurement_2021}, which determined $W=11.5$~eV.}
+    \label{fig:dokeplot}
+\end{figure}
+
+As mentioned above, CH$_3$T is injected to calibrate the fiducial volume for electron recoils. 
+Since tritium has an 11-year half-life for its $\beta$-decay, its injection is in theory problematic.
+However, it was determined in commissioning tests that methane can be efficiently removed with the LZ getter so it does not pose an issue in practice.
+
+Monoenergetic dispersed ERs are calibrated with  $^{83m}$Kr injections.
+The Kr is formed from $^{83}$Rb electron captures.
+The 41.5~keV total energy of the internal conversion electrons sit outside the WIMP search ROI, but can still be used to calculate the detector yields.
+Larger S2s ($>$ 10,000 phd) allow for excellent position resolution, which allows for mapping of the boundary of the TPC\cite{lux_collaboration_position_2018}.
+The two S1s for $^{83m}$Kr, labelled as $S1_a$ and $S1_b$, are affected by recombination in interesting ways, as the later decay occurs in the wake of the first. Increasing electric fields affect the time dependence of $S1_b/S1_a$\cite{singh_analysis_2020}, which can allow a direct measurement of the fields at each position in the detector.
+
+With a half life of 1.83~hr the Kr decays before adequately mixing within the LXe under certain circumstances.
+This allowed LZ to discover that the FV was in a ``low flow" state, where little mixing occurred with the boundary layer.
+While advantageous from the perspective of Rn-emanation, it does raise some questions regarding electronegative impurities being effectively cleaned out by the circulation system.
+Flow-mapping using Rn-Po coincidences is ongoing in order to understand this region.
+The low flow region is seen in the Kr calibration data in Fig. \ref{fig:stagnant}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Sims/Krypton_Position.png}
+    \caption[ 2D histogram of reconstructed event positions, S2 radius vs. drift time, from an early $^{83m}$Kr injection.]% 
+    {
+    2D histogram of reconstructed event positions, S2 radius vs. drift time, from an early $^{83m}$Kr injection. The low flow region is seen in the middle, along with the detector boundaries.
+    Single scatter events within the drift region are shown.
+    Note that, despite the low flow in the middle of the detector, a relatively straight and clear indicator of the wall location is found.}
+    \label{fig:stagnant}
+\end{figure}
+
+Nuclear recoil calibrations were performed with DD and AmLi.
+A commercial generator creates 2.45~MeV neutrons, which are guided using a hollow conduit through the LZ water tank to the OCV.
+The setup can be rearranged to use a neutron reflector which reduces the energy and flux further, allowing calibration down to 1.1~keV$_{\mathrm{NR}}$.
+While this is a pure source of NRs, the scatters occur along a narrow beam at the top of the detector.
+To calibrate the positional dependence, an AmLi $\alpha-n$ source was prepared, which produces broad band neutrons out to 1.5~MeV. 
+The trade offs that some amount of gammas are produced from the excited final states, and that the event rate is high, leading to copious accidental events which have to be removed for proper analysis.
+
+
+\section{Analysis}
+\subsection{Data collection}
+Data is collected using online FPGAs with an advanced trigger which causes the digitized waveforms to be written to disk.
+This trigger has configurable settings for different scenarios \textit{e.g.} calibrations or background, but during the WIMP search it is tuned to trigger an ``event" for every S2.
+The waveforms from the assorted TPC PMTs are summed, and are filtered with a boxcar filter which efficiently detects the presence of an S2 (a separate filter exists for S1s, which under WIMP search settings does not trigger events).
+Triggering events are written to disk using a compression method called \textit{Pulse-only digitization} (POD).
+Each PMT channel is filtered and zero-suppressed such that, as the name implies, only regions of time around likely photoelectrons signals are saved and not noise.
+These .evt files containing PODs and metadata are sent to the US and UK data centers for processing.
+
+Raw event files are processed using the Gaudi-based LZ Analysis Package (LZAP).
+The pulsefinder runs over the summed PODs to identify discrete pulse boundaries.
+From these pulses reconstructed quantities(RQ)s are then calculated, e.g. pulse area, prompt fraction,  etc.
+These RQs are used to classify the pulses as one of several types: S1, S2, single electron (SE), single photoelectron(SPE), multiple photoelectron (MPE), or other.
+S2s and SEs have their XY positions reconstructed using the Mercury algorithm.
+Depending on the topology of pulses, the interaction finder then classifies the overall event into one of several scatter types: single (SS), multiple (MS), pileup (PU), or other, and calculates additional interaction-based RQs.
+
+The RQ files output by LZAP are finally analyzed by the ALPACA framework.
+ALPACA is a modulear framework which reads the lzap .root files, executes a particular analysis, and writes the results and plots to disk.
+It was developed so that multiple modules can be chained together into a single analysis.
+As opposed to LZAP, events in ALPACA are not assumed to be independent.
+This comes into play with the e-train veto, which removes periods of time following large S2s, amounting to a dead time fraction of 29.8\%.
+The SR1 WS analysis proceeds by identifying single scatters within the WIMP search region of interest (ROI): S1c $\in [3,80]$phd, S2c $\in [600, 10^5]$.
+The S2 radius and drift time must lie in the fiducial volume, and OD and  Skin vetoes (see Section \ref{sec:veto}) are applied based on the S1.
+Coincident S1 pulses within the skin detector are vetoed.
+There are two selections: a prompt cut, which removes events with any $N>2$ PMTs coincident in the skin within 500~ns, and a delayed cut, which removes events with skin S1s within an expanded coincidence window of 1.2~ms if the skin pulses were large enough ($N>55$).
+Finally, anti-accidental data quality cuts are applied (more details in Chapter \ref{chap:accidental}).
+
+\subsection{Detection Threshold}
+
+The WIMP recoil spectrum is a smooth, falling exponential, which heavily incentivizes making the energy threshold as low as possible.
+A limiting factor here is the accidental PMT coincidence background, discussed in greater detail in Chapter \ref{chap:accidental}, which sets the smallest S1 as 3 phd, detected in 3 distinct PMTs.
+This is more than the 2-fold coincidence requirement used in LUX.
+The scintillation yield decreases as deposited energy approaches zero, exacerbating the problem. 
+The number of detected photons is a stochastic process due to the light collection efficiency, making events near threshold fluctuate downwards.
+
+Data quality cuts are used to remove the accidental background, which also rises towards threshold, as detailed in Section \ref{sec:dq_cuts}.
+Both S1 and S2 based cuts were employed.
+A significant background of few-electron noise was observed, necessitating raising the S2 threshold to 600~phd.
+These criteria were tuned to have high acceptance at threshold for low-energy tritium and DD calibration data.
+In the end the S2-based cuts, which aimed to eliminate near-surface and above-anode events, end up reducing the acceptance to around 60\% at $S2_{\mathrm{raw}} = 600$~phd, and the S1 cuts maintain$>95\%$ acceptance across the entire ROI.
+
+Translating to reconstructed energy~keV$_{\mathrm{NR}}$ yields Fig. \ref{fig:energy_threshold}.
+A roughly logistic curve is seen, rising from nearly 0\% at 2~keV~keV$_{\mathrm{NR}}$, to 50\% at 4.51~keV$_{\mathrm{NR}}$, to $\approx 90$\% across at 10-45~keV$_{\mathrm{NR}}$.
+The WIMP search ROI removes the tail towards higher energies, as the corrected S1 pulse areas are required to be below $80$~phd.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/LZ/EnergyThreshold.png}
+    \caption[ The nuclear recoil analysis acceptance curve for LZ's first science run.]%
+    {
+    The nuclear recoil analysis acceptance curve for LZ's first science run, taken from \cite{aalbers_first_2022}.
+   Note that the largest impact at threshold is the single scatter selection, while intermediate energies (10-40 $keV_{\mathrm{NR}}$) are impacted most by the data quality selection, while the largest energies are removed by the region-of-interest (ROI).
+   The inset indicates more precisely the soft energy threshold.}
+    \label{fig:energy_threshold}
+\end{figure}
+
+
+\subsection{Profile Likelihood}
+\label{sec:plr}
+LZ obtains two sided confidence intervals on the size of a physics signal based on the observed data.
+Rather than obtaining a "cut and count" upper limit using the method of Feldman and Cousins\cite{feldman_unified_1998}, the analysis of the signal in the pretense of background proceeds with the \textit{Profile Likelihood Ratio}(PLR) test statistic.
+In this case one estimate parameters $\boldsymbol{\mu}$ alongside  some nuisance parameters $\boldsymbol{\theta}$ from data $\boldsymbol{X}$.
+The likelihood of $\boldsymbol{X}$ is provided by the "extended likelihood function"\cite{baker_clarification_1984}, which combines the Poisson fluctuations and probability distribution functions of the signal and background.
+When $\mu_\chi$ is the number of signal events, $\theta_j$ are counts of background events, and $f_\mu(\boldsymbol{x}_i)$, $f_j(\boldsymbol{x}_i)$ are the distributions of each model, the extended likelihood is:
+
+\begin{equation}
+    \mathcal{L}(\boldsymbol{X}; \boldsymbol{\mu_\chi}) = \frac{e^{-(\mu_\chi + \sum_j \theta_j })}{N!}\prod_i^N[\mu_\chi f_\chi(\boldsymbol{x}_i) + \sum_j \theta_j f_j(\boldsymbol{x_i})]~.
+\end{equation}
+\noindent
+The likelihood ratio generally is the ratio of two models: $q = \mathcal{L}(\mu_1) / \mathcal{L}(\mu_2)$.
+For the PLR the nuisance/background parameters $\theta_j$ are \textit{profiled}, in other words the conditional probability is maximized.
+
+\begin{equation}
+    \lambda(\boldsymbol{\mu}) = \frac{\mathcal{L}(\boldsymbol{\mu},  \hat {\hat {\boldsymbol \theta}})}{\mathcal{L}(\hat {\boldsymbol \mu},  \hat  {\boldsymbol {\theta}})}
+    \label{eq:plr}~.
+\end{equation}
+\noindent
+Here the double caret indicates that the likelihood has been maximized over $\boldsymbol{\theta}$ for a given $\boldsymbol{\mu}$, while the single caret over the parameters indicate the global maximum.
+Following the convention set in Ref. \cite{baxter_recommended_2021}, the variable $\tilde t_\mu$ is defined: 
+\begin{equation}
+    \tilde t_\mu =
+    \begin{cases}
+    -2 \ln \lambda(\mu) \qquad \hat \mu \geq 0 \\
+     -2 \ln \lambda(0) \qquad \hat \mu < 0 \\
+    \end{cases}~.
+\end{equation}
+\noindent
+This handles the fluctuations below zero and is asymptotically distributed according to the $\chi^2$ distribution with degrees of freedom equal to the number of fitted parameters less the number of data points\cite{wilks_large-sample_1938}.
+In practice the asymptotic formulae are not used, and the distribution of $f(t_\mu|\mu)$ is found via monte-carlo sampling.
+The exclusion limit is then set by examining the models such that the probability of obtaining the observe $\tilde t_\mu$, given the true value is $\mu$, exceeds a predefined amount $\alpha$ (usually 0.1):
+\begin{equation}
+    p_\mu = \int_{\tilde t_{\mu, \text {obs}}}^\infty  f(t_\mu | \mu) dt_\mu > \alpha~.
+\end{equation}
+\noindent
+For discovery the background-only value $\tilde t_0$ is examined instead.
+By definition, the two sided exclusion limit "lifts off" with frequency $\alpha$/2, but this does not imply that a discovery has taken place. 
+The coverage requirement to measure a signal a fraction $\alpha$ of the time leads to limits occasionally being set in regions of parameter space where the detector has little sensitivity.
+"Power Constrained Limits" (PCL) address this by incorporating $\pi(\mu)$, the probability to reject the background-only hypothesis in the presence of a signal, into the analysis\cite{cowan_power-constrained_2011}.
+
+\section{Physics searches}
+\subsection{WIMPs}
+
+LZ is designed to be maximally sensitive to spin-independent (SI) couplings between WIMPS and nucleons.
+The LZ SR1 result is shown in Figure. \ref{fig:sr1_limit}, setting a world-leading limit at the masses 20-40~GeV/c$^2$.
+The 50\% acceptance threshold for NRs was found to be 5.5~keV$_{nr}$.
+An underfluctuation of the limit between 19-23~GeV/$c^2$ resulted in the utilization of a power-constrained limit in that region\cite{cowan_power-constrained_2011}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Sims/lz_sr1_limit.png}
+    \caption[The LZ spin-independent WIMP-nucleon exclusion limit.]%
+    {The LZ spin-independent WIMP-nucleon exclusion limit. Figure from \cite{aalbers_first_2022}.
+    Note the distinctive check mark shape, caused by the kinematic matching between the DM particle and the xenon, along with the energy threshold.
+    The fluctuation of the exclusion limit downwards lead to the use of a power constraint between $m\chi \in [19,23]$~GeV/c$^2$.
+    The green and yellow are ``Brazil bands" which indicate the confidence interval of the background free limits.}
+    \label{fig:sr1_limit}
+\end{figure}
+\subsection{Neutrinoless Double Beta Decay}
+
+Neutrino masses are currently not explained in the standard model. 
+If they are their own antiparticle, i.e. their mass is from a Majorana mass term in the Lagrangian, certain processes become possible.
+In two neutrino double beta decay ($2\nu 2 \beta$), a nucleus undergoes two simultaneous beta decays, resulting in a continuous distribution of total energy deposition out to the Q-value.
+If neutrinos are Majorana, the two outgoing neutrinos may instead connect as a virtual particle in the Feynman diagram, leading to neutrinoless double beta decay ($0\nu 2 \beta)$:
+
+\begin{equation}
+    (Z,A) \rightarrow (Z+2, A) + 2 e^-~.
+    \label{eq:dbd}
+\end{equation}
+
+The combined energy of the simultaneous $\beta$ rays in this process is located entirely at the Q value of the $2 \nu 2 \beta$ process.
+Therefore, the signal appears as a sharp peak on top of the beta decay spectrum, and sensitivity is ultimately limited by energy reconstruction.
+
+Natural xenon contains two potential candidates for $0 \nu 2 \beta$, $^{134}$Xe and $^{136}$Xe, with Q-values of 825.8~keV and  2457.83~keV \cite{lux-zeplin_projected_2021}.
+At the $^{208}$Tl line of 2.61~MeV, a resolution of $\sigma_E/E =0.64$\% is found.
+The projected median sensitivities are 7.3$\times10^{24}$ years and 1.06$\times 10^{26}$ years for $^{134}$Xe and $^{136}$Xe neutrinoless double beta decay, respectively\cite{akerib_projected_2020}.
+
+\subsection{Boron-8}
+
+In the sun $^7$Be, part of the pp chain, occasionally captures a proton to form $^8$B.
+Boron then immediately $\beta$-decays with a 12.1~MeV endpoint.
+These neutrinos can coherently scatter off of the xenon nuclei.
+Due to the poor energy transfer, the $^8$B neutrino signal appears as extremely low energy nuclear recoils, and is almost indistinguishable from a WIMP of mass 2-6~GeV/c$^2$.
+This signal poses a problem for the future of the WIMP search in that region, but remains a viable signal to search for in data.
+Lowering the coincidence threshold for S1s from 3 to 2 will increase the discovery potential by two orders of magnitude\cite{akerib_enhancing_2021}.
+This analysis is impacted greatly by the ability to remove isolated S1s, which cause accidental coincidence background (see Chapter \ref{chap:accidental}).
+
+\subsection{Transient Signals}
+
+A nearby supernova (within the galaxy) would generate neutrinos which would be observable in LZ.
+Approximately 350 NR events would be observed over a 10s period of time from a 27~$M_\odot$ supernova 10~kpc away\cite{khaitan_supernova_2018}.
+This would vastly expand the catalog of supernova events began by supernova 1987a.
+Cerenkov-based detectors such as Hyper-kamiokande can probe $\bar \nu_e$, and the kiloton-scale DUNE far detector will be sensitive to $\nu_e$.
+A clear understanding of the flux of all flavors of neutrino is valuable to the field of stellar physics.
+The low threshold and high $A$ of liquid xenon TPCs affords observation of ~keV-scale $CE\nu NS$ nuclear recoils from $\mathcal{O}$(MeV) neutrinos.
+This interaction is sensitive to all flavors of neutrinos\cite{lang_supernova_2016}, unlike the other detector technologies, and can identify the timing of the core-collapse rebound.
+

@@ -1,0 +1,445 @@
+\chapter{Simulations}
+\label{chap:sims}
+\section{Introduction}
+
+Obtaining a result for the dark matter search requires understanding how the detector will respond to certain physics.
+As part of the simulations working group, I made significant contributions to the software stack in the design phase, and implemented several physics and detector response models.
+In this chapter I detail the design of these features.
+Further detail may be found in the LZ simulations paper\cite{akerib_simulations_2021} and SR1 result\cite{aalbers_first_2022}.
+
+\section {DMCalc}
+\subsection{Purpose}
+DMCalc was build off of, and heavily modified, software developed by LZ simulations coordinator Quentin Riffard.
+It was created to make calculations of dark matter recoil rates.
+I was tasked with building off of this framework to make a general purpose, extensible physics model library which could be utilized throughout the simulations stack.
+Applications included making high quality plots, and creating the recoil spectra that LZLAMA and BACCARAT (below) sample from.
+
+\subsection{Design}
+DMCalc divides its calculations into the following concepts:
+\begin{itemize}
+    \item \textbf{Spectra}: The velocity or energy distribution of incoming particles.
+    For relativistic particles ($m<<T$) the energy probability distribution is used, while for nonrelativistic ($m>>T$ ) particles the velocity distribution is used.
+    As of writing there are no models implemented with intermediate velocities ( $m\sim T \leftrightarrow \beta > 0.01$), so the distinction is more accurately zero or nonzero mass.
+    DMCalc takes these distributions and integrates the differential cross section over the first moment of velocity:
+    \begin{equation}
+        \sigma_{\text{eff}} = \int \frac{d \sigma}{d E_R} v f(v) dv
+    \end{equation}
+    \noindent
+    In some models, this integral may be calculated analytically, and the generic numerical integral is skipped.
+    This occurs in the dark matter case, as the \textit{Spectrum} class is derived into the \textit{Halo}.
+    Typically in the literature the velocity dependence of dark matter exploits the isotropic $d\sigma / dE_R = (r m_\chi v^2/2)^{-1} \theta( r m_\chi v^2/2-E_R)$, where $r = 4 m_T m_\chi /(m_T + m_\chi)^2$ to factor the result into the ``inverse velocity distribution"\cite{mccabe_earths_2014}:
+    
+    \begin{equation}
+        \xi(E_R) = \int_{v_{\text{min}}(E_R)}^{v_{\text{max}}} \frac{f(v)}{v}dv
+        \label{eq:halo_function}~.
+    \end{equation}
+    \noindent
+    As such, within DMCalc dark matter models redistribute the remaining factors to place all velocity dependence in $\xi(E_R)$.
+    Neutrino models use the incident energy distribution instead.
+    \item \textbf{Cross Sections}
+    Cross sections are the core of any physics model.
+    DMCalc requires at minimum the function $\frac{d \sigma}{d E_R}(E_i, E_R)$, where $E_R$ is the recoil energy and $E_i$ is the incident particle energy, to be convolved with the incident energy spectrum.
+    The interactions are defined in the laboratory frame with a target at rest.
+    There is an implicit dependence on the target nucleus.
+    For dark matter models, since the velocity dependence has been factored into the $\xi(E_R)$ function, the differential cross section must be independent of incident velocity.
+    The elastic ``halo cross section" is given by :
+    \begin{equation}
+        [\frac{d \sigma}{d E_R}]_{\text{halo}}(E_R) = \frac{2 \sigma_{\chi T}}{r m_\chi}  ~.
+    \end{equation}
+    \noindent
+    The $\sigma_{\chi T}$ term will differ between the spin-independent and spin-dependent models.
+    In reality the recoil energy may not exceed the backscatter amount $r m_\chi v^2/2$, but this fact is folded into $v_{\text{min}}(E_R)$ in the halo inverse velocity distribution.
+    For neutrinos, the cross sections are calculated on a per-flavor basis.
+    At this point in time, while scattering is not assumed to be isotropic in general, the angular dependence is not a component of the functions, as LZ and other TPCs lack directional sensitivity.
+    
+    \item \textbf{Target}
+    DMCalc, while used primarily by LZ, also aims to make comparisons between different target media.
+    It is also necessary to calculate different scattering rates for effects like earth shielding \cite{bramante_saturated_2018}.
+    Within DMCalc, cross sections are calculated based on the recoiling \textit{Nucleus}, and any $A$, $Z$ dependence will appear there.
+    A detector consists of a \textit{target} material, which is a mixture of several \textit{nuclei}.
+    A convenient interface allows targets to be added together and for the isotopic fractions to sum to 1, e.g. an unrealistic mixture $\text{Xe}_{\text{mix}} = 0.5 \text{Xe}_{129} + 0.5 \text{Xe}_{131}$.
+    LZ uses natural xenon, but other targets are shown in Fig. \ref{fig:recoil_rates_dmc}
+    \item \textbf{Rates} : This is the high level control class.
+    The parameters of the physics models are placed in this class. 
+    For dark matter models, these parameters include the WIMP mass, WIMP-nucleon cross section, and coupling (spin-independent or spin-dependent).
+    Targets and optional velocity distributions are specified here. 
+    Clients such as LZLAMA and BACCARAT interact through this class.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Sims/DMCalc_Targets.pdf}
+    \includegraphics[width=0.45\textwidth]{Assets/Sims/Recoil_Rates.pdf}
+    \caption[WIMP recoil rates generated with DMCalc]%
+    {WIMP recoil rates generated with DMCalc.
+    \textit{Left}: WIMP dark matter differential nuclear recoil rates for different targets.
+    \textit{Right}: WIMP dark matter nuclear recoil rates for different model( SI, SD-p, and SD-n).}
+    \label{fig:recoil_rates_dmc}
+\end{figure}
+\subsection{Halo Distributions}
+
+The dark matter velocity distribution is not known precisely. 
+The standard halo model assumes a Maxwellian distribution in the galactic rest frame.
+Subcomponents of different distributions are conceivable, though. 
+Notably, the results of the GAIA survey lead to the development of the SHM++\cite{evans_refinement_2019}. 
+For this reason I implemented several dark matter velocity distributions, along with a mechanism to combine them in a similar way to the Targets.
+
+\begin{itemize}
+    \item \textbf{Gaussian ellipsoids}: This is the building blocks for the SHM++ model.
+    There, a warm, slow, isotropic Gaussian distribution is combined with a cold, fast, eccentric Gaussian distribution. 
+    It is believed that this extra ``sausage" is from a galaxy merger late in the development of the Milky way.
+    In DMCalc, not only is it possible to form the SHM++, it is possible to add Gaussian subcomponents with any desired covariance matrix.
+    \item \textbf{Debris flows}: The Milky way can tidally strip material from nearby satellite galaxies, forming flows of materially which has yet to mix with the rest of the galaxy\cite{kuhlen_direct_2012}. 
+    The velocity distributions are characterized by the flow velocity $v_{flow}$:
+    \begin{equation}
+        f(v) = \begin{cases}
+        \frac{1}{2} \frac{v}{v_{flow} v_e(t)}, & |v-v_e(t)| < v_{flow}\\
+        0,& |v-v_e(t)| \geq v_{flow}
+        \end{cases}\;.
+    \end{equation}
+    \item \textbf{Streams}: In a similar manner to debris flows, stellar streams \cite{banik_probing_2018} indicate that cold subhalos may travel through the main halo.
+    These are modelled as monochromatic sources in the galaxy frame $f(v) = \delta(v - v_s)$.
+\end{itemize}
+
+Examples of these models are shown in Fig. \ref{fig:halo_types}.
+In addition to the probability distribution functions, the $\xi(E_R)$ functions must also be calculated.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/Sims/DMCalc_Halo.pdf}
+    \caption[Velocity distributions for various dark matter halo models, produced in DMCalc.]%
+    {Velocity distributions for various dark matter halo models, produced in DMCalc.
+    Shown are the SHM\cite{mccabe_earths_2014} (blue), SHM++\cite{evans_refinement_2019}(orange, jagged due to Monte-Carlo integration), debris\cite{kuhlen_direct_2012} (green), stream\cite{banik_probing_2018}(blue, line), and a custom Gaussian composite model (red,for demonstration purposes).}
+    \label{fig:halo_types}
+\end{figure}
+
+The annual modulation due to the motion of the earth around the Sun is also modelled in DMCalc. 
+One specifies the J2000 date and the velocity of the Earth in galactic coordinates $v_E$ is calculated and used in the subsequent evaluation of the SHM velocity distribution.
+All dependence is rolled into $v_E$, and therefore any of the other velocity components benefit automatically from changing the day.
+Using a value of $d=60.8$ gives the approximate mean value.
+The amplitude of the modulations for select SI-WIMP distributions is shown in Fig. \ref{fig:modulations}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Sims/DMCalc-Modulation.pdf}
+    \caption{Relative modulation amplitudes for WIMP masses of 20 and 50 GeV/c$^2$, as a function of recoil energy, calculated with DMCalc.}
+    \label{fig:modulations}
+\end{figure}
+\subsection{Bindings}
+
+To make DMCalc maximally useful, the C++ code base could be used in several ways.
+Every class was made serializable, such that a string could be input into a parser and the \textit{Rate} object would be created automatically.
+The two main methods of supplying a configuration string were YAML\cite{noauthor_yaml_nodate} and via the command line.
+With the YAML interface additional instructions could be provided to make the driver program output the desired plots.
+The command line parser was somewhat more limited, as it was intended to be simple to access and extend.
+The internal arguments are completely encapsulated, making any change to DMCalc automatically propagate to its client programs.
+
+The most flexible method of using DMCalc was via its python bindings, which I developed.
+Most of the C++ classes are accessible via the bindings, with names changed from the preferred C++ convention of camelCase to the python3 convention of snake\_case.
+
+
+DMCalc is compiled into a shared object .so library, which is then installed and linked against in the client software. 
+The installation procedure also copies some database files which specify certain spectra. 
+These are most critical for the Neutrino models, which calculate matter effects and have several components (e.g. pp, B8, diffuse supernovae, etc).
+As much of the code was made to be compile-time calculable, so that runtime calculations are as fast as possible.
+Compile time calculations also allow for static error analysis and unit testing, where certain computational results will trigger a compiler fault if they fail an assertion.
+
+\subsection{Future Work}
+
+DMCalc is at the time of writing limited to the calculation of WIMP( and ``blob", see Chapter \ref{chap:tracks}) dark matter and neutrino background models.
+Near term plans include the incorporation of sub-GeV and low-energy ER models.
+Neutrino magnetic moments and axions are of particular interest.
+Recently the Migdal effect\cite{ibe_migdal_2018} was added to the WIMP model by graduate student Andreas Biekert.
+This produces an ER from a low-energy NR, which requires additional convolutions over recoil energy.
+The intention for DMCalc was to make it simple to implement an equation and use it in simulations, and while that goal was met, some quality of life modifications will likely be made in the future to facilitate expanded use.
+
+\section{LZLAMA}
+\subsection{Purpose}
+LZLAMA is the core of the LUX-ZEPLIN fast simulations chain.
+I contributed to it through consultation on the design, core code development, linkage to the DMCalc library, and module development.
+As with DMCalc, LZLAMA was based on a scaffolding created by Quentin Riffard for the LUX experiment.
+It transforms entries representing energy deposits into the LZ reduced-quantity files by simulated the detector effects in a parametric (top-down) fashion.
+This is different than the full chain simulations, which simulate the particle physics, photon propagation, and electronics response in a bottom-up fashion.
+The LZLAMA(fast) chain has the advantage of being computationally less expensive, and more straightforward to match simulation results to data.
+The software operates in two processing modes: \textit{pdf-sampling}, where the recoil spectra are used to create the detector responses, and \textit{file-processing}, where  energy deposits are created using the Geant4-based particle tracker BACCARAT, and the detector response to these deposits are then simulated.
+Under \textit{file-processing}, the extensive physics library of Geant4 can be leveraged without the bottlenecks involved in generating and analyzing simulated waveforms.
+
+\subsection{Design}
+
+LZLAMA takes in a configuration file which specifies the parameters of the simulation.
+The processing classes come in three categories: Inputs, Modules, and Writers, which are performed sequentially.
+Each detector effect generally becomes its own module, and these modules have certain parameters (e.g. trigger threshold) which can be tuned to match data.
+LZ is modelled as three separate detectors: the TPC, Skin, and OD.
+Each module is assigned to one or more of the detectors.
+
+\begin{enumerate}
+    \item \textbf{Inputs}: The input classes generate the deposits.
+    The modes \textit{file-processing} and \textit{pdf-sampling} control the manner in which these deposits are generated. 
+    With \textit{pdf-sampling} enabled, LZLAMA uses DMCalc, or a hard coded histogram to generate the recoil energies. 
+    These deposits are generated uniformly throughout the cylindrical TPC volume: 
+    
+   \begin{align}
+        R^2 \sim U(0, 72.8) \mathrm{~cm}\\
+        Z \sim U(0, 146.1) \mathrm{~cm}~.
+   \end{align}
+   
+    For certain generators the reverse field region below the cathode is included.
+    Each generator also specifies the particle type, which is used in the NEST processing later on.
+    The \textit{file-processing} mode reads in BACCARAT output files, which contain the position, energy, and particle type information.
+    \item \textbf{Cut Modules}: The first line of modules culls the deposits which were not relevant for the performed tests.
+    Maximum energy, time, and particle type are considered.
+    Time cuts were implemented to assist the \textit{file-processing} mode, where metastable, long-lifetime excited states can lead to decays seconds or even years after the primary interactions.
+    \item \textbf{Pulse Generation Modules}: Several modules take in the deposits and output pulses. 
+    Deposits are first \textit{clustered}, where nearby vertices are merged together using the density-based clustering (DBSCAN\cite{ester_density-based_1996}) algorithm.
+    Vertices within 100$\mu$m and 10ns are merged into \textit{clusters}.
+    Merged pulses are then mapped with the LZElectricField Module, which associates with each cluster an S2 X,Y position, drift time, field magnitude, and diffusion.
+    The mapped points are then processed using NEST\cite{szydagis_nest_2011, szydagis_review_2021}, which takes in the previous values and generates the \textit{pulses}, i.e. S1s and S2s. 
+    \item \textbf{Detector Triggering Modules}:  Pulses are sorted according to start times, and then overlapping pulses are merged according to independent S1 and S2 pulse merging models.
+    S1s are merged according to a stochastic model based on the ratio of pulse areas, and the time difference between them.
+    Ratios closer to 1 result in lower merging probabilities, and closer pulses are merged with high probability.
+    The model is based on $^{83m}$Kr data, which has 9.4 and 32.1 keV internal conversion electrons\cite{kastens_calibration_2009}, which occasionally merge into a single pulse.
+    S2s are merged based on a drift time varying pulse widths. 
+    When the pulse boundaries overlap, they are merged based on the overlapping time and relative areas. 
+    This is tuned to match the DD calibration data.
+    
+    Merged S2s then have their positions perturbed using the \textit{PositionResolution} Module.
+    This simulates the effect of the position reconstruction algorithm (Mercury) and the transverse diffusion.
+    This feature was implemented by myself and detailed further in Section \ref{sec:resolution}.
+    
+    The area and PMT coincidences of the merged pulses are then used to determine if they trigger the pulse finder and DAQ.
+    S1s in LZ are identified based on a 3-fold coincident (though this is a configurable parameter).
+    S2s have a minimum area of 20 phd necessary to trigger an event.
+    \item \textbf{Event Construction Modules}: In the event of a triggered event, the merged pulses are organized into an \textit{event}.
+    These events are then classified into different \textit{interaction} types based on the number and time order of pulses.
+    Interactions are one of the following: single scatter (1 S1, 1 S2), multiple scatter( 1S1, 2+S2s), pileup scatter( 2+ S1s, 2+ S2s), and other scatters ( everything else).
+    Based on the particular scatter, certain  reconstructed RQs are calculated.
+    \item \textbf{Writers}: Here the events are written out into the desired .root format.
+    The formats are:
+    \begin{itemize}
+        \item \textbf{LZRQ}: a subset of the RQs in the same format as processed LZ data. The per-PMT information is not written by default.
+        \item \textbf{Flat Table}: A debugging format used to test the modules independently. 
+        It writes out all events, whether they triggered or not, and the format is simplified to map onto the internal LZLAMA data structures.
+        \item \textbf{Legacy}: A format made to be compatible with LUX events.
+    \end{itemize} 
+    The written files also contain \textit{MCTruth} information, which is the actual (i.e. not reconstructed) deposit information.
+    Because of the multiple stages of merging, each pulse is associated with multiple vertices, and some vertices are not associated with any pulses.
+\end{enumerate}
+% \subsection{Links to DMCalc}
+\subsection{Resolution}
+\label{sec:resolution}
+The imprecision of the position reconstruction in LZ was implemented into LZLAMA by myself using inputs obtained from data.
+Two independent models were used, resulting from the fundamentally different ways X,Y and Z components are estimated.
+For X,Y these are found with Mercury, which maximizes the likelihood of the S2 position given the observed PMT hit map.
+For Z this is found with the drift time and the known thermal electron velocity $v_e$.
+\subsubsection{Transverse}
+Transverse diffusion spreads the electrons in the radial and azimuthal directions according to a Gaussian $\sigma_T = \sqrt{2 D_T t}$.
+This results in an intrinsic error on single electrons.
+Additionally there is an effect from the grid funneling, where the 5mm pitch between the gate grid wires squeeze the electron trajectories inwards.
+Most importantly, the stochastic nature of the photon hit patterns determine the accuracy of the reconstruction.
+Points near the edge of the TPC are affected by the finite extent of the top array and the reflections from nearby surfaces, reducing the accuracy.
+Then, the S2 position is given by $\hat X \sim N(X, \sigma_e(R, S2)$.
+
+Two main scaling effects are present: reduction of the error on the estimator for the mean with increased samples, and the position dependence of the single electron resolution.
+The area scaling was confirmed with $^{83m}$Kr data.
+While the total energy of these events are monoenergetic 41 keV electron recoils, between recombination fluctuations lead to a spread in S1 and S2 values. 
+The calibration data, taken near the beginning of SR1, is shown in Fig. \ref{fig:krypton_data}.
+For the resolution analysis, events with S1 $\in [125,300]$ phd, $\log_10$ S2 $\in [4, 4.75]$, driftTime $\in [50, 950] \mu s$ were selected to encapsulate the ellipsoid.
+Additionally, events near the wall experience charge loss (QL), producing the ``rain" below the main ellipsoid.
+Events with $\log_10 S2 \in [2.75, 4]$ are analyzed separately.
+
+Mercury maximizes the likelihood of S2 positions based on ``light response functions"\cite{lux_collaboration_position_2018}.
+In addition to the estimated (X,Y) of the S2 it also returns a covariance matrix $\Sigma_{ij}$.
+I take the elements of this matrix and rotate the matrix $R(\theta) \Sigma R^{-1}(\theta)$ such that the diagonal elements contain the $\sigma^2_R, R^2\sigma^2_\phi$ values.
+I use the charge loss events from $^{83m}$Kr to test the area scaling relationship, as they all occur at approximately the same radius.
+The $1/\sqrt{S2_{\text{Top}}}$ scaling is confirmed in both the $\sigma_R$ and $R\sigma_\phi$ components, as shown in Fig. \ref{fig:ql_area_scaling}.
+
+The non-charge loss Krypton decays are also used to provide an estimate for the area scaling.
+To eliminate the effect of radial dependence events with reconstructed S2 radius $>$ 71~cm were chosen. 
+I found that the same scaling relationship extends to these events.
+QL events provide a third handle on the resolution near the wall.
+Those scatters were sorted into drift time bins of width 50 $\mu $s, and the mean and standard deviation are calculated per bin. 
+The residuals of each event are calculated relative to their respective bin, and the estimate for the error was evaluated as a function of S2 top area.
+This technique reveals a modification to the inverse square root scaling: 
+\begin{equation}
+    \sigma_R = \frac{\sigma_0}{\sqrt{S2_{\text{top}}}} + \sigma_1~,
+\end{equation}
+\noindent
+where the additional $\sigma_1=3.05\mathrm{~mm}$ term implies in intrinsic resolution that is not captured by the Mercury covariance matrix.
+This model is shown in Fig. \ref{fig:resolution_area_scaling}.
+The two models coincide around 1000 phd.
+For simplicity a the models are combined, with $\sigma_1=0$ but with the $\sigma_0$ scaled to pass through the mean of the charge loss data S2 values.
+
+Radial dependence was found with the non-charge loss events, with results shown in Fig. \ref{fig:resolution_radius}.
+As before, Mercury covariance values were used.
+There is relatively little radial dependence over the fiducial volume $R<68.8$~cm, but near the wall at 72.8~cm $\sigma_r$ increases by a factor of approximately two, while the $R\sigma_\phi$ is consistent with a constant term.
+I model this effect with an exponentially falling term.
+The overall result which I implemented in LZLAMA is the following model:
+\begin{align}
+    \sigma_r = \frac{1}{\sqrt{S2_{\text{top}}}} [\sigma_0 + \sigma_1\exp(\frac{(r - r_{\text{wall}})}{r_0})]\\
+     R\sigma_\phi = \frac{\sigma_0}{\sqrt{S2_{\text{top}}}}~,
+\end{align}
+\noindent
+where parameters for SR1 were estimated as $\sigma_0=17.5$~mm, $\sigma_1=10.48$~mm, $r_0=1.97$~mm.
+The smeared positions are clamped to $r\leq r_{\text{wall}}+1$~cm.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Sims/Kr_S1S2.png}
+    \caption[Krypton calibration single scatter S1-S2 distribution histogram.]%
+    {Krypton calibration single scatter S1-S2 distribution heatmap.
+    This data follows a nominal drift time fiducial cut, along with basic anti-accidentals cuts, such as high single channel and pulse length (see Chapter \ref{chap:accidental} for more details).
+    The main lobe of the distribution can be seen, entirely outside of the WIMP search ROI, along with a ``rain" of events at lower S2s, a result of the charge loss regions near the wall.
+    }
+    \label{fig:krypton_data}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Sims/QL_S2Scaling.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Sims/QL_Phi_S2Scaling.png}
+    \caption[Histograms of radial uncertainty from Mercury for Krypton charge loss events as a function of S2 area in the top PMT array. ]%
+    {Histograms of radial uncertainty from Mercury for Krypton charge loss events as a function of S2 area in the top PMT array. 
+    S2 area scaling from charge loss events, as measured by the rotated Mercury covariance matrix.
+}
+    \label{fig:ql_area_scaling}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7 \textwidth]{Assets/Sims/Area_Scaling_All.pdf}
+    \caption[Independent S2 position resolution vs. S2 area scaling models.]%
+    {Independent S2 position resolution vs. S2 area scaling models.
+    Charge loss events and $^{83m}$Kr events with S2 radius $>$ 71~cm are shown, estimating $\sigma_R$ from the Mercury covariance.
+    Charge loss (blue) and near-wall Krypton events (blue) follow the same trend.
+    The uncertainty estimated from the charge loss reconstructed positions themselves (which are all within 3~mm of the wall, and therefore have a relatively precise ``truth" location), 
+    shown in green, indicates a slightly different relationship, preferring a constant ``systematic" uncertainty on top of the area-dependent relationship.
+    The purple line indicates the implemented model, with a systematic term of zero but passing through the mean of the charge loss RMS data points.
+    }
+    \label{fig:resolution_area_scaling}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Sims/Resolution_Radius_Model.pdf}
+    \caption[The radial and azimuthal resolution as a function of radius within the TPC, as estimated through the rotated S2 position covariance matrix of $^{83m}$Kr events.]%
+    {The radial and azimuthal resolution as a function of radius within the TPC, as estimated through the rotated S2 position covariance matrix of $^{83m}$Kr events.
+    The azimuthal component does not display any dependence on radius, while the radial component shows an increase in uncertainty near the wall.
+    Note that this shows the resolution corrected for S2 area, \textit{i.e.} $\Upsilon=\sigma\times \sqrt{\mathrm{S2}}$}
+    \label{fig:resolution_radius}
+\end{figure}
+% \afterpage{\FloatBarrier}
+\subsubsection{Longitudinal}
+Longitudinal diffusion causes the electrons to be spread out by a Gaussian of standard deviation $\sigma_Z = \sqrt{2 D_L t}$, and $\sigma_t = \sigma_Z/v_e$
+Single electrons produce photons continuously as they traverse the extraction region, usually on the scale of $1-2\mu$s.
+The drift times for S2s are defined by area fraction times, but within the fast chain the details of pulse shape are simplified into start and end times.
+The start time is then defined as the time that the fastest electron reaches the liquid level.
+To find this value when $N_e > 1$, the cumulative distribution of electrons must be located.
+The probability that $N$ \textit{i.i.d} values with cdf $F_1(X)$ are greater than $x$ is given by
+\begin{equation}
+    F_N = 1- (1-F_1(x))^N~.
+\end{equation}
+\noindent
+In this case the cumulative distribution is provided by the error function, $F_1(t) = \frac{1}{2}(1 + \text{erf}(\frac{t}{\sigma_t \sqrt{2}})$.
+To sample the fastest electron, a quantile is drawn from a uniform distribution $p \sim U(0,1)$, and the inverse error function is used to obtain the appropriate value:
+
+\begin{equation}
+    t_{\text{min}} = \sqrt{2}\sigma_t\text{erf}^{-1}\{2(1-(1-p)^{1/N_e})-1\} + \mu_t\;.
+\end{equation}
+
+\afterpage{\FloatBarrier}
+\section{BACCARAT }
+\subsection{Description}
+The full chain simulations for LZ is performed by the Geant4\cite{agostinelli_geant4simulation_2003} based BACCARAT simulations package.
+Particles are tracked through the detector, where they generate optical photons, thermal electrons, and secondary interactions.
+I contributed the field models, described in detail in Chapter \ref{chap:fields}, to BACCARAT.
+Several field configurations were made available, with differing drift and extraction fields. 
+The fields were utilized to calculate the recombination probabilities for the quanta.
+Thermal electrons were transported from the deposit sites to the liquid surface based on the drift maps. 
+Fields within the extraction region produce S2 light based on the fields queried in that region.
+All effects are stored within the LZElectricField package.
+
+\subsection{PTFE Pockets}
+\label{sec:pockets}
+
+The PTFE panels covering the field cage of LZ's TPC are typically treated as if they were a single cylindrical component.
+In reality the cage is constructed by placing the field shaping rings between small interlocking PTFE sections.
+Under thermal contraction these sections fit together tightly, but small gaps exist in the vertical direction, as shown in Fig. \ref{fig:pockets}.
+While still light-tight between the skin and TPC regions, this leads to a volume of Xenon which is invisible to S2s.
+S1 light may reflect off the channels and lead to S1-only background (see Chapter \ref{chap:accidental}).
+
+I implemented these small pockets into the BACCARAT geometry.
+The generator which creates $^{210}$Po decays was modified to place primaries along the new contours.
+LZLAMA had to be similarly modified so that it would not generate S2s from deposits in the pockets.
+The light collection model was simplified at this point, simply attenuating the quanta based on the distance from the wall: 
+\begin{equation}
+    \frac{N_{\gamma}'} {N_{\gamma}} = 1-\frac{r-r_{\text{wall}}}{r_{\text{ring}}-r_{\text{wall}}}~.
+\end{equation}
+
+This new value of $N_\gamma'$ propagates through to the binomial fluctuations which result from the light collection efficiency in the TPC.
+I simulated both the $^{206}$Pb recoils and the $\beta-$decay spectra from the detector components near the wall.
+The charge loss model was used to find the S1-only spectrum from the decays on the regular wall.
+An S1-only spectrum which results from these simulations is shown in Fig. \ref{fig:ptfe_s1only}
+I find that the pockets result in more S1-only background than the PTFE at $r=72.8$cm.
+With 30~mBq/m$^2$ of $^{210}$Po plateout decays simulated, 31.8~mHz of S1-only is found from the normal wall with S1$<$100phd, whereas the pockets result in 37.8~mHz of S1-only in the same region.
+These results depend on the light propagation in the pockets, and future work will simulate the effects of numerous reflections in this region.
+
+\begin{figure}
+    \centering
+      \includegraphics[width=0.3\textwidth]{Assets/Sims/PTFE_gaps.png}
+    \includegraphics[width =0.6\textwidth]{Assets/Sims/Po210_pockets.png}
+    \caption[Simulations of the gaps in the PTFE walls.]%
+    {
+    \textit{Left}: CAD rendering of the PTFE pockets.
+    \textit{Right}:$^{210}$Po decays on the PTFE walls. 
+    The pocket profiles can be seen in the decay locations beyond the wall radius of 728 mm.
+    The density is uniform on the surface, but appears less dense in the pockets due to the aspect ratio.}
+    \label{fig:pockets}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Assets/Sims/S1only_pockets.png}
+    \caption{The S1-only spectrum which results from events near the wall, including the newly simulated PTFE pockets}
+    \label{fig:ptfe_s1only}
+\end{figure}
+\subsection{Code Reviewer}
+I had the pleasure of serving as the code quality reviewer for LZ software.
+As part of this role, merge requests for simulations software were sent to my gitlab.com dashboard.
+I would issue recommendations based on the CPP core guidelines to ensure readability and performance were up to the quality demanded of LZ.
+
+These reviews only existed for newly committed code.
+For old code, I judiciously utilized static analysis tools  like Coverity\footnote{synopsis.com} and clang-format\footnote{https://clang.llvm.org/docs/ClangFormat.html} to enforce the core guidelines.
+In many cases I refactored old code within BACCARAT to be more compliant.
+The largest issues I observed were excessive function complexity, and shadowed variables.
+While it was difficult to use with the existing code base, I converted many ``bare pointers" into ``smart pointers" which obviate the need for manual deletion.
+
+I implemented a feature into the gitlab repository to automatically run the memory leak checker valgrind\footnote{valgrind.org}.
+Memory leaks occur when data is allocated by one section of a program, and the reference to that memory is discarded without deallocation.
+Depending on where these leaks occur, memory useage might grow over time until a memory error occurs.
+To detect these, I used valgrind-CI\footnote{https://pypi.org/project/ValgrindCI/} to render the valgrind outputs.
+Valgrind essentially runs the program on emulated hardware, intercepting its machine instructions to track the allocations and deallocations, which leads to slowdowns of a factor of ten or more.
+Because of this the tests are run in parallel to other continuous integrations, and allowed to fail.
+The rendered html is then placed in the artifacts folder where the developers can inspect them.
+
+When the electric fields were incorporated into LZLAMA, I performed similar tests to inspect the impact. 
+I used the valgrind output, alongside statistical profiling tools like GPerftools\footnote{https://github.com/gperftools}.
+The conclusion of these tests were that the electric field module was subdominant to the disk writes from the LZLAMA .root output.
+The call graph is shown in Fig. \ref{fig:profiling}.
+At various times I used similar strategies in other codes which I have written, and to consult on shared analysis programs.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.75\textwidth]{Assets/Sims/valgrind-ci.png}\\
+    \includegraphics[width = 0.75\textwidth]{Assets/Sims/callgrind2.png}
+    \caption[Code evaluation outputs from code profiling programs.]%
+    {Code evaluation outputs from code profiling programs. \text{Top}: Valgrind-CI rendered for BACCARAT.
+    The errors indicate memory leaks indentified by valgrind.
+    \text{Bottom}: Callgrind output used to inform the optimizations for LZLAMA.
+    Each colored node is a particular function call.
+    The edges indicate that a function called another function, and the number indicate the number of calls which occurred. 
+    The percentages in each node represent the fraction of the parent node's call time taken by the particular child node. }
+    \label{fig:profiling}
+\end{figure}
+
+
+

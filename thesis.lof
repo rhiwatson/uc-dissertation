@@ -1,0 +1,375 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Isotopic abundances predicted by Big Bang Nucleosynthesis.}}{5}{figure.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.2}{\ignorespaces The Cosmic Microwave Background Radiation temperature anisotropy spectrum.}}{8}{figure.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.3}{\ignorespaces The matter power spectrum, inferred from a variety of observations at different distance scales.}}{10}{figure.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Current exclusion limits for primordial black holes in mass and fraction of dark matter density.}}{15}{figure.1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Differential recoil rates for assorted WIMP models with a WIMP-nucleon cross section of 1\nobreakspace {}zb.}}{18}{figure.1.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {1.6}{\ignorespaces The lab frame velocity probability distribution function of the standard halo model}}{19}{figure.1.6}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.1}{\ignorespaces The cross section and primary operating principle of LUX-ZEPLIN's time projection chamber. }}{24}{figure.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.2}{\ignorespaces $\qopname \relax o{log}_{10} (S2c)$ vs. $S1c$ areas for different calibration sources, demonstrating particle identification.}}{29}{figure.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.3}{\ignorespaces CAD rendering of the LZ water tank and detector.}}{31}{figure.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.4}{\ignorespaces A Doke plot, taken from \cite {baudis_measurement_2021}, which determined $W=11.5$\nobreakspace {}eV.}}{32}{figure.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.5}{\ignorespaces 2D histogram of reconstructed event positions, S2 radius vs. drift time, from an early $^{83m}$Kr injection.}}{33}{figure.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.6}{\ignorespaces The nuclear recoil analysis acceptance curve for LZ's first science run.}}{36}{figure.2.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {2.7}{\ignorespaces The LZ spin-independent WIMP-nucleon exclusion limit.}}{38}{figure.2.7}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.1}{\ignorespaces A side-view cross section of the LZ Cathode High Voltage (CHV) feedthrough. }}{43}{figure.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Photographs of examples of traditional feedthrough designs for dual-phase TPCs.}}{43}{figure.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.3}{\ignorespaces CAD rendering of the LZ water tank with components relevant to the CHV feedthrough annotated.}}{44}{figure.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.4}{\ignorespaces The results of a finite element field simulation in Maxwell.}}{45}{figure.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.5}{\ignorespaces An annotated diagram of the spool can connection / warm feedthrough at the top of the water tank.}}{46}{figure.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.6}{\ignorespaces A photograph of Harwin pin which connects the resistors in series between the CHV grading rings.}}{48}{figure.3.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.7}{\ignorespaces A photograph of the CHV prototype test stand.}}{49}{figure.3.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Schematic of the charge sensing circuit for the CHV feedthrough test.}}{49}{figure.3.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.9}{\ignorespaces The schematic for the base for the CHV photomultiplier tube.}}{50}{figure.3.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.10}{\ignorespaces CAD rendering of high voltage test structure and surrounding instrumentation.}}{51}{figure.3.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.11}{\ignorespaces The schematic of the charge sensing circuit for the CHV prototype test. }}{52}{figure.3.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Results of SPICE simulations using the schematic in Fig. \ref {fig:charge_sensing_circuit}.}}{53}{figure.3.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.13}{\ignorespaces The noise power spectrum for Run 1 of the CHV Prototype tests. }}{55}{figure.3.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.14}{\ignorespaces A representative waveform from a CHV prototype test stand acquisition.}}{56}{figure.3.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Waveform results from the CHV baseline subtraction technique.}}{57}{figure.3.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.16}{\ignorespaces The noise power spectrum (FFT) before and after the baseline subtraction technique.}}{58}{figure.3.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.17}{\ignorespaces A representative ``chirp" waveform which was observed in the data.}}{59}{figure.3.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.18}{\ignorespaces The Hamamatsu PMT impulse response, obtained from CHV prototype waveforms. }}{60}{figure.3.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.19}{\ignorespaces The optimal FIR filter for the CHV PMT response.}}{61}{figure.3.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.20}{\ignorespaces An example CHV prototype test event waveform with the zero-suppressed Richardson-Lucy deconvolution algorithm applied.}}{62}{figure.3.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.21}{\ignorespaces An event waveform classified under criteria (4) and (5), showing all three channels: PMT and both charge amplifiers.}}{63}{figure.3.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.22}{\ignorespaces The CHV purity monitor charge amplifier impulse response.}}{64}{figure.3.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.23}{\ignorespaces The Pulse area spectrum for the two PMT LED calibrations. }}{65}{figure.3.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Overview of the LED background subtraction procedure.}}{66}{figure.3.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.25}{\ignorespaces The R5912-02-MOD gain as a function of applied cathode voltage.}}{67}{figure.3.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.26}{\ignorespaces The PMT gain as a function of PMT temperature.}}{68}{figure.3.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.27}{\ignorespaces The measured oxygen-equivalent impurity level, obtained via the Argon triplet lifetime, over the course of CHV Run 2.}}{69}{figure.3.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.28}{\ignorespaces A photograph of an oscilloscope from a test of the purity monitor performed while bypassing the feedthrough. }}{70}{figure.3.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.29}{\ignorespaces PMT (top) and charge amplifier(bottom) data from the first day of Run 1 high voltage ramps.}}{73}{figure.3.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.30}{\ignorespaces The waveforms from terminal event in the first day of CHV Run 1's high voltage ramps. }}{74}{figure.3.30}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.31}{\ignorespaces PMT time series data from the CHV Prototype - May 25 high voltage ramp.}}{74}{figure.3.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.32}{\ignorespaces PMT data from the CHV - August 14 high voltage ramp.}}{76}{figure.3.32}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.33}{\ignorespaces PLC and PMT data from the August 14-15 overnight zero field data.}}{77}{figure.3.33}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.34}{\ignorespaces PMT time series data from the August 24 (Run 2) high voltage ramp.}}{77}{figure.3.34}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.35}{\ignorespaces Charge amplifier data from the CHV Prototype - August 24 high voltage ramp.}}{78}{figure.3.35}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.36}{\ignorespaces Waveforms from the terminal event in the CHV Prototype - August 24 high voltage ramp, defining the quiet time period for Run 2.}}{78}{figure.3.36}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.37}{\ignorespaces Construction photos of the LZ-CHV xenon displacer in the LBL clean room.}}{82}{figure.3.37}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.38}{\ignorespaces Photographs from the production grading structure construction process in the LBL clean room.}}{83}{figure.3.38}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.39}{\ignorespaces A photograph of the completed production grading structure in the LBL clean room. }}{84}{figure.3.39}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.40}{\ignorespaces A photograph of the cathode high voltage delivery crate. Aluminum panels lined the box. }}{85}{figure.3.40}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {3.41}{\ignorespaces Photographs taken during the cathode high voltage feedthrough final installation at SURF.}}{86}{figure.3.41}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.1}{\ignorespaces The LZ 2D axisymmetric finite element mesh, produced and rendered in GMSH.}}{90}{figure.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.2}{\ignorespaces The zoomed-in 2D mesh for the LZ cathode, gate, and anode rings.}}{93}{figure.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.3}{\ignorespaces The resulting simulated electric field for the LZ forward field region from Fenics.}}{94}{figure.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Radial electric fields and equipotentials near the cathode region.}}{95}{figure.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Volume-weighted histograms of simulated field magnitudes in the LZ TPC.}}{96}{figure.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.6}{\ignorespaces The field nonuniformity (RMS magnitude) as a function of cathode and gate voltage, averaged over the analysis and engineering fiducial volumes.}}{98}{figure.4.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Illustration of the principle of barycentric coordinates. Each vertex is a primary color (red,green,blue).}}{104}{figure.4.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Illustration of the ``dead zones"/ charge-loss regions near the TPC wall.}}{105}{figure.4.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.9}{\ignorespaces The volume-weighted charge loss probability distribution function, used for validation of simulations against data.}}{107}{figure.4.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.10}{\ignorespaces The radial component of the electric field near the TPC wall boundary, with and without a particular charge distribution.}}{108}{figure.4.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.11}{\ignorespaces The equipotentials which trace out the cathode excursions. }}{109}{figure.4.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Illustration of the principle of partially transparent grids, taken from Ref. \cite {bunemann_design_1949}.}}{110}{figure.4.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.13}{\ignorespaces The funneling and time delay effect of the woven mesh grid as a function of displacement from the middle of a cell.}}{111}{figure.4.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.14}{\ignorespaces The fraction of charge loss regions near the wall ($R=728\mathrm {\nobreakspace {}mm}$) as a function of drift field.}}{113}{figure.4.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.15}{\ignorespaces The results of the estimated charge density on the reconstructed location of LZ PTFE walls.}}{116}{figure.4.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.16}{\ignorespaces The estimated total surface charge accumulated on the TPC walls over time.}}{117}{figure.4.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.17}{\ignorespaces The estimated surface charge density profile for the calibration data.}}{118}{figure.4.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.18}{\ignorespaces The impact of a uniform wall charge on the field lines near the walls. }}{119}{figure.4.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.19}{\ignorespaces The charge loss volume vs uniform charge density.}}{120}{figure.4.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.20}{\ignorespaces Uncorrected S2 areas as a function of drift time with simulated perfect xenon purity. }}{121}{figure.4.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {4.21}{\ignorespaces Electron location scatter plots at the liquid level from grid funneling simulations. }}{122}{figure.4.21}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.1}{\ignorespaces WIMP-nucleon collisional cross section reduction as a result of coherence loss. }}{127}{figure.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.2}{\ignorespaces An example e-train event waveform taken from commissioning data using the LZ event viewer.}}{132}{figure.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.3}{\ignorespaces An example of a split-S1 event seen in the LZ event viewer. }}{133}{figure.5.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Interstellar gas heating limits on contact interactions, figure from Ref. \cite {bhoonah_detecting_2020}.}}{134}{figure.5.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.5}{\ignorespaces The extrapolated single scatter exclusion limits for LZ (orange) and Xenon1T (blue), along with best-case scenario, background free, 100\% acceptance MIMP search for LZ}}{136}{figure.5.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Energy attenuation as a function of incident angle, indicating The overburden or Earth shielding effect on different reduced cross sections.}}{141}{figure.5.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.7}{\ignorespaces An illustration of the geometry involved in the transits of ultramassive dark matter particles through the earth.}}{142}{figure.5.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Earth shielding effect simulations with DMCalc.}}{144}{figure.5.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.9}{\ignorespaces The velocity distribution at surf after the attenuation of earth shielding.}}{146}{figure.5.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.10}{\ignorespaces The reduced cross section scaling of MIMP simulations.}}{147}{figure.5.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.11}{\ignorespaces The analysis efficiency as a function of altitude (angle to the horizon) for the turnaround model $\sigma _{\chi p} = 10^{-30}$\nobreakspace {}cm$^2$.}}{148}{figure.5.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Simulated horizon angles of SHM particles at SURF.}}{149}{figure.5.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.13}{\ignorespaces A simulated multiple scatter colinear even waveform in LUX, made using LUX-BACCARAT.}}{151}{figure.5.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.14}{\ignorespaces Unique reconstructed quantities for multiple scater events, analyzed for the LUX simulations. }}{151}{figure.5.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.15}{\ignorespaces A histogram of simulated MIMP velocities for a model with $\sigma _{\chi p} =10^{-30}$\nobreakspace {}cm$^2$ using LZLAMA.}}{156}{figure.5.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.16}{\ignorespaces A heat map of simulated S1 and S2 areas for the multiple scatter analysis.}}{157}{figure.5.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.17}{\ignorespaces Example reconstructed tracks / individual S2 locations from SR1.}}{157}{figure.5.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.18}{\ignorespaces S1-S2 distributions using various estimates for the vertex counts, indicating the convergence towards the mean value.}}{160}{figure.5.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.19}{\ignorespaces Pulse count predictions using the linear regression model.}}{161}{figure.5.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.20}{\ignorespaces MIMP search cut acceptances as a function of the number of vertices, evaluated on the turnaround model. }}{162}{figure.5.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.21}{\ignorespaces MIMP acceptance relative to the multiplicity requirement of 2+S1s, 2+ S2s as a function of incident velocity and entry/exit points.}}{162}{figure.5.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.22}{\ignorespaces The LZ SR1 MIMP search exclusion limits for $A^4$(left) and contact interactions right. }}{163}{figure.5.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.23}{\ignorespaces LZ SR1 MIMP search exclusion limits plotted alongside the results from competing analyses for $A^4$ SI scaling.}}{164}{figure.5.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {5.24}{\ignorespaces Nugget search results.}}{165}{figure.5.24}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.1}{\ignorespaces WIMP recoil rates generated with DMCalc}}{168}{figure.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Velocity distributions for various dark matter halo models, produced in DMCalc.}}{169}{figure.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Relative modulation amplitudes for WIMP masses of 20 and 50 GeV/c$^2$, as a function of recoil energy, calculated with DMCalc.}}{170}{figure.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Krypton calibration single scatter S1-S2 distribution histogram.}}{175}{figure.6.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Histograms of radial uncertainty from Mercury for Krypton charge loss events as a function of S2 area in the top PMT array. }}{176}{figure.6.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Independent S2 position resolution vs. S2 area scaling models.}}{177}{figure.6.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.7}{\ignorespaces The radial and azimuthal resolution as a function of radius within the TPC, as estimated through the rotated S2 position covariance matrix of $^{83m}$Kr events.}}{178}{figure.6.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Simulations of the gaps in the PTFE walls.}}{180}{figure.6.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.9}{\ignorespaces The S1-only spectrum which results from events near the wall, including the newly simulated PTFE pockets}}{180}{figure.6.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Code evaluation outputs from code profiling programs.}}{182}{figure.6.10}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.1}{\ignorespaces A histogram of total SPE rate preceding S1s in single scatters passing the livetime-impacting data quality cuts}}{187}{figure.7.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.2}{\ignorespaces A 2D histogram of top-bottom asymmetry and S2 area of cathode events within the WS ROI.}}{188}{figure.7.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.3}{\ignorespaces A 2D histogram of S1 and TBA-corrected S1 areas from an SR1 $\alpha $ skim.}}{190}{figure.7.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.4}{\ignorespaces The field fringing background spectrum as predicted by SR1 single scatters with S2$_R>60$\nobreakspace {}cm. }}{191}{figure.7.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.5}{\ignorespaces The isolated S1 spectrum obtained from long random data.}}{193}{figure.7.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.6}{\ignorespaces Isolated S1 rate as a function of the lower bound in \textit {Top}: S1 area, \textit {Bottom}: coincidence threshold, with stacked analysis selection criteria.}}{194}{figure.7.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.7}{\ignorespaces The isolated S1 rate plotted over long timescales.}}{195}{figure.7.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.8}{\ignorespaces A 2D histogram of the maximum channel area vs. S1 area distribution of isolated S1 pulses, taken in the ``long random" mode.}}{198}{figure.7.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.9}{\ignorespaces The drift time independent HSC cut development. Curves are shown for $\text {MaxChannelArea}<S1^{0.4}+1$.}}{199}{figure.7.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.10}{\ignorespaces Maximum channel area ratio vs. drift time histogram for $^{83m}$Kr calibration, with the High Single Channel selection criterion indicated in dashed red.}}{200}{figure.7.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.11}{\ignorespaces A histogram of the individual channel areas for low coincidence HSC and non-HSC pulses.}}{201}{figure.7.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.12}{\ignorespaces Histogram of channel contributions to the HSC pulses. The lower indices before(after) the break at 300 are the top(bottom) array.}}{202}{figure.7.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.13}{\ignorespaces Analytic TBA vs. S1 area calculations, with confidence intervals calculated with several methods, indicated for $\hat {p}=0.5$. }}{204}{figure.7.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.14}{\ignorespaces The TBA-drift time cut efficiencies as a function of S1 pulse area for 3$\sigma $ confidence interval selections.}}{205}{figure.7.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.15}{\ignorespaces S1 shape decision boundaries for the FWHM RQ, as a function of S1 area.}}{206}{figure.7.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.16}{\ignorespaces The S1 shape cut acceptance, as applied to the tritiated methane injection calibration dataset, and the iS1 pulses from Pre-SR1 data.}}{207}{figure.7.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.17}{\ignorespaces Histograms of PMT hit pattern spreads vs top-bottom-asymmetry, presented for top array (left) and bottom array(right), and for HSC pulses (top) and non-HSC pulses (bottom).}}{209}{figure.7.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.18}{\ignorespaces TBA-Area bands for HSC cut failing (left) and passing(right) isolated S1s from the Pre-SR1 dataset.}}{209}{figure.7.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.19}{\ignorespaces Heatmaps of the PMT array hit centroids for isolated S1s from the Pre-SR1 long random acquisition. }}{210}{figure.7.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.20}{\ignorespaces The total chopstitch cut acceptances as a function of corrected S2 area (left) and corrected S1 area (right).}}{214}{figure.7.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.21}{\ignorespaces Chopstitch 1D histograms for corrected S1 and S2 areas, which form the inputs to the outer product which becomes the complete ``accidentals pdf."}}{214}{figure.7.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.22}{\ignorespaces The chopstitch-accidentals pdf, before smoothing. }}{216}{figure.7.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.23}{\ignorespaces The smoothed accidentals PDF, with SR1 data overlaid. }}{217}{figure.7.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.24}{\ignorespaces Single Scatter drift time spectrum in LZ, indicating the difference between physical and unphysical drift times.}}{218}{figure.7.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.25}{\ignorespaces Differential iS1 rates vs corrected S1 area for various datasets over the WIMP search ROI.}}{220}{figure.7.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.26}{\ignorespaces The decay of the isolated S1 rate following particular alterations to the grid voltages.}}{221}{figure.7.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.27}{\ignorespaces Accidentals data isolated S1 distributions during a flare-up.}}{221}{figure.7.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.28}{\ignorespaces Isolated S1 hotspots in two different grid configurations. }}{222}{figure.7.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.29}{\ignorespaces The reweighted S1 spectrum which provides the negative samples for the boosted decision trees.}}{222}{figure.7.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.30}{\ignorespaces Boosting stages for the BDT training.}}{226}{figure.7.30}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.31}{\ignorespaces Receiver-operating characteristic for the pulse shape cuts.}}{227}{figure.7.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.32}{\ignorespaces Event acceptance vs S1 area for the BDT and RF models.}}{227}{figure.7.32}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.33}{\ignorespaces WIMP mass results. A smaller simulated WIMP mass results in more large-area iS1s being removes, as expected.}}{228}{figure.7.33}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.34}{\ignorespaces Scan over simulated WIMP masses for the BDT selection criterion.}}{228}{figure.7.34}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.35}{\ignorespaces Feature importance values for the isolated S1 classifying boosted decision tree.}}{229}{figure.7.35}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {7.36}{\ignorespaces Accidentals single scatter contamination}}{230}{figure.7.36}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.1}{\ignorespaces Paschen-Townsend law / predicted breakdown curves in xenon vs pressure-separation distance.}}{234}{figure.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.2}{\ignorespaces Piping and instrumentation (P\&ID) of the XeBrA experiment.}}{242}{figure.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.3}{\ignorespaces The XeBrA test stand with the OCV in place. }}{243}{figure.8.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.4}{\ignorespaces The XeBrA Rogowski electrodes, in-situ.}}{244}{figure.8.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.5}{\ignorespaces A CAD rendering of the XeBrA ICV cross section.}}{245}{figure.8.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.6}{\ignorespaces A simulated electric field profile for the XeBrA electrodes.}}{246}{figure.8.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.7}{\ignorespaces A typical refrigeration cycle plot in pressure-enthalpy space.}}{247}{figure.8.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.8}{\ignorespaces simulated stressed electrode areas vs. cathode-anode distances for each of the tilts which were estimated from the photogrammetric method. }}{250}{figure.8.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.9}{\ignorespaces The schematic for the XeBrA charge sensing circuit, produced in LTSpice.}}{251}{figure.8.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.10}{\ignorespaces A photograph of the XeBrA purity monitor field cage.}}{253}{figure.8.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.11}{\ignorespaces Three distinct examples of streamers observed using the high speed cameras installed in XeBrA.}}{255}{figure.8.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.12}{\ignorespaces An example time series of measurements during of a subcooling cycle in Run 7. }}{259}{figure.8.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.13}{\ignorespaces The distribution of the time differences between breakdowns and their associated discrete voltage steps. }}{263}{figure.8.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.14}{\ignorespaces An analytical example of combining two hazard functions.}}{265}{figure.8.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.15}{\ignorespaces High voltage power supply voltage vs. time, with the identified breakdowns for a representative dataset}}{266}{figure.8.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.16}{\ignorespaces An example of a breakdown distribution from a dataset that strongly favors a two component, three-parameter Weibull PDF }}{267}{figure.8.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.17}{\ignorespaces Various categories of event acquisitions waveforms in XeBrA.}}{270}{figure.8.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.18}{\ignorespaces The results of the dechirping procedure on a typical anode signal event waveform.}}{271}{figure.8.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.19}{\ignorespaces The stressed electrode area scaling relationship inferred from XeBrA.}}{271}{figure.8.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.20}{\ignorespaces XeBrA pressure scan data. }}{272}{figure.8.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.21}{\ignorespaces XeBrA estimated breakdown voltages vs. ramp rate scan results.}}{273}{figure.8.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.22}{\ignorespaces Fowler-Nordheim plots from a run of XeBrA.}}{276}{figure.8.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.23}{\ignorespaces Pulse rate evolution over the courase of a single ramp.}}{278}{figure.8.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.24}{\ignorespaces A precursor event window. Dotted lines indicate locations of identified pulses.}}{279}{figure.8.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.25}{\ignorespaces Distributions of anode current preceding a breakdown for different parameter scans in Run 10, over time.}}{280}{figure.8.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.26}{\ignorespaces Comparison of anode current and SiPM rate in the 30 seconds preceding a breakdown between Runs 9 (orange, mechanically polished electrodes) and Run 10 (blue, passivated electrodes).}}{281}{figure.8.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.27}{\ignorespaces Pulse height distribution for Run 9, demonstrating frequent DAQ saturation. }}{282}{figure.8.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.28}{\ignorespaces Average current between 30\nobreakspace {}s and 120\nobreakspace {}s from the beginning of the HV ramps for each breakdown in Run 9. }}{282}{figure.8.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.29}{\ignorespaces Anode pulse Rate vs. stressed electrode area over several runs.}}{283}{figure.8.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.30}{\ignorespaces A representative PMT ramp and hold pattern.}}{283}{figure.8.30}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.31}{\ignorespaces A series of high-framerate photographs of a breakdown containing two apparent discharges. Four frames are shown in sequential}}{285}{figure.8.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {8.32}{\ignorespaces The XeBrA electrodes after hundreds of breakdowns, showing damage in the form of white pits. }}{286}{figure.8.32}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}

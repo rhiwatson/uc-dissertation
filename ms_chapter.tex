@@ -1,0 +1,1273 @@
+\chapter{Multiple Scatter Dark Matter Search}
+\label{chap:tracks}
+\section{Introduction}
+
+The typical WIMP-nucleon differential recoil rate approaches a value proportional to the ratio of the WIMP-nucleon cross section and the WIMP mass, $\sigma_{\chi p}/m_\chi$, when the WIMP mass greatly exceeds the target mass:$m_\chi >> M_T$.
+Limits in this regime are determined by the exposure and acceptance of the respective experiments (see Eq. \ref{eq:wimpscattering}).
+For xenon, this approximation becomes valid beyond about $m_\chi \sim $100~GeV/c$^2$, and is observed in Fig. \ref{fig:sr1_limit}.
+Beyond the unitarity limit of $\mathcal{O}(100)$ TeV, however, the maximum allowable WIMP annihilation cross section is insufficient to explain the observed relic density\cite{griest_unitarity_1990}.
+This necessitates the introduction of theories which relax the assumptions of thermal relic WIMP theory, such as initial thermal equilibrium\cite{kolb_wimpzillas_1998}, weak interactions\cite{hochberg_simp_2022, harris_snowmass_2022}, CP conservation\cite{petraki_review_2013}, or pointlike particles\cite{gresham_astrophysical_2018}.
+Under such a theory, it becomes possible for an experiment such as LZ to set exclusion limits up to  the Planck Mass.
+In this ultrahigh mass regime, the analysis techniques used for the~GeV-scale WIMPs must be re-examined.
+
+The main limiting factor for the largest masses that an experiment can probe is set by the particle flux.
+At $m_\chi=40$~GeV/c$^2$ (where most LXe experiments such as LZ\cite{aalbers_first_2022}, PANDAX-4T\cite{meng_dark_2021}, and XENON1T\cite{xenon_collaboration_7_dark_2018,the_xenon_collaboration_projected_2020} set the tightest constraints on $\sigma_p$), there are frequent transits of dark matter particles through the TPC, but these transits  rarely result in detectable nuclear recoils due to the large mean free path.
+As $m_\chi$ grows, the upper limit on $\sigma_p$ increases and the flux of dark matter decreases, leading to an inverted situation where transits become infrequent, but each transit regularly results in a detectable nuclear recoil.
+Eventually we transition to a regime where only $\mathcal{O}(1)$ transits occur over the lifetime of an experiment, but those transits result in, on average, \textit{many} energy deposits each.
+This violates one of the central assumptions of the traditional WIMP search: that dark matter events are singular nuclear recoils.
+Much of the background discrimination comes from the ability to distinguish single vs. multiple scatters, which necessitates new methods to achieve a low background search.
+
+Several limits exist on ultrahigh mass, multiply scattering dark matter, in a variety of media. 
+Recently, DEAP-3600 set limits on dark matter models exceeding the Planck mass\cite{lai_planck_2021}.
+In this chapter I detail the extension of LZ SR1 WIMP search for ultrahigh mass dark matter with a multiple scatter event topology.
+My most significant contributions to this analysis was in the area of the simulations.
+I also made, consulted on, and developed a subset of the analysis criterion, and performed code refactoring as required.
+
+
+\section{Models}
+\subsection{Composite Asymmetric Dark Matter}
+In the typical WIMP paradigm, dark matter is  a fermion which annihilates with its anti-particle (which, if dark matter is Majorana, is the same particle) to achieve the correct relic density today.
+It is assumed that  $\chi$ and $\bar{\chi}$ are produced in equal amounts. 
+However, since the baryonic and non-baryonic matter densities are the same order of magnitude, $\Omega_{\chi} \sim 5 \times \Omega_b$\cite{planck_collaboration_planck_2020}, this leads to the interesting possibility that the two densities could be related, with perhaps $n_\chi \approx n_b \rightarrow m_\chi \approx 5 \times m_b$.
+
+The matter-antimatter asymmetry in the universe is currently unexplained.
+Three basic conditions must be met in order for baryogenesis to occur:
+\begin{enumerate}
+    \item Baryon number (B) violation: it must be possible for an interaction vertex to change the $B$ number.
+    \item C and CP violation: baryons must be distinct in the theory from anti-baryons, otherwise the B-violating processes would still alter $B$ and $\bar{B}$ at identical rates.
+    \item Out-of-equilibrium interactions: With the previous two conditions met, the comoving baryon number density $n_b$ evolves over time.
+    However, while in thermal equilibrium the production and destruction of baryons occur at equal rates.
+    A departure from thermal equilibrium is necessary in order to overproduce baryons. 
+\end{enumerate}
+
+Together, these requirements are known as the Sakharov conditions\cite{sakharov_violation_1967}. 
+In asymmetric models of dark matter, there exists a dark sector consisting of dark baryons, which couples to the standard model (SM) through some unknown portal.
+The initial asymmetry is produced in either the SM baryons, the dark sector, or both.
+The asymmetry is then communicated to the other sector through the portal.
+Afterwards, the symmetric portion of both fields annihilates away, leaving only the asymmetric portions.
+Because the density of the symmetric portion is lower than the total density, a slightly larger annihilation cross section is required \cite{petraki_review_2013}, by small factor given by
+
+\begin{equation}
+    \frac{m_{\chi}}{m_p} \frac{\eta(\chi)/q_\chi}{\eta(b)} = \frac{1-r_\infty}{1+r_\infty}\frac{\Omega_\chi}{\Omega_b},
+\end{equation}
+\noindent
+ where $\eta = (n_b -\bar{n_b})/n_\gamma$ is the asymmetry of the species relative to the photon density, $q_\chi$ is the baryon number of the DM, $m_\chi$ and $m_p$ are the DM an proton masses, respectively, $\Omega_\chi$ and $\Omega_b$ are the fractions of the critical density made up of DM and baryons, and $r_\infty = \bar{n_\chi} / n_\chi$ is the fractional frozen out asymmetry. 
+
+Since the frozen-out portion of the dark matter is protected against further self-annihilation, the dark baryons may form bound states, held together by a mediator within the dark sector.
+This effectively decouples the theoretical problem of achieving the correct dark matter density from the mass of the dark matter state itself.
+Therefore, the unitarity bound no longer applies, and the bound state can achieve arbitrarily high masses, perhaps up to the Planck mass (above which the particle number flux becomes negligible for current generation detectors).
+
+The interactions are generally considered as a result of scalar and vector interactions, analogous to  the pions and vector mesons which carry the residual strong nuclear force.
+The Lagrangian is given by\cite{gresham_nuclear_2017}:
+
+\begin{equation}
+    \mathcal{L} = \bar \chi [i \gamma^\mu \partial_\mu - g_V \gamma^\mu V_\mu - (m_\chi - g_\phi \phi)] \chi + \frac{1}{2}[(\partial \phi )^2 - m_\phi^2 \phi^2 - V(\phi)] - \frac{1}{4} V_{\mu \nu} V^{\mu \nu} + \frac{1}{2} m_V^2 V_\mu^2\;,
+    \label{eq:blobs_lagrangian}
+\end{equation}
+\noindent
+where $\chi$ is the DM constituent fermion field, $V$ is a dark vector field, and $\phi$ is a dark scalar.
+The attractive force from the $\phi$ coupling must be strong enough to efficiently fuse the dark nucleons into dark baryons, but it need not couple strongly to the SM.
+In general the mediator or portal need not be the same field $\phi$ which binds the nuclear state\cite{coskuner_direct_2019}, though it is possible that the $V\mu$ kinetically mixes with the SM photon, as in dark photon theories\cite{essig_dark_2013}.
+
+The formation and detection mechanisms of such bound states is explored in Refs. \cite{coskuner_direct_2019,gresham_astrophysical_2018}.
+There, the authors assume, based on nuclear physics, that bound states of sufficiently high dark baryon number enter into a state of constant density as a function of radius, known as saturation.
+Using a model incorporating both scalar and vector mediators (similar to nuclear physics, where the scalar mediator is the pion and the vector mediator is the photons coupled to the protons), they further assume that the surface tension on the state is negligible compared to the overall mass.
+The dark nuclear state can then be parameterized by the mass of the dark nucleon, $m_\chi$, and the reduced mass when taking into account the binding energy, $\bar{m_\chi}$.
+The radius of such a bound state with $N$ dark nucleons is:
+
+\begin{equation}
+    R_\chi = (\frac{9 \pi}{4} \frac{N}{\bar{m_{\chi}}^3})^{1/3}~.
+\end{equation}
+
+In the big bang nucleosynthesis (BBN) scenario, elements up to $A=7$ can be synthesized efficiently. 
+A bottleneck exists such that no stable nuclei exist with $A=5$ or $A=8$, suppressing further nucleosynthesis  along with the Coulomb barrier which grows with $Z$.
+However, there is no \textit{a priori} reason to suspect such a bottleneck with the dark nucleon fusion processes, and therefore dark fusion would have occurred until freeze-out when the reaction rate reaches parity with the Hubble expansion $\Gamma(t) \sim H(t)$.
+In Ref. \cite{gresham_astrophysical_2018}, the bounds on the number of constituents in the bound state $N_\chi$ and $m_\chi$ were explored, finding
+
+\begin{equation}
+    N_\chi \approx 10^{12} (\frac{g_\star(T_{\mathrm syn})}{10})^{3/5} (\frac{1 \mathrm{~GeV}}{\bar{m_\chi}})^{12/5} (\frac{\bar{m}_\chi}{n_{\mathrm sat}})^{4/5} (\frac{T_{ \mathrm syn}}{\bar{m}_\chi})^{9/5},
+\end{equation}
+\noindent
+where $T_{\mathrm syn}$ is the temperature at which the fusion process begins. 
+Self-interaction constraints are also relevant, since the dark nuclei have the potential for strong interactions between each other. 
+However, due to the dependence of $N_\chi$ on $m_\chi$ the self-interacting dark matter(SIDM) limits translate into upper bounds on $N$ (and $m_\chi$).
+These bounds depend on $m_\chi$ and $n_{\mathrm{sat}}$ but are restricted to $m_\chi < 10^{19}$ GeV/c$^2$ in order to avoid both excessive fine-tuning and to maintain the assumption of two-body interactions\cite{gresham_astrophysical_2018}.
+These models are variously referred to in the literature as ``nuggets" or ``blobs." 
+More recent papers adopt the model-agnostic term ``multiply interacting dark matter." 
+One consequence of these models is that the extended radius of the dark matter leads to form factor effects, analogous to that of the target form factor.
+The recoil rate for MIMPs\cite{butcher_can_2017} is modified from the WIMP case\cite{cerdeno_direct_2010} as follows:
+
+  \begin{equation}
+     \frac{dR}{dE_r} = A^2 N_\chi^2 |F_T(q)|^2|F_{\chi}(q)|^2 \sigma_{1 p} \frac{\rho_\chi}{2m_\chi \mu_p^2} \int_{v_{min}(E_r)}^{v_{esc}} f(v) \frac{dv}{v}~.
+     \label{eq:mimpscattering}
+ \end{equation}
+
+There are several possibilities for the mass distribution of the dark matter state, but it is thought that at sufficient number of constituents $N_\chi$, a ``saturation" occurs whereby the density becomes constant:  $n\rightarrow n_{\mathrm sat}$\cite{gresham_nuclear_2017}. 
+For an extended object of constant density and radius $R$, the ``top-hat" form factor is given by 
+ 
+ \begin{equation}
+     F(q) = 3\frac{j_1(qR)}{qR} = 3 \frac{\sin(qR) - qR\cos(qR)}{(qR)^3}~,
+     \label{eq:tophat}
+ \end{equation}
+ \noindent
+ where $j_1$ is the spherical Bessel function of the first kind.
+The $A^2$ coherence term is lost faster as a function of momentum exchange $q$ with the addition of $F_\chi$.
+When $qR\chi $ exceeds the inverse spacing of the dark nucleons, the rate transitions to \textit{incoherent} scattering, which scales with $N_\chi$ and not $N_\chi^2$\cite{coskuner_direct_2019}.
+ Even with the Helm\cite{helm_inelastic_1956} form factor of xenon alone leads to a dependence of the collisional cross section $\sigma_{T\chi}$ on the velocity, as the maximum recoil energy is $E_{r, \mathrm {max}} = rE_\chi \approx 2 m_T v_\chi^2$, where $r \equiv 4 m_\chi m_T / (m_\chi + m_T)^2$, when $m_\chi >> M_T$.
+ This effect is shown in Fig. \ref{fig:coherence}.
+ There, the attenuation of the collisional cross section is shown as a function of velocity, normalized such that $\bar \Sigma(v=0) =1$
+ The collisional cross section is the average of the cross section over scattering angle:
+ \begin{equation}
+     \Sigma (E_\chi) =  \sigma_{\chi p } \frac{\mu_{\chi T}^2}{\mu_{\chi p}^2} A^2 \int_{\sqrt{2 m_T E_{\mathrm{thres}} }}^{\sqrt{ 2 m_T E_\chi}} |F_T (q) |^2 |F_\chi (q)|^2 \frac{q}{m_T}dq~.
+     \label{eq:collisional}
+ \end{equation}
+ 
+ \begin{figure}
+     \centering
+     \includegraphics[width=0.7\textwidth]{Assets/Tracks/ff.pdf}
+     \caption[WIMP-nucleon collisional cross section reduction as a result of coherence loss. ]%
+     {Collisional cross section reduction as a result of coherence loss. The mode of the standard halo model is around 300 km/s, so this effect leads to significantly larger mean free path  than the predictions from pointlike scattering.}
+     \label{fig:coherence}
+ \end{figure}
+ 
+ Composite states may also fuse from bosonic constituents \cite{gresham_astrophysical_2018}, in which case the Pauli exclusion principle no longer forces the radius of the DM state to be large.
+ In this case, the differential cross section is suppressed by the extent of the blob radius $R_\chi = \Lambda_\chi^{-1}$, but there is not a possibility of incoherent scattering as in the fermion case.
+Incoherent scattering refers to the case where the inverse momentum transfer $q^{-1}$ becomes on the scale of the inter-constituent distance of the DM state $\Delta R = \Lambda_\chi^{-1} N_\chi^{-1/3}$.
+The finite size effects are therefore less significant for bosonic dark matter.
+ 
+ The mediator mass could be heavy or light. 
+ The heavy case leads to suppression of $\sigma_T$ by $1/\mu^2$, where $\mu$ is the reduced mediator mass.
+ In the case of a light mediator, \textit{i.e.} $\mu < \min(m_T, m_\chi)$, an additional form factor is used based on long range interactions\cite{coskuner_direct_2019}, given by 
+ \begin{equation}
+     F_{\text{med}}(q) = q_0^2 / q^2 ,
+ \end{equation}
+ \noindent
+ where $q_0$ is an arbitrary scale factor which is absorbed into the per-nucleon cross section.
+ 
+ 
+\subsection{Freeze-in}
+\label{sec:freezein}
+
+Another way to circumvent the unitarity limit for thermal relics is to remove the restriction that the dark matter was initially in thermal equilibrium with the SM plasma.
+Instead, one may stipulate that the dark matter was produced gravitationally, possibly immediately following the inflationary era\cite{kolb_wimpzillas_1998, kolb_superheavy_2017}.
+Other mechanisms include inflaton decay during reheating and Higgs portal interactions\cite{kolb_superheavy_2017}.
+This class of models is referred to as ``freeze-in" models, to contrast the typical ``freeze-out" WIMP paradigm. 
+They never exist in chemical equilibrium, and their abundance increases until the temperature of the bath drops below their mass.
+The particles themselves are frequently referred to as ``WIMPZillas," referring to their large masses compared to the classical WIMP. 
+\begin{align}
+    \mathcal{L}_{\phi} = \frac{\kappa_\phi}{2} \phi^2 \Phi^\dagger \Phi~.
+    % \mathcal{L}_{\psi} = \frac{\kappa_\psi}{2M_{PL}} \psi\psi  \Phi^\dagger \Phi\\
+    % \mathcal{L}_{V} = \frac{\kappa_A}{2} \frac{m^2}{M_{PL}^2} g^{\mu \nu} A_\mu A_\nu \Phi^\dagger \Phi
+\end{align}
+
+When the dark matter is generated through $2SM\rightarrow2DM$ pair production from SM particles, the production primarily occurs at the temperature of the more massive particle \cite{hambye_direct_2018}, due to Boltzmann suppression $e^{-m/T}$.
+As opposed to freeze-out dark matter, the yield scales proportionally to the interaction cross section, rather than inversely proportionally. 
+The Higgs-portal based model used in Ref. \cite{kolb_superheavy_2017} parameterizes the density in terms of the Hubble constant at the end of inflation, $H_e$, and the temperature at the start of radiation domination (reheating), $T_{RH}$.
+The number density of dark matter, $n_\chi$, is a model-dependent quantity which generally scales with  $T_{RH}^{-n_\chi}$, where $n_\chi>0$.
+Both $H_e$ and $T_{RH}$ have well-motivated theoretical upper limits, and therefore $m_\chi$ can not be arbitrarily large in these models. 
+In general, for both fermionic and bosonic WIMPzillas, $m_\chi< 10^{16} \mathrm{~GeV}/c^2$ in order to achieve the desired density\cite{kolb_superheavy_2017}:
+% \begin{equation}
+%     \Omega_\chi h^2  = (0.12 \times 10^{7}) (\frac{H_e}{10^{13} \mathrm{~GeV}})^2 (\frac{T_RH}{10^9 \mathrm{~GeV}})(\frac{m}{H_e})(\frac{a^3n}{a_e^3 H_e^3})
+% \end{equation}
+The choice of model (i.e the spin of the particle) affects the comoving number density.
+This production mechanism can accommodate dark matter masses up to $m_{DM}\sim 10^{15} \mathrm{~GeV}$, with the main limitation being constraints on the value of the reheating temperature $T_{RH}$.
+
+In models where the WIMPzilla is produced via inflaton decay, the density is again proportional to the cross section\cite{kolb_wimpzillas_1998}:
+\begin{equation}
+    \Omega_\chi h^2 = m_\chi ^2 \langle \sigma v \rangle  (\frac{g_*}{200})^{-3/2})(\frac{2000 T_{RH}}{m_\chi})^7,
+\end{equation}
+\noindent
+ where $g_*$ is the number of relativistic degrees of freedom
+This mechanism also allows masses up to $10^{15}$~GeV.
+Due to flux limitations, as well as the typical assumption of feeble SM couplings, these models have not traditionally been converted to direct detection limits, but rather explored in the context of indirect detection.
+The decay of supermassive dark matter would produce extremely energetic cosmic rays. 
+The Pierre Auger Observatory recently set limits on the dark matter lifetime in the range of $10^{14}-10^{16}$~GeV resulting from their non-observation of events above $10^{11.3}$~GeV\cite{alcantara_hunting_2019}.
+
+\subsection{SIMPs}
+\label{sec:simps}
+
+Multiple scattering dark matter necessarily has large SM cross sections, which may suggest a large self cross section, as well.
+An alternative to the typical $2\rightarrow 2$ freezeout mechanism is a number-changing interaction $3\rightarrow 2$, whereby a DM particle must meet two others in order to annihilate into two resulting DM states.
+This is known as ``Strongly Interacting Dark Matter", or SIMPs\cite{bernal_wimp_2015, hochberg_simp_2022} as a result of the suggestive mass scale analogous to WIMP dark matter models.
+The Boltzmann equation in this case is slightly different: 
+
+\begin{equation}
+    \frac{\partial n}{\partial t} + 3Hn = -\langle \sigma v^2\rangle (n^3 - n^2 n_{eq}),
+    \label{eq:simp_boltzmann}
+\end{equation}
+\noindent
+which freezes out, just like in the WIMP case, when the reaction rate becomes on the order of the Hubble expansion $\Gamma \approx H$.
+This results in a mass scale\cite{hochberg_simp_2022}:
+
+\begin{equation}
+    M_{\text{SIMP}} \approx \alpha \cdot  (100 \text{~MeV} /c^2),
+\end{equation}
+\noindent
+where $\alpha$ is the effective fine structure constant of these new DM forces.
+For $\alpha \sim \mathcal{O}(1)$, this implies a mass scale around the $\pi_0$ mass of 139~MeV, resulting in the SIMP naming.
+
+This model could be a possibility for light multiply scattering dark matter, but such large values of the reduced cross section $\tilde \sigma = \sigma/M$ lead to significant effect from Earth shielding\cite{albuquerque_direct_2003, kavanagh_earth-scattering_2018}, as discussed in Section \ref{sec:overburden}.
+SIMPs  risk losing too much velocity on their way to the detector and falling below the respective energy thresholds.
+Low-threshold, surface-operated detectors have the highest sensitivity to such models.
+An analysis of CRESST and $\nu$-cleus data\cite{davis_probing_2017} placed exclusion limits on such models up to $\sigma_{\chi p} \sim 10^{-27} \mathrm{~cm}^2$.
+LZ struggles to observe such models due to Earth-shielding and 2~keV threshold, therefore SIMP models are not considered a viable MIMP candidate for this analysis.
+
+\subsection{Quark Nuggets}
+\label{sec:nuggets}
+
+Dark sector models may include analogous versions of SM gauge interactions.
+Dark QCD $SU(3)_D$ leads to interesting phenomena, such as Dark Quark nuggets\cite{bai_dark_2019,witten_cosmic_1984}.
+The dark sector may contain a dark QCD with $N_c$ ``colors" and $N_f$ ``flavors" of dark quarks.
+This sector would experience a first-order phase transition, which in addition to dark baryons may nucleate dark quark states with large baryon number.
+The radius and mass of such states may span from~keV-scale to PeV scale, and is inversely proportional to the temperature of the phase transition $T_c$.
+Probes of such ``macro" dark matter include gravitational wave backgrounds, and X-ray bursts from nugget collisions\cite{bai_dark_2019}.
+SM couplings can result in direct detection signals but introduce model dependence.
+
+
+Other models may lead to macroscopic dark matter, such as superconducting QCD states from axion domain walls\cite{zhitnitsky_nonbaryonic_2003}, 6-quark states \cite{bai_six_2018}, or Z(3) domain wall collapse\cite{atreya_reviving_2014}.
+These models explored in limits set using tracks in ancient mica and Skylab\cite{jacobs_macro_2015}.
+
+
+
+\section{Backgrounds}
+
+While the WIMP search benefits from the extremely low single scatter background in the fiducial volume of LZ, the MIMP search is vulnerable to background sources which produce multiple scatters.
+These backgrounds require additional attention.
+
+\begin{enumerate}
+    \item \textbf{Bismuth-Polonium coincidences}. The $^{214}$Bi isotope $\beta$-decays into a $^{214}$Po nucleus with a 3.27~MeV Q-value. This is followed by the 7.833~MeV $\alpha$-decay of the $^{214}$Po into $^{210}$Pb.
+    The half like of the $^{214}$Po decay is 162.3 $\mu$s\cite{be_table_2016}, placing it within the range of the TPC drift length.
+    A MIMP search which extends down to double scatters would in principle observe such events as background. 
+    However, the high energy $\alpha$ far exceeds the energy of any nuclear recoil which may result from a WIMP.
+    Additionally,the deposits are in the same physical location, which allows for analysis to remove them based on subtended length in the detector.
+    
+    \item \textbf{Gammas}: Gamma ray photons may Compton scatter several times before being absorbed completely. 
+    Compton scattering is the dominant form of energy loss between 3 and 6~MeV\cite{berger_xcom_2010}, with a mean free path of $\sim$12~cm at 3~MeV.
+    While electron recoils can be distinguished from nuclear recoils based on S2 / S1 ratio, at low energy recombination fluctuations result in ERs being reconstructed as NRs more frequently (see Fig. \ref{fig:recoil_bands}).
+    As a result, the summed S1 and S2 signals for gamma rays are more NR-like than single scatters of the same total energy.
+    The angular distribution is predicted by the \textit{Klein-Nishina} formula\cite{klein_uber_1929}:
+    
+    \begin{equation}
+        \frac{d \sigma}{d \Omega} = \frac{\alpha^2}{2} (\frac{\omega ' }{\omega})^2 [\frac{\omega ' }{\omega} + \frac{\omega }{\omega'} - \sin^2 \theta]\;,
+    \end{equation}
+    \noindent
+    where $\omega$($\omega '$) is the incoming (outgoing) photon frequency, $\alpha \approx 1/137.04$ is the fine structure constant, and $\theta$ is the scattering angle of the photon.
+    Large deflection angles may accumulate over many scatters, making colinear tracks unlikely.
+    As MIMPs are deflected by angles $\Delta \theta \sim m_T/m_\chi$, the signal tracks are more likely to lie along a single line subtending the detector.
+    
+    \item \textbf{Muons}: A minimally ionizing muon at 226~MeV has a $\langle dE / dx\rangle = 3.58$~MeV/cm, depositing enormous energy into the detector.
+    The resulting events have upwards of $10^8$ TPC photons, and this quantity of light typically causes the detector to have an extremely high single photon rate for several seconds afterwards.
+    Minimally ionizing muons, aside from their high energy, can be detected by coincidences with the OD veto detector.
+    
+    \item \textbf{Electron Trains}: Following large S2s, an elevated rate of single electrons and single photoelectrons is observed over the course of  tens of  milliseconds, shown in Fig \ref{fig:etrain}.
+    These can mimic the appearance of MIMPs due to the fact that they contain many S1s and S2s.
+    However, certain features make these not all that challenging to remove from the analysis. 
+    For instance, proximity to large S2s can predict the decay of e-trains, affording the use of an ``e-train veto" precluding these time periods from further analysis.
+    Occasionally, the e-train veto fails, as is the case with so-called ``ghost muons" which are not tagged as a muon event for unknown reasons.
+    Even in the case of such failures, these e-train events have prominent S2s of relatively uniform size which appear evenly distributed throughout the event window.
+    As MIMPs have S2s which are at most separated by one full drift length, e-trains do not constitute a pernicious background.
+    Additionally, e-train events frequently have S2s in the pre-trigger window, and have buffers which are not active at the start of the event, due to the activity of the previous event window carrying over.
+    These qualities make them easier to remove.
+    
+    \item \textbf{Neutrons}. Much like Compton scatters, Neutrons constitute a multiple scatter background, but are additionally concerning due to them being, by definition, multiple nuclear recoils.
+    Neutron scatters usually have nearly isotropic scattering angles due to elastic scattering off xenon nuclei.
+    
+    \begin{equation}
+        \frac{d \sigma}{d \cos \theta_{\text{lab}}} = \frac{d \sigma}{d \cos \theta_{\mathrm{~cm}}} \frac{d \cos \theta_{\mathrm{~cm}}}{d \cos \theta_{\text{lab}}} \approx \frac{1}{\cos \theta_{\text{lab}} - A^{-1}}~.
+    \end{equation}
+    \noindent
+    The approximation is valid when $\cos_\theta >>A^{-1}$.
+    Supplementary to the non-colinearity, neutrons can be captured on the Gd in the OD, which results in a series of detectable gamma rays.
+    Tagging OD pulses allows for efficient rejection of neutrons.
+    
+    \item \textbf{Pileup} of single scatters. Perhaps the most difficult to detect, this background consists of two true single scatters piling up, with one scatter occuring during the drift length of the other.
+    In principle this should occur as frequently as the accidental rate, with approximately one event in SR1.
+    Three or more scatters should entirely eliminate this background.
+    In this analysis this background is partially mitigated by requiring the time difference between S1s and S2s to be consistent with standard halo model velocities.
+    In addition, since the single scatter background is concentrated along the edge of the TPC volume, fiducializing away from the boundary will further mitigate the background.
+    We require a certain number of scatters (but not all) to occur in the fiducial volume, which reduces the change of pileup events appearing like a MIMP.
+    \item \textbf{Split S1s}.
+    Cerenkov photons tend to have a longer tail than scintillation photons.
+    This will occasionally lead to the pulses being split apart, like in Fig. \ref{fig:split_s1}.
+    This is challenging to deal with without introducing too many restrictions on the pulse shape, which is undesirable since pulse merging must be assumed.
+    However, it was observed that these split S1s are also frequently ``high single channel" events, with more light concentrated in one PMT than expected from combinatorics. 
+    Removing events with such pulses based on cuts developed in Chapter \ref{chap:accidental} successfully mitigates this background.
+\end{enumerate}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/Tracks/ETrain.png}
+    \caption[An example e-train event waveform taken from commissioning data using the LZ event viewer.]%
+    {An example e-train event waveform taken from commissioning data using the LZ event viewer.
+    At this point in time, the pre-trigger window was 1.5~ms and the post-trigger window was 2.5~ms.
+    Note the S2s which subtend multiple ms, along with the fact that the S2s begin not at the trigger (t=0), but at the beginning of the event window.
+    S1s and SEs appear in the latter portion of the window.
+    }
+    \label{fig:etrain}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{Assets/Tracks/SplitS1_Zoomin.png}\\
+        \includegraphics[width=0.95\textwidth]{Assets/Tracks/SplitS1_Zoomout.png}
+
+    \caption[An example of a split-S1 event seen in the LZ event viewer. ]%
+    {An example of a split-S1 event seen in the LZ event viewer. 
+    The S1 pulse has a longer-than-average tail, leading to three consecutive pulses identified by the pulse finding software.
+    There were actually multiple S2s, suggesting the possibility of a $\gamma$-ray as a source.}
+    \label{fig:split_s1}
+\end{figure}
+
+\section{Upper Bounds}
+\label{sec:mimp_upper}
+
+One may ask how far into parameter space could a TPC even conceptually probe.
+Due to the low particle number fluxes involved, large integrated areas or long timescales are required.
+On the mass frontier the models and their limits start to transfer to MACHO-like limits, and in any case require unrealistic integration times.
+For the cross section frontier, several interesting astrophysical constraints exist.
+
+White dwarfs are stable on long time scales, kept in equilibrium by electron degeneracy pressure. If, however, they absorb dark matter at a high enough rate, a white dwarf may either heat to the point of igniting into a supernova type Ia, or collapse into a black hole.
+The existence of a 3~Gyr old white dwarf places a constraint of $m_\chi>10^{15}$~GeV/c$^2$ at the cross section where LZ becomes opaque to dark matter($\sigma_{\chi p}\approx 10^{-30}$~cm$^2$)\cite{acevedo_supernovae_2019}.
+
+Interstellar gas clouds are another category that have been explored.
+Their immense size and mass leads to the possibility for frequent scatter with dark matter particles, if those particles have large SM couplings.
+The fact that these clouds have been observed with temperatures $\mathcal{O}$(100)K allow limits to be set, as seen in Fig. \ref{fig:gas_clouds}\cite{bhoonah_detecting_2020}.
+
+Instead of looking at large areas, one can search over long timescales instead.
+Ancient mica crystals can be damaged by particle tracks over time, and this fact has been used to set limits on magnetic monopoles\cite{price_search_1986}.
+These limits can be interpreted as limits on the dark matter tracks, and the much higher energy threshold is compensated for by the GYr exposure.
+The upper limit on cross section was found to be\cite{bhoonah_detecting_2020}:
+
+\begin{equation}
+    \sigma_{\chi p} < 10^{-15} \mathrm{~cm}^2 \;(\frac{m_\chi}{10^{15} \mathrm{~GeV}})~,
+    \label{eq:mica}
+\end{equation}
+\noindent
+above a threshold of $\sigma_{\chi p}>4\times 10^{18}$~cm$^2$.
+All of these limits, save the white dwarf supernovae limit, are far beyond the regime that LZ is sensitive to without performing advanced pulse-shape analysis.
+A particular design choice which is beneficial to high-cross section searches is using modular detectors.
+In TPCs, large cross sections appear as an extended pulse of light, requiring a more sophisticated treatment of the waveform analysis, especially when it comes to saturation and position reconstruction.
+Modular experiments can detect depositions in each of their independent detectors, effectively removing the upper bound on cross section while still leveraging the colinearity of the DM tracks.
+Experiments such as DAMA\cite{bernabei_extended_1999}, the MAJORANA Demonstrator\cite{clark_direct_2020}, XENON1T\cite{xenon_collaboration_7_dark_2018}, and an EJ-301 liquid scintillator experiment at the University of Chicago \cite{cappiello_new_2021} have performed such analysis.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/Tracks/GasCloud.png}
+    \caption[Interstellar gas heating limits on contact interactions, figure from Ref. \cite{bhoonah_detecting_2020}.]%
+    {
+    Interstellar gas heating limits on contact interactions, figure from Ref. \cite{bhoonah_detecting_2020}.
+    The $y$-axis is the DM-\textit{nucleus} cross section, and the $x$-axis is the mass of the DM state.
+    The ``nucleon size" indicates a typical geometric cross section of a target nucleus ($1\mathrm{~fm}^2$ $\approx 10^{-26}\mathrm{~cm}^2$).
+    Assorted other limits are shown, such as those using ancient mica\cite{price_search_1986}, the 2017 CRESST surface run\cite{davis_probing_2017}, DAMA\cite{bernabei_dark_2021}, and a modular liquid scintillator detector at the U. of Chicago \cite{cappiello_new_2021}.
+    }
+    \label{fig:gas_clouds}
+\end{figure}
+
+\section{Projected Limits}
+\label{sec:projected_limits}
+Before selection criteria development and Monte Carlo simulation, an analytic, background-free limit was calculated as a best case scenario.
+A Feldman-Cousins\cite{feldman_unified_1998} upper limit was calculated from the  flux, excluding models predicting more than 2.44 events in the SR1 exposure (60 live days\cite{aalbers_first_2022}).
+The limits are double valued for a given $M_\chi$ in general, due to the fact that the Poisson probability increases a maximum at $N=\lambda$ before decreasing.
+Because of this, I calculate the maximum excluded MIMP mass as a function of the cross section.
+This is done by calculating the flux of detected MIMPs at a given mass and cross section $\Phi(\sigma_i, M_0)$, through the surface area $S$, over the livetime $T_{\text{SR1}}$ and scaling to find the required mass:
+\begin{equation}
+    M_i \geq \frac{2.44 M_0 }{T_{\text{SR1}}S  \Phi (\sigma_i, M_0)} ~.
+\end{equation}
+\noindent
+The differential flux of \textit{transiting particles} of a given velocity is given by:
+
+\begin{equation}
+    \frac{d \phi}{d v} = \frac{\rho_\chi}{m_\chi}v f(v) ~.
+\end{equation}
+
+To calculate the flux of events, the expected number of scatters is calculated as $\lambda = \sigma(v) \bar l$, where $\bar l$ is the average chord length.
+Cauchy's theorem\cite{reuss_cauchys_2018} provides a value of the average chord length of a convex shape:
+
+\begin{equation}
+    \bar l = 4 \frac V S~,
+\end{equation}
+
+where $V$ is the volume and $S$ is the surface area of the object.
+The ratio of volume to surface area can be understood from dimensional analysis, while the pre-factor of 4 is a result of integration over the incident normal angles.
+For a square cylinder $h=2r$ this gives $\bar l = 1.5 r$.
+The probability of finding a transit with exactly $N$ scatters is given by the Poisson probability: 
+
+\begin{align}
+    \lambda = \mu^{-1} \equiv   \sigma \bar l n_T\\
+    P(N; \lambda) = \frac{\lambda^N \exp (- \lambda)}{N!},
+\end{align}
+\noindent
+where $\mu$ is the mean free path.
+The final step is to integrate the velocity distribution over the surface elements $\vec v \cdot \hat n = v \cos \theta$.
+Integrating over the incoming hemisphere gives $ \frac{1}{2}\int_0^1 \cos \theta d cos \theta = \frac{1}{4}$.
+The result is then 
+\begin{equation}
+    \Phi_N = \frac{\rho_\chi S}{4 m_\chi} \int_{v_{min}}^{v_{max}}  \frac{\lambda^N e^{- \lambda }}{N!}  v f(v) dv 
+\end{equation}
+\noindent
+Note that this is a generalization of the usual single scatter result.
+Plugging in $N=1$ to find the probability of single scatters, and the average chord length, the volume-scaling result is recovered: 
+
+\begin{equation}
+    \Phi_1 \approx  \frac{\rho_\chi}{ m_\chi} Vn_T \int_{v_{min}}^{v_{max}} \sigma(v)   v f(v) dv 
+\end{equation}
+\noindent
+Note that in the typical $\log \sigma_{\chi p}$ vs. $\log m_\chi$ limit plot, the upper limit from below is given by $\sigma \propto m_\chi^{1/N_{\mathrm{min}}}$, where $N_{\mathrm {min}}$ is the minimum number of scatters necessary to be observed in the MIMP analysis.
+I also extrapolate the single scatter results from the SR1 WIMP search exclusion limit\cite{aalbers_first_2022}.
+SR1 is neither background free nor a Feldman-Cousins limit, but in the high mass regime where the spectrum is independent of mass, one can calculate an effective 90\% CL upper limit on the expected number of signal events.
+In essence this modifies the 2.44 number from FC.
+Taking the fiducial volume, SR1 exposure, and limit calculated at $M=10$ TeV/$c^2$, I extrapolate the SR1 single scatter limit to $10^{17}$~GeV/c$^2$, shown in Fig. \ref{fig:mimp_projected}.
+I do the same for Xenon1T, matching the area and average chord length of their unique fiducial volume shape\cite{xenon_collaboration_7_dark_2018}, which is a cylinder with cutoffs near the corners.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/Projected_Limits.pdf}
+    \caption[The extrapolated single scatter exclusion limits for LZ (orange) and Xenon1T (blue), along with best-case scenario, background free, 100\% acceptance MIMP search for LZ]%
+    {The extrapolated single scatter exclusion limits for LZ (orange) and Xenon1T (blue), along with best-case scenario, background free, 100\% acceptance MIMP search for LZ (green; solid is assuming sensitivity to 3-10 scatters, dotted is 2-100).
+    Note the general features of the MIMP search: it pushes to higher masses than the single scatter search, the minimum number of scatters modifies the slope of the upper limit, and the maximum number of scatters extends the cross section higher.
+    In this space the effect of overburden is negligible\cite{bramante_saturated_2018,clark_direct_2020}.
+    }
+    \label{fig:mimp_projected}
+\end{figure}
+
+\afterpage{\FloatBarrier}
+\section{Simulation}
+\label{sec:mimp_sims}
+\subsection {Monte Carlo}
+In order to estimate the selection criteria efficiencies, the multiply scattering events were simulated for the LZ detector.
+The intention was to observe the effect of certain pulse-based cuts on the spectra when the WIMP calculation is unfolded.
+In particular, it was necessary to see how frequently certain pulses merge together, confusing the search for multiple S1s and S2s.
+
+Isotropic spectra are frequently simulated as initiating from a large hemisphere of radius much greater than that of the detector scale, and randomly sampled velocity vector.
+However, this method results in many simulated events which are not transits, and it was desired to save computing resources by only simulating true transits across the TPC.
+As such, the Monte Carlo sampling proceeded in the following steps:
+\begin{enumerate}
+    \item Sample $\vec{x}_0$, the initial starting point, from the surface of the TPC.
+    \item Sample the angle relative to the normal, $\cos \theta = \vec{v} \cdot \hat{n}$. 
+    This can be sampled using the inverse CDF, by sampling $x \in [0,1]$, and transforming to $\cos \theta = \sqrt{x}$.
+    The correct flux normalization then requires division by 4.
+    \item Sample the speed (equivalently, kinetic energy) of the incoming particle. This is taken from the first moment of the velocity distribution (the SHM\cite{mccabe_earths_2014} or SHM++\cite{evans_refinement_2019}). In the LZLAMA (see Chapter \ref{chap:sims}.) simulation software, it is possible to sample the velocity using the inverse CDF method, or to simply weight the flux by the velocity probability distribution function.
+    \item If overburden(see Section \ref{sec:overburden}, \cite{bramante_saturated_2018}) is being simulated, attenuate the incoming speed of the particle according to Eq \ref{eq:overburden}. 
+    This is a function of the angle relative to the Earth's surface $\theta_E$, and the value of $\sigma/M$. Downgoing trajectories are generally not heavily attenuated until $\sigma/M$ is several orders of magnitude larger than the values which completely attenuate upgoing trajectories.
+    \item Track the trajectory of the particle through the detector.
+    The deflection along the path is assumed to be negligible due to the large difference in masses. 
+    The interaction length $l_i$ is calculated at the start. Each deposit is generated a distance $d \in \exp(-x/l_i)$ from the previous deposit, where $x$ is sampled from a uniform distribution.
+    The recoil energy is then sampled from the form-factor distribution in energy space:
+    
+    \begin{equation}
+        P(E_r < E) = \int_0^{\sqrt{2m_TE}}|F(q)|^2 \theta (2m_T v_\chi^2-q^2 /  2 m_T )dq~,
+    \end{equation}
+    \noindent
+    where $q$ is the momentum transfer.
+    \item Simulate the S1, S2, and drift times using NEST\cite{szydagis_nest_2011} and LZLAMA (Chapter \ref{chap:sims}). 
+    The overall procedure for simulation is described in chapter \ref{chap:sims}.
+    The length of the pulses is simulated, and when pulses overlap they are merged with a probability which was tuned to commissioning data taken before the  SR1 WIMP search exposure.
+\end{enumerate}
+
+For maximal post-processing flexibility, the ``uniform sampling" method was utilized, where instead of sampling the velocity distribution with the inverse CDF method, the probability distribution is used to weight the flux.
+Each event then has a weight attached to it, which is proportional to the frequency of transits with those properties in the detector.
+This is distinct from the units used in the single scatter simulations, where the weight is inversely proportional to the exposure, i.e. each weight value is in units of 1/ton/year.
+The flux/weight for each sampled event is given by:
+\begin{equation}
+    w_i = n_\chi S v_i f(v_i) \frac{E_{\mathrm{max}}-E_{\mathrm{min}}}{N_{\text{events}}} (1-\exp(-n_T \sigma_{\chi T} L)),
+\end{equation}
+\noindent
+where $S$ is the surface area of the detector, $N_{\text{events}}$ is the number of simulated events, $f(v_i)$ is the velocity probability distribution function, and $L$ is the transit length.
+The factor at the end corrects for the transits without any deposits, allowing the simulation to only generate transits that could possibly result in scatters inside the TPC.
+Even with this capability, some events do not trigger if certain conditions are met.
+For example, if the transit goes entirely through the RFR, it will not generate an S2, and therefore will not trigger the DAQ.
+
+\subsection{Pulse Merging}
+The pulse merging algorithm is critical for understanding the acceptance of the simulations.
+The S1 and S2 pulses have separate algorithms in the energy-only simulation  which approximate the effect of the pulse finder in LZap (for more details, see Chapter \ref{chap:sims} and Ref \cite{akerib_simulations_2021}.).
+For S1s, a non-deterministic algorithm was developed.
+It calculates a merger probability based on proximity and relative ratio of the S1 areas.
+The map which is used to calculate this was created from $^{83m}$Kr slow chain simulations.
+At a separation of 100ns, S1s will merge with 100\% probability.
+
+In the case of S2s, a deterministic model was used.
+The S2 pulse widths were calculated based on drift times, with a width of $2 \mu s$ at the center of the detector.
+Pulses with overlaps were merged if the edges were overlapping by an amount determined by the ratio of their areas.
+The minimum overlapping time was a tuneable parameter which was adjusted to match the DD neutron calibration data.
+In that case, the success metric was that the distribution of number of reconstructed S2s matched between the two models.
+When pulses are merged, the boundary of the pulse becomes the minimum and maximum of the two original pulse edges, which guarantees transitivity.
+
+\subsection{Contact Interactions}
+\label{sec:contact_interactions}
+In spin-independent (SI) WIMP interactions, the WIMP-\textit{nucleus} scattering cross section $\sigma_{\chi T}$ scales as $A^4$ times the WIMP-\textit{nucleon} cross section $\sigma_{\chi p}$ when $m_\chi >> m_A$.
+This is the result of the coherent sum of the contributions of the nucleons, and the scaling of the reduced mass, both of which contribute a factor of $A^2$.
+% This is part of the reason why xenon is the medium of choice for LZ.
+When considering ultraheavy dark matter, this runs into some theoretical issues.
+Since the 90\% confidence exclusion limit in the ultraheavy limit scales as $\sigma \propto m_\chi$, the WIMP-nucleon cross sections become large as $m_\chi \rightarrow M_{\mathrm{Planck}}$.
+This leads to multiple-scatter events, explored below.
+The cross sections that result in these events happen to coincide with the geometric cross section of xenon, which has important implications.
+
+The normal SI scaling result comes about from the application of the first Born approximation.
+The scattering amplitude is given by :
+
+\begin{equation}
+    f^{(1)} \approx -2 \mu_T \int_0^{r_T} V(r')r'^2 dr'~.
+\end{equation}
+
+This result is valid when the potential is weak enough to not form bound states if $V(r)$ is attractive.
+The scattering cross section can be expanded into partial waves:
+
+\begin{equation}
+    \sigma_{\chi T} = \frac{4 \pi}{k^2} \sum_{l=0}^{\infty} (2l+1) \sin^2(\delta_l),
+\end{equation}
+\noindent
+where $\delta_l$ are the phase shifts. 
+Partial-wave expansion is the result of expanding the incident plane wave into spherical harmonics and solving the Schr{\"o}dinger equation.
+Approximating the nucleus as a sphere of constant potential for $r < r_A$ leads to phase shifts above $\delta_l \approx kr_A$ which are rapidly attenuated.
+For s-wave scattering, it is assumed that the cross section is dominated by the  $l=0$ term, and therefore the value of $\delta_0$.
+This leads to the result that the maximum possible cross section is provided by
+
+\begin{equation}
+    \sigma_{\chi T} = \frac{4 \pi}{k^2} ~.
+\end{equation}
+
+Solving the spherical top-hat potential results in a region of validity for the first Born approximation\cite{digman_not_2019}:
+
+\begin{equation}
+    \sigma_{\chi T}^{(1)} < \frac{16}{9} \pi r_T^2,
+\end{equation}
+\noindent
+where the superindex $(i)$ indicates the order of the Born approximation, here is the first.
+This result is valid in the weak coupling limit, where the first term of the Born expansion is sufficient.
+Stronger couplings $V(x)$ require further terms of the expansion, \textit{i.e.}  $\sigma_{\chi T} \approx \sigma_{\chi T}^{(2)} + \mathcal{O}(|V|^3)$ for the second Born approximation.
+The complete calculation completely saturates at the geometric cross section\cite{digman_not_2019}, $\sigma_{\chi T} < 4 \pi r_A^2$.
+Due to the sharp cutoff in radius, higher partial waves do not allow this limit to be superceded greatly for repulsive potentials.
+Attractive potentials have the ability to form resonances, which can enhance the scattering cross section.
+For xenon (A=131), this saturation occurs above approximately $10^{-24}$~cm$^2$, which translates to  $\sigma_{\chi p}\sim 10^{-33}\mathrm{~cm}^2$.
+
+Somewhat unfortunately the maximal geometric cross section is slightly smaller than the cross section needed for multiple scatters to dominate over single scatters in LZ.
+Since the xenon radius is approximately 5~fm, this occurs when $\bar{l}\sigma_{\chi T}n_T \approx 1$, where $\bar l$ is the the average chord length and $n_T = 6.022 \times 10^{23} \rho_T / A_T$ is the number density of the target, which for LZ equates to $\sigma_{\chi T}=7.87\times 10^{-25}$~cm$^2$.
+
+This result motivates the reporting of two alternate cross section limits.
+The spin independent $A^4$ scaling limits are to be shown alongside the ``contact" interactions, where the per-nucleus limits are calculated.
+This has been done for Majorana\cite{clark_direct_2020} and DEAP-3600\cite{lai_planck_2021}. 
+This has minimal effects for the analysis within a particular experiment as long as the detector medium is a single element with isotopes relatively close in $A$.
+The distinction between per-nucleus and per-nucleon limits come into play mostly for comparisons between experiments, where xenon's $A^4$ advantage no longer applies over other media.
+The form factors for each target are still calculated, and lead to suppression of the rate of more energetic recoils.
+
+Contact interactions such as these will greatly impact the overburden curve.
+Since there is no longer a penalty for smaller nuclei, the stopping power now only depends on the density  of blocking matter.
+This means that, while the per-nucleon and per-nucleus limits can be approximately scaled into one another with $A^4$, the overburden lower limits must be recomputed between the two cases.
+
+\subsection{Overburden}
+\label{sec:overburden}
+
+\subsubsection{Attenuation from Earth Shielding}
+
+ For DM masses above a few TeV/c$^2$ and cross sections above $\approx 10^{-31}$, the mean free path through the Earth becomes low enough that transiting dark nuclei can lose a significant amount of kinetic energy before reaching the detector.
+Planck-scale dark matter is sufficiently massive that this is a minor effect, but for masses below $\sim 10^{12} \mathrm{~GeV}$ this overburden effect can attenuate the incident flux below detectable levels.
+The change in velocity when $m_\chi >> M_T$ is given by Eq. \ref{eq:overburden}, where the sum is over the various nuclei\cite{bramante_saturated_2018}. 
+
+\begin{equation}
+    \log(\frac{v_f}{v_i}) = \frac{L}{2} \sum_i n_i \sigma_{i \chi}(v) \log (1- 2\frac{m_i}{m_\chi}) \approx -\frac{2L}{m_\chi}  \sum_i \rho_i \sigma_{i \chi}(v)
+    \label{eq:overburden}
+\end{equation}
+
+With the caveat that the cross section depends on $v$ through the nuclear form factors of the nuclei that the dark nucleus encounters, the attenuation in velocity scales with $v_f \propto v_i \exp(-\sigma/m_\chi)$, which in turn results in a power law in the lower limits curve.
+As pointed out in Ref. \cite{bramante_saturated_2018}, at sufficiently high cross sections, the number of nuclei between the surface an the detector with which to scatter saturates.
+After the cross section exceeds this value, there is no additional cost in terms of velocity attenuation, and therefore the exclusion limits may in principle extend arbitrarily high in $\sigma_{\chi p}$.
+This phenomenon is known as ``saturated overburden scattering"(SOS) and is relevant for analyses sensitive to large number of scatters.
+In practice, the maximum number of scatters considered in an analysis typically causes the exclusion contour to turn around before the SOS threshold is reached. 
+These analysis constraints are set by the fact that excessive amounts of energy deposition in a detector will likely result in an interpretation other than multiply scattering dark matter, e.g. muons or grid discharge.
+
+
+It should be noted that Eq. \ref{eq:overburden} does not take the nuclear form factor into account. 
+A more realistic calculation utilizes the first moment of the nuclear form factor to calculate the expected energy deposition, which is no longer half the kinematic maximum,  $rE_i /2 \approx 2 m_T v_i^2$
+. 
+\begin{align}
+     \log(\frac{v_f}{v_i}) = \frac{L}{2} \sum_i n_i \sigma_{i \chi}(v) \log (1- \frac{\langle E_{ri} \rangle}{E_i})\\
+     \langle E_{ri} \rangle = \frac{1}{E_{r,\text{max}}}\int_0^ {E_{r,\text{max}}} |F_i(q)|^2 E_r dE_r~.
+\end{align}
+
+Additional perturbations occur due to the decrease in the mean free path as the DM transits the Earth, resulting from the various form factors approaching 1 as $v_\chi\rightarrow0$.
+The results are shown in Fig. \ref{fig:overburden_attenuation}, where the attenuation predictably grows with the angle below the horizon, with discontinuities at the major layer transitions.
+Increases to the reduced cross section $\tilde \sigma \equiv \sigma / m_\chi$ results in stronger attention at a given altitude.
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/Tracks/Overburden_PREM_attenuation_300kps.pdf}
+    \caption[Energy attenuation as a function of incident angle, indicating The overburden or Earth shielding effect on different reduced cross sections.]%
+    {Energy attenuation as a function of incident angle, indicating The overburden or Earth shielding effect on different reduced cross sections.
+    Here, a 300~km/s MIMP of mass $10^{17}$~GeV/$c^2$ is simulated with various incident velocity vectors.
+    The $y$-axis indicates the ratio of the incident kinetic energy at the LZ detector at the 4850 ft level of LZ to the kinetic energy at the surface.
+    The altitude of the mantle and core layers are indicated, but there are multiple sub-layers present.
+    The scan is performed over reduced cross section, as the effect of overburden is proportional to $\sigma/m_\chi$ per Eq. \ref{eq:overburden}.
+    Below a reduced cross section of approximately $10^{-7}$~barns/TeV, the upper hemisphere is almost entirely unaffected.}
+    \label{fig:overburden_attenuation}
+\end{figure}
+\subsubsection{ Density profile }
+
+The density profile used for modelling the attenuation of energy is given by the Preliminary Reference Earth Model \cite{dziewonski_preliminary_1981}.
+This provides a profile of the density and atomic composition of each layer of the Earth.
+The densities, additionally, are modelled as piecewise quadratic.
+In order to find the mass subtended by the track on its way to the detector, these quadratic terms must be integrated.
+I use the following terms, some of which are illustrated on Fig. \ref{fig:earth_geometry}:
+
+\begin{itemize}
+    \item $R_\oplus $ = Earth's radius
+    \item $d$ = depth from surface
+    \item $l$ = length along track
+    \item $L$ = total length of the track.
+    \item $\theta$ = angle between track and vertical from detector.
+    \item $\theta ^\prime = \pi - \theta $ = interior angle.
+    \item $\phi$ = angle between track and the Earth's surface normal at the entry point.
+    \item $\theta_e$ = angle between the entry point, the center of the Earth, and the detector
+    \item  $x \equiv R_\oplus - d $
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Assets/Tracks/Earth_geometry.png}
+    \caption[An illustration of the geometry involved in the transits of ultramassive dark matter particles through the earth.]%
+    {An illustration of the geometry involved in the transits of ultramassive dark matter particles through the earth.
+    In this picture the detector is located at the top of the circle at a depth $d$ below the surface.}
+    \label{fig:earth_geometry}
+\end{figure}
+
+Assuming we know $\theta$, $d$, $R_\oplus$, we want to solve for the remaining variables.
+First, we find the  subtended length $L$.
+The Law of Sines states that: 
+
+\begin{align}
+\frac{L}{\sin \theta_e} = \frac{R_\oplus}{\sin \theta^\prime} = \frac{R_\oplus - d}{\sin \phi}
+\end{align}
+\begin{align}
+\sin \phi = \frac{R_\oplus}{R_\oplus - d}\sin \theta \\ 
+\theta_e = \pi - \theta^\prime - \phi = \theta - \phi \\
+L = R_\oplus \frac{\sin (\theta - \phi)} {\sin \theta}
+= R_\oplus \frac{\sin (\theta - \sin^{-1}(\frac{R_\oplus}{R_\oplus - d}\sin \theta) )} {\sin \theta}
+\end{align}
+% (http://www.typnet.net/Essays/EarthGrav.htm)
+The sectional density $N$ (having units mass / area) is given by the integral of the density $n(r)$ along the track.
+
+\begin{align}
+    N = \int_0^L n(r) dl = \int_0^L (a r^2 + b r + c) dl \\
+    r = \sqrt{R_\oplus ^2 + l^2 - 2R_\oplus l \cos \phi}~.
+\end{align}
+
+The constant and quadratic components are:
+
+\begin{align}
+    \int_0^L r^2 dl = \int_0^L (R_\oplus ^2 + l^2 - 2R_\oplus l \cos \phi) dl = R_\oplus^2 L + L^3 /3 - R_\oplus L^2 \cos \phi~.
+\end{align}
+
+The calculation for the linear component is slightly more involved.
+
+\begin{equation}  
+\int r dl = \int dl \sqrt{R_\oplus ^2 + l^2 - 2R_\oplus l \cos \phi} =
+    \int dl \sqrt{(l - R_\oplus \cos \phi)^2 + R_\oplus^2(1- \cos^2 \phi)}~.
+    \end{equation}
+    
+Making the substitutions $  y \equiv l - R_\oplus \cos \phi$, $ a \equiv R_\oplus \sin \phi$ this becomes:
+    \begin{align}
+   \int r dl    =  \int dy \sqrt{y^2 + a^2} \nonumber~,
+   \end{align}
+   which can be solved with a hyperbolic substitution $y \equiv a \sinh u$L
+   
+   \begin{equation}
+   \int r dl    = \frac{1}{2}[a^2   \sinh^{-1}(\frac{y}{a}) + ay \sqrt{1 + y^2/a^2}]
+   \end{equation}~,
+\noindent
+providing an estimate of the projected density along the track, which gives $M=\sigma \rho_S$.
+I assume the composition is uniform along the track to obtain the isotopic fractions.
+Each element has the overburden saturate separately (for $A^4$ scaling, when the DM-nucleus cross sections differ between elements).
+As the particle slows down, the form factor suppression diminishes, which increases the stopping power.
+In order to simulate this second order effect, the cross sections are re-evaluated at each layer interface.
+Additionally, a simplified tracking procedure was implemented, whereby if the predicted attenuation exceeds a factor of two, the layer was subdivided and recalculated.
+The factor of two was chosen so as to only subdivide layers near the point of complete stopping.
+As xenon is larger than most of the elements in the Earth, the velocity dependence of the cross section from the various elements are much less than that of the detector itself.
+The saturated overburden curve, rounded at the corner by the number of isotopes, is shown in Fig. \ref{fig:prem_density}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/PREM.png}
+        \includegraphics[width=0.5\textwidth]{Assets/Tracks/SOS.png}
+    \caption[Earth shielding effect simulations with DMCalc.]%
+    {\textit{Left}:The density profile of the Preliminary Reference Earth  Model (PREM).
+    \textit{Right}: The saturated overburden curves for tracks incident from above and below.
+    These curves are calculated by finding models where the indicent velocity (here $\beta = 10^{-3}$), are attenuated to a velocity where they can no longer result in a 1~keV recoil (this is approximately 20 km/s for lxe).
+    In addition to the additional distance when coming from below, the presence of a dense iron core $A=55$ leads to greater stopping power.}
+    \label{fig:prem_density}
+\end{figure}
+
+\subsubsection {Modified Velocity Distribution}
+
+The Monte Carlo has two stategies for incorporating Earth shielding.
+The method described above is akin to rejection sampling, where a base distribution (the standard halo model\cite{mccabe_earths_2014}) is sampled, then the Earth shielding correction is applied to each particle.
+Another strategy was considered for this purpose, which was to directly calculate the velocity distribution at the detector and sample from this modified distribution.
+This was ultimately not used for the simulations due to increased computation time, but it does provide an intuitive picture of the overburden effect.
+
+The method starts by taking velocities at fixed intervals from 0 to the cutoff of the SHM at 800 km/s. 
+Each of these ``knots" are then transformed according to the overburden model at a specified zenith $\theta$.
+The probability contained between the ``knots" must be conserved.
+A modified probability distribution function is given by the following calculation: 
+
+\begin{align}
+    f(v)dv = g(v^\prime) dv^\prime \\
+    g(v^\prime) = f(v) \frac{dv}{dv^\prime} =\frac { f(v) }{(v \frac{da}{dv} + a)}\;.
+\end{align}
+
+To generically evaluate the Earth shielding, one computes $a= \frac{E_f}{E_i}$ and takes the derivative with respect to incident velocity $v$(this is likely to be done numerically). 
+Imagining a series of velocities $v_n$, which have their attenuations   $a_n$ evaluated.
+The amount of probability in each bin much be conserved under the transformation, so the transformation is given by the following equation:
+
+\begin{align}
+    g(v_n a_n) = f(v_n) \Delta v / (v_{n+1}a_{n+1} - v_n a_n)~.
+\end{align}
+
+If one keeps the above approximations, you can simply evaluate the attenuation at one mass, and safely rescale it to other masses.
+The mass of the DM particle only controls the average energy depletion per scatter.
+Some representative distributions are shown in Fig. \ref{fig:overburden_shm.}.
+
+At large reduced cross sections $\tilde \sigma = \sigma / M$ significant portions of the distribution are mapped to velocities near zero.
+This strains the numerical precision and leads to the possibility that the mapped velocities change orders, which would lead to negative Jacobians or divide-by-zero errors.
+Mapped velocities below the 1~keV$_{\mathrm{NR}}$ threshold in xenon of 20 km/s where placed in an overflow bin, and their probability masses were added to that value.
+The distribution was renormalized so that it would still integrate to 1 when performing the inverse-CDF sampling.
+Another technique to improve performance of the modified distributions was to take the resulting probability mass function, and then interpolate on a uniform spacing to create a new set of points to interpolate for the sampling procedure.
+
+This was not used in the final calculations because for each point it required calculating a new distribution, with new points, each of which required a new attenuation each time.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/overburden_shm.png}
+        \includegraphics[width=0.45\textwidth]{Assets/Tracks/overburden_weighting.png}
+
+    \caption[The velocity distribution at surf after the attenuation of earth shielding.]%
+    {[The velocity distribution at surf after the attenuation of earth shielding.
+    \textit{Left}: Velocity distributions calculated from the SHM in the presence of overburden.
+    Note that for a fixed cross section, decreasing the mass distorts the SHM towards lower velocities. 
+    \textit{Right}: The 2D distribution of velocities, angles for another cross section.
+    The red bar indicates complete stoppage of certain angles.
+    Notice that the upper hemisphere is largely unaffected for this model, but the attenuation gradually increases below the horizon.
+    The horizontal black line denotes the cutoff velocity of 20~km/s.
+    Each horizontal scan is normalized such that the peak value in each vertical strip is 1, so this is not a true probability density function.}
+    \label{fig:overburden_shm.}
+\end{figure}
+
+
+\subsubsection{Reduced Cross Section Scaling}
+
+To incorporate the effect of Earth shielding or overburden on the limits, I calculate several scans over $\sigma$ and $M$ in order to estimate the overall impact on the flux.
+For the xenon turnaround cross section of $\approx 10^{-30}$~cm$^2$, the overburden effect is negligible, so scan over cross section of a fixed mass was performed.
+The grid scan for overburden was performed at a specific location in parameter space where multiple scatters still dominate single scatters, but the overburden effect is small enough to still allow signal through.
+This ends up being in the range $m_\chi \in [10^4, 10^6]$~GeV/c$^2$.
+
+At each mass, successively higher cross sections were tested until the flux was too low to simulate further without prohibitive computational cost (approximately 1 MIMP event for every 10$^5$ transits).
+The maximum cross section was interpolated in log-space to find the cross section which would result in the minimum sensitive flux for SR1.
+A graph of mass, cross section was constructed, and the characteristic reduced cross section $\tilde \sigma = \sigma / M$ was determined by linear regression.
+
+This process was hindered by the particulars of the simulations, which I had to modify in order to reduce the space requirements.
+The Monte-Carlo already guarantees one scatter in the TPC per transit, weighting the events properly to account for the mean free path.
+However, the Earth shielding is handled by first sampling from the SHM, then slowing down the particle based in its incident velocity and angle.
+This leads to many events being simulated which will never result in an observable scatter of 0.5~$\mathrm{keV}_{NR}$ (this is a loose analysis threshold, set by the threefold PMT coincidence requirement, along with the small impacts of data quality selection criterion.
+See Fig. \ref{fig:energy_threshold} and Ref. \cite{aalbers_first_2022}.).
+I dealt with this first by resampling the entry point repeatedly until a surviving track was generated. 
+This process is cheaper than writing an empty event to disk and starting the machinery over again.
+These events were weighted by $N_{\text{trials}}^{-1}$.
+The incident velocity is not modified, so it is possible to become stuck in an infinite loop.
+I set a maximum number of iterations of 5000 to break out of the loop.
+When this occurs, I infer that this incident velocity is too low to be observed, and therefore should not be attempted again.
+The minimum velocity sampled from the velocity distribution through inverse-CDF is increased to the incident velocity + 1 km/s for all subsequent events.
+Events which follow are further reduced in weight by the lost probability in the velocity distribution to correct for this.
+Such changes drastically improved the ability of the simulations to identify the exact maximum observable cross section at a given mass.
+Simulation results are shown in Fig. \ref{fig:sigma_scaling_overburden}.
+The lower limit for the reduced cross sections (the intercept of the overburden curves), are $\tilde \sigma_{A4} = 1.91\times10^{-3}$, $\tilde \sigma_{C} = 325$~barns/TeV for the spin-independent $A^4$ scaling, and contact interaction (opaque to SM) models, respectively.
+In the $A^4$ scaling, the characteristic $\tilde \sigma$ is per-nucleon, while the contact interaction is reported per-nucleus.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/Overburden_sims.pdf}
+    \caption{The reduced cross section scaling of MIMP simulations.}
+    \label{fig:sigma_scaling_overburden}
+\end{figure}
+
+\subsection{Incident Velocity Vector}
+
+For simplicity the incident velocity vectors are sampled uniformly in angle relative to the horizon.
+However, the ``WIMP wind" is not isotropic, but rather is biased towards coming from the constellation Cygnus at declination 42.03$^\circ$ and right ascension 20.62~h\cite{baxter_recommended_2021}.
+SURF is located in the northern hemisphere at latitude 44$^\circ$N, and therefore the Cygnus constellation never actually drops below the horizon.
+This is highly beneficial for any dark matter search which probes high cross sections and is therefore affected by the Earth shielding effect.
+In the MIMP analysis, there is also a slight angular dependence to the analysis cuts due to pulse merging, which is shown in Fig. \ref{fig:incident_velocity}.
+Therefore, accurately sampling the altitude of the incoming MIMP particles was performed in post-processing by reweighting the flux associated with each event.
+
+I use the conventions in Ref. \cite{baxter_recommended_2021} to construct the angular distribution of transits at SURF, and I briefly restate the calculations here.
+In the rectangular galactic frame of reference, every halo particle has a velocity with components $(v_r, v_\phi, v_\theta)$, pointing inwards towards the galactic core, in the rotational direction of the galaxy, and above the galactic plane.
+This velocity is decomposed into the following components:
+
+\begin{equation}
+    \vec{v}_{gal} = \vec{v}_{lab} + (\vec{v_0} + \vec{v}_{\odot} + \vec{v}_{\oplus}(t)) ,
+    \label{eq:galaxy_velocity}
+\end{equation}
+\noindent
+where $\vec{v_0}=(0,238,0)$~km/s is the local standard of rest, $ \vec{v}_{\odot}=(11.1, 12.2, 7.3)$~km/s is the peculiar velocity of the Sun, and $ \vec{v}_{\oplus}(t) $ is the velocity of the Earth around the Sun.
+The Earth's velocity varies throughout the year but the mean value, taken at March 9, is $(29.2, -0.1, 5.9)$~km/s.
+The standard halo model \cite{mccabe_earths_2014} is a Gaussian of mean 0 and standard deviation $\sigma_0 = |\vec {v_0}|/\sqrt{2}$, with an additional cutoff of values above $v=544$~km/s.
+
+I sample points from the 3D Gaussian, and make the appropriate translations before calculating the laboratory frame magnitudes, which regenerates the appropriate SHM velocity distribution, peaked at $\sim 300$~km/s.
+To find the laboratory frame angular distribution, I sample points along the line of latitude containing SURF, in rectangular coordinates where the North Pole is the $\hat z$-axis.
+The vectors, which represent the $\hat z '$-axis of the laboratory frame,  are rotated into in the galaxy frame.
+This is accomplished by first rotating the vectors in the $y\text{--}z$ plane such that the galactic North Pole of declination 27$^\circ$\cite{blaauw_new_1960} is the new z-axis.
+The vectors are then rotated in the $x-y'$ plane such that the right ascension of the galactic North Pole (192.86$^\circ$) is the same as the celestial North Pole (122.93$^\circ$).
+The resulting velocity magnitude distribution as a function of angle to the laboratory z-axis is displayed in Fig. \ref{fig:zenith}, illustrating the bias towards incoming velocities.
+This serves as the basis to reweight the events in pos-processing.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/Tracks/Altitude_eff.pdf}
+    \caption[The analysis efficiency as a function of altitude (angle to the horizon) for the turnaround model $\sigma_{\chi p} = 10^{-30}$~cm$^2$.]%
+    {The analysis efficiency as a function of altitude (angle to the horizon) for the turnaround model $\sigma_{\chi p} = 10^{-30}$~cm$^2$.
+    A significant, but sharp, reduction in acceptance is seen at perfectly horizontal events.}
+    \label{fig:incident_velocity}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/Tracks/Zenith.pdf}
+    \caption[Simulated horizon angles of SHM particles at SURF.]%
+    {Simulated horizon angles of SHM particles at SURF. The SHM velocity distribution in galactic coordinates was transformed into lab coordinates and averaged over the sidereal day. }
+    \label{fig:zenith}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Testing on LUX Run03 Data}
+
+The analysis was initially developed for LUX Run03 data.
+At the time, a mature lightly-ionizing-particle search had been performed on LUX data\cite{kamdin_search_2018}.
+It was believed that adapting the analysis to multiply scattering dark matter would be viable. 
+The main difference would be the spectrum and mean free path of the deposits.
+
+I performed the simulations tasks for this work, using the LUX\_BACCARAT software package alongside the LAMA fast chain.
+The MIMP physics were incorporated into LAMA, where the energy deposits were simulated coming from the surface of the TPC as discussed in Section \ref{sec:mimp_sims}.
+The particular geometry and detector response of LUX had to be implemented.
+It was decided that we would only use Run03 data, and not Run04, to avoid the problems of the extremely nonuniform field there\cite{lux_collaboration_3d_2017}.
+Energy deposits from the WIMP NR spectrum were written out into a customized format and read into the Geant4-based LUX\_BACCARAT simulations.
+These simulations run NEST\cite{szydagis_nest_2011} to calculate the quanta and photon gains.
+LUX\_BACCARAT  outputs a data format identical to the LUX data format, which can then be analyzed according to the MatLab\footnote{www.mathworks.com/}-based analysis frameworks to generate reduced quantities (RQs).
+An example waveform of a MIMP is shown in Fig. \ref{fig:lux_mimp}.
+
+While the full chain generates waveforms and folds in the effect of the pulse finding code, it was found to not accurately reproduce the top-bottom-asymmetry of data, leading to significant data loss.
+% It is believed that at some point the optical properties were changed when much of the codebase moved over to LZ.
+As the software was mostly unmaintained, I decided to shift over to using fast chain, parametric simulations.
+Pulses were generated with NEST, and a simplified pulse merging procedure was utilized, where pulses within a fixed width were merged.
+Unmerged S1(S2) pulses had a width of 150~ns (2~$\mu s$).
+
+A simplified version of a ``pulse chopping" algorithm developed by LUX \cite{terman_paul_search_nodate} was implemented for use in the fast chain.
+Each merged pulse tracked the original pulse areas and times.
+If a pulse was longer than a certain threshold, at the end of pulse processing it would construct the cumulative area for the merged pulse.
+The merged pulse would then be ``chopped" into sections of 50 samples = 500~ns.
+The areas of the chopped pulses would be the area of the unmerged pulses (length 2~$\mu$s) which overlapped with the region.
+The XY positions of the merged pulses were taken as the weighted centroids of the overlapping pulses, with the weights being the number of phe observed from the unmerged pulse in that region of time.
+This procedure helped to extend the LIP search into high charge fractions and in the MIMP search it will extend the search to higher multiplicities / cross sections.
+
+Another algorithm which was explored was a form of ``bootstrapping" for accurate predictions.
+A concern was that, for events which scatter in the reverse field region, S2s do not form, but S1s can.
+This causes the reconstructed lengths to be shorter, skewing the velocity distribution, as shown in Fig. \ref{fig:lux_vel}.
+To mitigate this, it is possible to  iteratively recalculating the positions.
+
+The bootstrapping algorithm reconstructed the track using the initial reconstructed positions.
+This yields a track which may result in intersections with the reverse field region (RFR).
+The fraction of the reconstructed track length in the forward field region (FFR) is used to mask the S1s which are likely to have occurred in the RFR.
+Using these masked S1s, the S2 drift times are recalculated, and a new track intersection is generated.
+This procedure is repeated several times until convergence.
+Without head-tail information this can lead to errors, but the degeneracy may be broken with S1 TBS information, which is particularly useful in this case as the RFR S1s will have asymmetries near -1.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/Tracks/LUX_event.png}
+    \caption{A simulated multiple scatter colinear even waveform in LUX, made using LUX-BACCARAT.}
+    \label{fig:lux_mimp}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/LUX_distances.png}
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/LUX_velocity.png}
+    \caption[ Unique reconstructed quantities for multiple scater events, analyzed for the LUX simulations. ]%
+    {
+    Unique reconstructed quantities for multiple scater events, analyzed for the LUX simulations. These indicate the impact of the reverse field region on the analysis.
+    \textit{Left}: Reconstructed and true distances for simulated MIMPs of of $\sigma_{\chi p} = 5\times 10^{-30}$~cm$^2$.
+    Red indicates reconstruction and blue is truth.
+    Shorter track lengths are more difficult to reconstruct.
+    \textit{Right}:
+    The reconstructed velocity distribution for MIMPs of $\sigma_{\chi p} = 5\times 10^{-30}$~cm$^2$
+    Tracks which intersect the reverse field region are indicated in red, and events which do not are indicated in blue.
+    RFR tracks are biased towards lower velocities, dominating the 0-100 km/s bin.}.
+    \label{fig:lux_vel}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Analysis on LZ SR1 Data}
+\subsection{Introduction}
+
+The dataset used for the MIMP search is identical to that used for the SR1 WIMP search\cite{aalbers_first_2022}.
+This consists of 89 dark matter search days over 115 calendar days.
+After removing time periods due to \textit{e.g.} the e-train veto, a final exposure of 60 live days was used for the result.
+The fiducial volume used was 5.5 tonnes.
+Most importantly for this analysis, the maximum drift time was 951~$\mu$s, with an electron lifetime in excess of 5000~$\mu$s, and a drift field of 193~V/cm.
+Many of the analysis cuts were maintained from the SR1 WIMP search, with some modifications, detailed in the following sections.
+
+\subsection{Selection Criteria}
+\begin{enumerate}
+    \item \textbf{E-train veto, Muon veto}. These remove periods of time following large ($10^4$ phd or higher) S2s, which experience elevated single electron and single photoelectron noise. This constitutes a reduction of livetime of approximately 30\% in SR1.
+    \item \textbf{Sustained Rate}: Removes events with SPE rate above 40 kHz across the entire pre-trigger region. This is an SR1 cut which is effective at reducing pileup S1s.
+    \item \textbf{OD Veto}: The GdLS outer detector effectively vetoes both neutrons and muons. 
+    MIMPs  will not deposit significant energy into the OD due to the comparatively small nuclear recoil energies of most elements.
+    For instance, $^{14}$C will on average experience nuclear recoils of 11~keV$_{\mathrm{NR}}$.
+    Using the GdLS chemical formula\cite{haselschwardt_liquid_2019} (C$_6$H$_6$)-C$_{(10-15)}$H$_{22-32}$, and density of 0.853~g/cm$^4$, stopping powers of $\sim$2~keV/cm are obtained for a value of $\sigma_{\chi p} = 10^{-27}$~cm$^2$.
+    This is well below the muon minimally ionizing particle energy deposition of $\mathcal{O}$(1)~MeV/cm.
+    
+    \item \textbf{Colinearity}. This leverages the negligible deflection in the incoming MIMP tracks. 
+    Each S2 pulse has its associated deposit position reconstructed based on the Mercury X,Y positions\cite{lux_collaboration_position_2018}, and the Z coordinate is based on the  reconstructed drift time.
+    Because the tracks are nonrelativistic, and MIMP signals are required to have multiple S1s, this introduces some ambiguity on the drift time on a per-S2 basis.
+    Due to the different thresholds between S2s and S1s, boundary effects of the RFR, and pulse merging, the number of S2s and S1s are in general different, preventing any systematic pairing of S1s and S2s.
+    One may correct the drift time to either the first S1, last S1, or linearly interpolate in either the forward or backwards directions.
+    SURF is located at 44$^\circ$ in the northern hemisphere, which beneficially causes most, but not all, of the WIMP wind to be downgoing. 
+    The upgoing tracks will have the first S1 be associated with the last S2 in general, as the maximum drift length of $955 \mu s$ far exceeds most transit times of 10~$\mu $s.
+    Denoting the $N$ S2 times $T_i$ and the $M$ S1 times as $t_i$, and the drift velocity as $v_e$, the corrections are given by:
+    
+    \begin{align}
+        z_{F,i} = v_e[T_i-t_0 -  (t_{M-1}-t_0)\frac{T_i - T_0}{T_{N-1}-T_0}]\\
+         z_{B,i} = v_e[T_i-t_{M-1} +  (t_{M-1})\frac{T_i - T_0}{T_{N-1}-T_0}],
+    \end{align}
+    
+    where $z_{F(B),i}$ is the forward(backward) corrected $\hat z$-coordinate of the scatter. 
+    These generally lead to percent-level corrections to the velocities.
+    While the XY coordinates may, in principle, be corrected based on the drift maps discussed in Chapter \ref{chap:fields}, due to the lack of head-tail information it was not performed.
+    Because the drift map in the fiducial volume is to first order a frustrum, pushing the bottom of the detector inwards by $\sim 2$~cm, this leads to an error on the reconstructed direction, but is is not expected to lead to improper residuals, as these are primarily sensitive to the curvature of the track.
+    The simulations of tracks fold the nonuniform drift map, so the effect of this choice is reflected in the efficiency of the cut.
+    The estimated uncertainty of the reconstructed altitude of the tracks, for the xenon turnaround model, for transits passing the ``multiplicity",  ``good S1", and ``uniformity" selections is 1.11 $\pm$ 0.08 degrees. 
+    
+    The colinearity requirement relies on a orthogonal-distance regression\cite{ gavin_hp_total_2017}, where the perpendicular distances between the points and a line $\mathbf{Y} = t \hat{\mathbf{m}} + \mathbf{b}$ is minimized.
+    This is differentiated to typical $\chi^2$ minimization, which minimized the distance between one coordinate and the line $y = mx + b$.
+    For two dimensions, the result is found by first calculating the covariance matrix $\sigma_{ij}$.
+    The slope and intercept are given by\cite{greene_generalized_2013}
+    
+    \begin{align}
+        m = \frac{\sigma_y^2 - \sigma_x^2 + \text{sgn} (\sigma_{xy}) \sqrt{(\sigma_y^2 - \sigma_x^2)^2 + 4 \sigma^2_{xy}}}{2 \sigma_{xy}}\\
+    b = \mu_y - m \mu_x.
+    \end{align}
+    
+    Generalizing to $ND$, this procedure is nearly identical to principle component analysis (PCA), where the eigenvalues of the covariance matrix are used to find the direction of maximal variance.
+    Given centered(mean is zero along each axis) data $\mathbf{x_i}$, the following matrix is constructed \cite{greene_generalized_2013}:
+    
+    \begin{equation}
+        M = \sum_i^N( x_i^2 I - \mathbf{x_i}\mathbf{x_i}^T)~.
+    \end{equation}
+    \noindent
+    The eigenvector $\mathbf{d_0}$ of $M$ with the smallest eigenvalue $\lambda_0$ minimizes the sum of the orthonogonal distances.
+    Note that the $M_{ij} = \text{Tr}\Sigma - \Sigma_{ij}$. 
+    
+    The resolution is considered on a point by point basis with the following model:
+    \begin{align}
+        \delta_R = \frac{1}{\sqrt{S2}}[\sigma_0 + \sigma_1\exp((r - R_w)/r_0)]\\
+                \delta_\phi = \frac{\sigma_2}{\sqrt{S2}}~.
+    \end{align}
+    \noindent
+    The square root reflects the fact that the resolution is at some level based on the Poisson fluctuations in the top array.
+    While the full covariance of each data point could be incorporated in principle, for simplicity and robustness each point was simply weighted by the inverse of the total error $\sigma_T^2 = \delta_R^2 + \delta^2_{\phi}$.
+    In the z-direction the error is taken to be uniformly 1~mm, as the resolution there is set by the rising edge of the S2 and not the number of electrons.
+    This translates to $\approx 500$~ns, a conservative estimate for the uncertainty on the drift time of the cathode.
+    
+    Both 2D and 3D trajectories were fit to the S2 points.
+    For the purposes of selection criteria, only the 2D orthogonal distances were used.
+    This was due to the mathematical challenge of propagating the error on the Z coordinate, which is calculated via the drift time rather than the Mercury position reconstruction algorithm\cite{lux_collaboration_position_2018}. 
+    The tails of the resulting distribution were challenging to characterize, and therefore only the XY was used for this purpose.
+    The XYZ trajectory was used to calculate the entry and exit points in the detector, necessary to estimate the velocity.
+    The XY colinearity requirement was selected as:
+    
+    \begin{equation}
+        \tilde \chi^2_{XY} = \frac{1}{N-2}\sum_i^N(\frac{ d_{i\perp} }{\sigma_i})^2 < \chi^2_{\text{cutoff}} = 2 ~.
+    \end{equation}
+  \noindent
+    The  threshold $\chi^2_{\text{cutoff}} = 2 $ was found to have sufficient signal acceptance and background rejection.
+    An example of an SR1 track with the reconstructed track overlayed is found in Fig. \ref{fig:sr1_tracks}.
+    
+    \item \textbf{Good S1}. In the WIMP search rejecting an S1 with a high single channel or an veto coincidence is the same as rejecting the event itself. In the MIMP search a separate decision had to be made regarding whether an excluded S1 should cause the event to be culled, rather than not counting the singular pulse.
+    I made the conservative choice to remove events with such pulses present.
+    \item \textbf{Uniformity}: MIMP tracks are not only colinear, they should subtend the entire track length.
+    The intersection of a line defined by points $(x_1,y_1), (x_2,y_2)$ with a circle is given by:
+    
+    \begin{align}
+        D \equiv x_1y_2 -x_2 y_1\\
+        d_r \equiv \sqrt{\Delta x^2 + \Delta y^2}\\
+        x = \frac{D \Delta y \pm \text{sgn}(\Delta y) \Delta x \sqrt{r^2 d_r^2 -D^2}}{d_r^2}\\
+        y = \frac{-D \Delta x \pm |\Delta y| \sqrt{r^2 d_r^2 -D^2}}{d_r^2}
+    \end{align}
+    
+    The intersection points with the circle are then projected onto the cylinder in order to find the $\hat z$-coordinates of the entry and exit points.
+    When the $\hat z$-components exceed the top and bottom of the cylinder, as is the case when the trajectory comes through the top and/or bottom, they are clipped and the missing distance is projected back onto the $x$,$y$ components.
+    
+    The uniformity cut's metric is the number of missing scatters along the reconstructed track trajectory.
+    The estimated mean free path is then taken as the subtended length of the scatters.
+    \begin{equation}
+        \hat \mu = \frac{|\mathbf{x}_{N-1} - \mathbf{x}_0|}{N-1}
+    \end{equation}
+    From the projected track length $L$ the ``missing scatters" are estimated as: \begin{equation}
+        N_{\text{missing}} = (L-|\mathbf{x}_{N-1} - \mathbf{x}_0|) / \mu ~.
+    \end{equation}
+    
+    The threshold for $N_{\text{missing}}$ was optimized by examining the receiver operating curve for the SR1 data and the simulated dataset at the turnaround cross section of $\sigma_{\chi p}=10^{-30}$~cm$^2$.
+    Due to the tails of the distribution and the reconstruction error, the threshold was chosen as $N_{\text{missing}} < 30$, a surprisingly large threshold.
+    An alternative estimator for $\mu$ was using the estimated full length, $L/N$.
+    This was found to perform worse for low numbers of scatters with the SR1 data, so was changed to the projected scatter length.
+    
+    \item \textbf{Velocity} The fact that the MIMP distribution is expected to follow the SHM \cite{mccabe_earths_2014} confers considerable leverage on the analysis. 
+    The velocity of any given track was estimated as the projected scatter length divided by the time difference of the S1s:
+    
+    \begin{equation}
+        \hat v = \frac{|\mathbf{x}_{N-1} - \mathbf{x}_0|}{t_{M-1} - t_0}~.
+    \end{equation}
+    
+    This estimator was found to approximate the input velocity distribution well, with some caveats.
+    Because S1s are frequently lost due to fluctuations below detection threshold, and due to pulse merging, the $\delta t = t_{M-1} - t_0$ frequently underestimates the true time difference between S2s.
+    The simulated velocity distribution has a tail which extends past the galactic escape velocity, as shown in Fig. \ref{fig:mimp_vdist}.
+    The boundaries for this selection were chosen as $\hat v \in [50, 1200]$ km/s, which was a conservative choice.
+    \item \textbf{Total S1 and S2 Area} Individual deposits are expected to fall along the nuclear recoil band in liquid xenon.
+    With pulse merging, selections based on any individual pulse become challenging. The more robust total S1 and S2 values are used instead.
+    The selection criteria, illustrated in Fig. \ref{fig:total_s1_s2}, are: 
+    \begin{itemize}
+        \item $\log_{10} (S2_{\text{total}}) < \log_{10} (S1_{\text{total}}) + 3 $
+         \item $\log_{10} (S2_{\text{total}}) > \log_{10} (S1_{\text{total}}) + 1 $
+        \item $S2_{\mathrm{total}} > 1200 $~phd
+
+    \end{itemize}
+    \item \textbf{Fiducial}. To mitigate the pileup and Compton scatter backgrounds a minimum number of points are required to be in a fiducial volume. 
+    Because of the multiple S2 requirement the volume can be less conservative than the WIMP search.
+    The boundaries were chosen as $z \in [2, 135]$~cm, $r < 70$~cm, and a minimum of 2 scatters were required to exist in this region.
+    
+    \item \textbf{Ordering}: In lieu of an XYZ colinearity requirement, a looser requirement on the z-coordinates are required. 
+    This specifies that, to the resolution of $\sigma_z$, the projected distances along the trajectory increases monotonically with $z$(equivalently, drift time).
+    On a functional level this iterates through the S2 pulses, and determines the sign by the first $|\Delta d| > \sigma_z$, where $d$ is the projected scatter length. 
+    Event with subsequent $\Delta d < - \text{sgn}|\sigma_z|$ are then rejected.
+    
+    \item \textbf{Miscellaneous}: The minimum number of prominent S1s and S2s were configurable, based on the requirement that background free conditions were possible. It turned out that $N_{S1}=N_{S2}=2$ was achievable.
+    Using the SHM as a basis, I was able to set a hard cutoff of 5~$\mu s$ for the S1 spread.
+    I  set a maximum S2 spread of 2~ms in order to accommodate the maximum drift time plus the potential for some e-train S2s to pass the event selection.
+\end{enumerate}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/VelocityDist_1E-30cm2.pdf}
+    \caption{A histogram of simulated MIMP velocities for a model with $\sigma_{\chi p} =10^{-30}$~cm$^2$ using LZLAMA.}
+    \label{fig:mimp_vdist}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7 \textwidth]{Assets/Tracks/TotalS1S2Boundaries.png}
+    \caption[A heat map of simulated S1 and S2 areas for the multiple scatter analysis.]%
+    {A heat map of simulated S1 and S2 areas for the multiple scatter analysis.
+    The total S1 and S2 cut boundaries for the MIMP analysis are indicated.
+    The model was the turnaround model, $\sigma_{\chi p} =10^{-30}$~cm$^2$.}
+    \label{fig:total_s1_s2}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/SR1_passUniformity_top.pdf}
+        \includegraphics[width=0.45\textwidth]{Assets/Tracks/SR1_passUniformity_side.pdf}
+    \caption[Example reconstructed tracks / individual S2 locations from SR1.]%
+    {Example reconstructed tracks / individual S2 locations from SR1.
+    This particular event passes the colinearity and uniformity cuts, but fails the velocity cut.}
+    \label{fig:sr1_tracks}
+\end{figure}
+\subsection{Modification of prominence algorithm}
+The fast chain simulation pulse merging was tuned to match simulations of deuterium-deuterium fusion simulations which typically had less than four prominent S2s. Prominence is explored more in Chapters \ref{chap:accidental} and \ref{chap:sims}, and refers to the property that a pulse is significantly larger than the noise level of pulses of its same type.
+A prominent pulse is meant to correspond to the physical light pulse, rather than a false positive from the pulse finding code.
+It was noticed that events with larger number of deposits were being classified into the lower bins.
+This was a result of the non-causal nature of the prominence algorithm, which selects based on a pulse's height-to-width ratio and the ratio of its area to the largest pulse of its same type, regardless of the ordering.
+Multiple scatter events tend to classify S2s as ``non-prominent" event if they occur before the largest pulse.
+This was determined to be a second order effect for the SR1 WIMP search, but was critical for the analysis of MIMPs, as the concern in the latter case was accurate reconstruction of the number of scatters, rather than simply single vs. multiple scatter differentiation.
+
+I modified the prominence algorithm for this analysis to be causal, and applied it to SR1 data.
+The same cut boundaries were applied as in SR1, but the ratio was applied to the largest pulse of a particular type \textit{up to that point} in the event window.
+In the code the raw pulses, the original non-causal prominent pulses, and the new causal prominence pulses were available, but for the reconstruction the velocities and the colinearity requirement only the causal prominent pulses were used.
+
+\subsection{Area Corrections}
+
+In order to further utilize the S1 and S2 areas, I implemented the area corrections in our analysis.
+These required some modification on a software level, since the versions for the WIMP search make single scatter assumptions.
+The S1 area corrections depend primarily on drift time, and S2 corrections are sensitive to the XY position as well as drift time due to the varying electroluminescence gain in the extraction region.
+The MIMP search S1c and S2c values are calculated for the three different estimates for drift time used elsewhere in the analysis: 1) the drift time from the S2 to the first S1, 2) the S1 transit corrected drift time, assuming downgoing trajectory, and 3) the S1 transit corrected drift time, assuming upgoing trajectory.
+The S1s have an explicit relationship between their top-bottom-asymmetry(TBA) and $z$-coordinate. 
+As such I correct their areas based on their TBA so as to make fewer assumptions.
+Other than these small modifications, the functional dependence of S1c/S1 and S2c/S2 is identical to the SR1 WIMP search.
+
+\subsection{Count Prediction}
+As part of an effort to capitalize on the ER/NR discrimination power, I attempted to get accurate measurements of the mean S1 and mean S2 values for each event.
+The central limit theorem\cite{abramowitz_handbook_1972} states that these will converge at high multiplicity to gaussian distributions centered on the means of the bands.
+To achieve this, accurate estimates of the number of vertices for each track was required.
+The differing energy thresholds and widths for S1s and S2s result in a bias towards more observed S2s than S1s on average.
+The S1 merging depends on the number of S1s and the transit time, while the S2 merging depends on the number of S2s and the incident angle (horizontal tracks will merge into a single pulse).
+Various estimates for number of vertices are shown in Fig. \ref{fig:predictions}, with the ``Fit" explained below.
+
+I chose to fit a linear regression model to the data using the python package sklearn\footnote{scikit-learn.org}, with the following features:
+\begin{enumerate}
+    \item $N_{S1}$: number of S1s.
+    \item $N_{S2}$: number of S2s.
+    \item $N_{S1}^2$
+    \item $N_{S2}^2$
+    \item $N_{S1}N_{S2}$
+    \item $\Delta t_{S1}$: time spread of S1s.
+    \item $\Delta t_{S2}$: time spread of S2s.
+    \item $\Delta t_{S1}^2$
+    \item $\Delta t_{S2}^2$.
+    \item $S1_{\text{max}}$: the largest S1 area
+    \item $S2_{\text{max}}$: the largest S1 area
+\end{enumerate}
+
+The quadratic terms were introduced to match the nonlinearity of the data, and the time spread variables exist because pulse merging is a result of track density.
+Dimensionful quantities were divided by characteristic scales: $\Delta_{S1}'=10$~ns, $\Delta_{S2}'=100$~ns, $S1_{\text{max}}'=100$~phd, $S2_{\text{max}}'=1000$~phd.
+This model was trained with the sklearn interface, which utilized Lass$\mathcal{O}$($L1$) regression.
+\begin{equation}
+    L = \sum_i^N(y-\hat{y})^2 + \lambda \sum_j^M |w_j| 
+\end{equation}
+The regularization parameter $\lambda$ I found using 5-fold stratified cross validation using a model of $\sigma_{\chi p} =10^{-30}$~cm$^2$.
+The coefficients for the model weights are:
+\begin{align}
+\hat N = \mathbf{X} w\\
+    w = \{.210,  .899,  .0209,  .00315, -.0174,  2.869, \nonumber \\
+\qquad -1.019,  24.558, .0204,  1.575,  3.343\}~.
+\end{align}
+The $L2$ loss, evaluated on the 30\% holdout dataset, was 0.928. 
+Vertex predictions are shown in Fig.\ref{fig:pulse_merging}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/predictions.png}
+    \caption{S1-S2 distributions using various estimates for the vertex counts, indicating the convergence towards the mean value.}
+    \label{fig:predictions}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/pulsemerging.png}
+    \caption[Pulse count predictions using the linear regression model.]%
+    {Pulse count predictions using the linear regression model.
+    This indicates that using S1 or S2 along results in under-estimation of the true number of vertices (with S1 being worse in general). 
+    The linear regression model tracks the true number of vertices well.}
+    \label{fig:pulse_merging}
+\end{figure}
+\subsection{Signal Acceptance}
+
+For the theory curves in Fig. \ref{fig:mimp_projected} a known number of vertices is specified, with 100\% for tracks with that number, and 0\% elsewhere.
+This analysis does not set an explicit upper limit on the number of pulses, but rather relies on the pulse finding code, which merges S2s together if they are close in time.
+This effectively sets the upper boundary to whatever mean free path appears like a continuous energy deposition, which ends up being around $10^{-29}$~cm$^2$.
+I characterize the cut acceptances as a function of true vertex count in Fig. \ref{fig:mimp_cut_acceptance} for a model near the turnaround point (mean number of scatters in LZ=1).
+The weighted acceptance for two or more scatters is $\eta_2 =0.803$, and for three or more scatters is is $\eta_3=0.684$.
+The highest acceptances are between 5 and 30 scatters, with over 95\% acceptance, but as the number of vertices increases this value drops to $\sim 40$\%.
+These are evaluated relative to the multiplicity requirement, so as to test the quality of the analysis independent of the model.
+The fiducial cut is particularly costly at the higher vertex counts.
+
+It is also instructive to show the dependence of acceptance on physical parameters, such as velocity or entry point, as shown in Fig. \ref{fig:mimp_locations}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/MIMP_cut_acceptance_2E-30.pdf}
+    \caption[MIMP search cut acceptances as a function of the number of vertices, evaluated on the turnaround model. ]%
+    {MIMP search cut acceptances as a function of the number of vertices, evaluated on the turnaround model. 
+    The cumulative effect of various selection criterion are indicated.}
+    \label{fig:mimp_cut_acceptance}
+\end{figure}
+\begin{figure}
+    \centering
+        \includegraphics[width=0.45\textwidth]{Assets/Tracks/Transit_eff.pdf}
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/Velocity_eff.pdf}
+    \caption[MIMP acceptance relative to the multiplicity requirement of 2+S1s, 2+ S2s as a function of incident velocity and entry/exit points.]%
+    {MIMP acceptance relative to the multiplicity requirement of 2+S1s, 2+ S2s as a function of incident velocity and entry/exit points.
+    Faster transits appear to be accepted more regularly, along with tracks which enter away from the bottom edge.}
+    \label{fig:mimp_locations}
+\end{figure}
+
+\subsection{Limit}
+
+The MIMP search limit was constructed in a similar way projected limit in Section \ref{sec:projected_limits}.
+Zero background events were observed during SR1, which causes the limit to be set entirely by the surviving MIMP flux.
+Models were selected uniformly in mass ($M=10^{17} \mathrm{~GeV}$), simulated in LZLAMA without Earth shielding, then analyzed with the method described above.
+The surviving flux of events translates into an effective minimum mass as each point.
+Characteristic $\tilde \sigma$ from Section \ref{sec:overburden} were used to extrapolate the lower limit from above from the point of intersection.
+In Fig. \ref{fig:mimp_limit} the $A^{4}$ limit for SR1 is shown, illustrating the impact of the analysis cuts.
+The 2+ scatter analysis has high acceptance, leading to minimal impact on the limit curve near the turnaround point.
+If the analysis required moving to 3+ the impact would be large, but still small at the turnaround model.
+To extrapolate the upper limit downwards, the minimum number of scatters, $n_{\mathrm {min}}$ was used to scale the cross section:
+
+\begin{equation}
+    \sigma \propto M^{1/n_{\mathrm {min}}}
+    \label{eq:lower_lobe_scaling}~.
+\end{equation}
+
+Extrapolation was utilized due to the computational cost of simulating multiple scatters when they are an extreme minority to single scatters, which occurs at low cross section.
+At 1000 live days, if zero background events are observed, LZ is projected to set a limit of $6.27\times 10^{18}$~GeV/c$^2$ at $\sigma_{\chi p} = 10^{-30}$~cm$^2$.
+Comparisons to other ultrahigh dark matter searches are shown in Fig. \ref{fig:global_mimp}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/SI_limit.pdf}
+      \includegraphics[width=0.45\textwidth]{Assets/Tracks/contact_limit.pdf}\\
+    \caption[The LZ SR1 MIMP search exclusion limits for $A^4$(left) and contact interactions right. ]%
+    {The LZ SR1 MIMP search exclusion limits for $A^4$(left) and contact interactions right. The projected 1000-live days exposure for LZ, assuming a background free experimental result, is shown in dashed red on the left plot.
+    The impacts of the analysis selection criterion appear minuscule when shown over this many decades.}
+    \label{fig:mimp_limit}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/Tracks/A4_limits_deap.png}
+    \caption{LZ SR1 MIMP search exclusion limits plotted alongside the results from competing analyses for $A^4$ SI scaling.}
+    \label{fig:global_mimp}
+\end{figure}
+\subsection{Dark Matter Radius}
+
+It was assumed in previous experimental results \cite{clark_direct_2020, lai_planck_2021} that the only models to consider were $A^4$ and contact interactions (opaque to SM).
+In the case of $A^4$ it was stated that one may circumvent the geometric cross section of the target by assuming a dark matter radius which is large enough to generate the desired per-nucleon cross section without needing to accommodate the model dependence of the dark matter form factor.
+This critical radius was supposed as $R_D\sim 1$~fm, a typical nuclear distance scale.
+For completeness, I incorporate the dark matter form factor in the form of a 3D top-hat function, and show the effect of increasing the radius from zero.
+
+The simulations proceeded in an identical fashion as the previous results.
+At the stage of calculating the mean free path at a particular DM velocity, $\mu (v_\chi)$, the xenon Helm\cite{helm_inelastic_1956} form factor is multiplied by the dark form factor from Eq. \ref{eq:tophat}.
+These results are displayed in Fig. \ref{fig:blob_radius}.
+As the radius of the dark ``blob" or ``nugget" increases, the excluded cross sections are shifted upwards.
+
+The effect of overburden is two-fold. 
+With the extended object, nuclear recoils are biased even more heavily towards lower energies.
+This means that, in addition to increasing the mean free path through the Earth, the expected recoil energy per scatter decreases, further reducing the stopping power.
+Additionally, the increased velocity dependence causes tracks deposit even more of their energy towards the ends of their tracks.
+The overburden scaling relationship between DM radius and the lower limit on cross section, when the radius exceeds the 5 fm radius of the xenon, is approximately $\tilde \sigma_{LL} \propto R^{3.4}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/Blob_limits.pdf}
+    \includegraphics[width=0.45\textwidth]{Assets/Tracks/Blob_overburden.pdf}
+    \caption[Nugget search results.]%
+    {\textit{Left}: Extended object dark matter search results.
+    \textit{Right}: Extended object dark matter overburden scaling for $M=10^4$~GeV/c$^2$ objects.}
+    \label{fig:blob_radius}
+\end{figure}
+
+
+
+\afterpage{\FloatBarrier}
+
+\section{Summary}
+
+The LZ SR1 MIMP search reports a background free, null result for dark matter scattering multiple times in the TPC.
+With $A^4$ scaling the experiment is world leading at $\sigma_{\chi p} = 10^{-30}$~cm$^2$, extending the high mass frontier to 3.80$\times10^{17}$~GeV/c$^2$.
+The experiment is set up to further explore the high-mass frontier as exposure increases over its lifetime.
+With contact interactions, i.e. when the dark matter state is opaque to the SM nucleus, xenon no longer benefits from a higher atomic number, and therefore the increased flux of the LAr-based DEAP-3600\cite{lai_planck_2021} excluded higher masses.
+Contact interactions in the LZ SR1 MIMP search push lower in cross section, but into space which is already explored by the single scatter WIMP search.
+
+The effect of dark matter form factor was explored, demonstrating the expected effect of pushing the MIMP limits higher in cross section space while maintaining the maximum mass.
+Future searches, if background is present, can exploit this form factor to place limits not only on cross section, but dark matter radius.
+
+Extensions to the MIMP search will involve waveform-based analysis to mitigate the effect of pulse merging.
+Pulse classification is also uncharacterized at this point, i.e. at what point does a merger of several S1s cease to appear like an S1? 
+It will also be beneficial to capitalize on the veto detectors.
+While the $\langle \frac {dE} {dx} \rangle$ in the outer detector is too small to be useful at small cross sections, the skin detector presents an opportunity to increase the effective surface area of the detector.
+While the skin veto is disabled, this search is agnostic to its signals.
+A future analysis could look for S1s which bookend the multiple scatters in the TPC, increasing the detection efficiency.
+

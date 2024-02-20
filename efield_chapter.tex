@@ -1,0 +1,1026 @@
+\chapter{Electric Field Simulations for LZ}
+
+\label{chap:fields}
+
+\section{Introduction}
+A TPC's electric field affects every aspect of the experiment.
+The drift field magnitude determines the drift velocity, changing the mapping of time to z-position in the detector.
+It also impacts the discrimination power between electron recoils and nuclear recoils via its affect on the recombination probability.
+Nonuniformities in the field distort the field lines and electron trajectories. 
+While TPCs often aim for electric fields of the highest achievable uniformity and magnitude, going too high in field can have undesired results.
+
+A particularly instructive example of a nonideal electric field is LUX Run 4.
+Following the completion of Run 3, a grid conditioning campaign was conducted, with the intention of burning off impurities on the electrodes and increasing the allowable applied voltages.
+This unfortunately had the opposite effect, distorting the electric field and reducing the average electric field magnitude\cite{lux_collaboration_3d_2017}.
+This is believed to be due to the creation of a permanent negative charge on the PTFE walls of the TPC of between -3.6 $\mu$C/m$^2$ to -5.5$\mu$C/m$^2$.
+Due to this nonuniformity, a complex field model had to be fit to the data, in order to properly simulate the detector response.
+
+While it was not expected that the field nonuniformity in LZ would be as severe as in LUX Run4, it was still necessary to  model the electron drifts and extraction fields.
+The electric fields had to be solved for a variety of possible electrode configurations, as it was not known ahead of time which voltages would be applied.
+
+\section{Finite Element Simulation}
+\subsection{Maxwell's Equations}
+The software used to simulate LZ's electric field (FEniCS\cite{alnaes_fenics_2015}), requires a more in depth knowledge of the details of finite element simulation than other packages, for example Comsol.
+At its core, the finite element method seeks a field $u$ which is the solution to some differential equation, subject to boundary conditions.
+The field is represented as an element of a particular vector space $V$.
+Each node of the mesh is assigned a value $u_i = u(x_i)$, and the spatial derivatives are calculated based on the nearby nodes $x_{j\neq i}$.
+The differential equations therefore appear as constraints specifying the relationship between nearby nodes, i.e. $\sum_k a_k u_k =0$.
+The entire problem then becomes system of equations, $A\mathbf{u} = \mathbf{f}$, where $A$ is the finite element matrix and $\mathbf{f}$ is the source term.
+For electrostatics, this source term is physically the free charges in the solution.
+Constraints, such as Neumann (derivative) or Dirichlet (value), can be applied to the boundaries in the form of Lagrange multipliers.
+
+There are many solvers capable of finding $u$, but it is observed to be beneficial to put the differential equations in ``weak formulation" first\cite{singh_short_2010}.
+This is a conjugate problem whereby the following transformation is performed:
+\begin{equation}
+     \boldsymbol A  \boldsymbol u = f \rightarrow v^T \boldsymbol A \boldsymbol u =  \boldsymbol v^T f~,
+\end{equation}
+\noindent
+where $u,v \in V$, a vector space describing the problem.
+This solution must hold for all $v$.
+The solutions found with the weak formulation are equivalent to the solutions found with the strong (original) formulation.
+The advantage of performing this technique is that the constraints are all first order constraints, rather than second order, which is more numerically stable.
+This is somewhat reminiscent of the equivalence between Lagrangian and Hamiltonian mechanics.
+In the case of electrostatics we are solving the Poisson equation where $u$ represents the electric potential.
+Therefore, the weak formulation, with units of permittivity $\epsilon=1$ becomes:
+
+\begin{align}
+     \nabla (\mathbf{D}) = \nabla (\epsilon\mathbf{E}) = -\nabla(\epsilon \nabla \phi) = \rho_f \\
+    -\int v \nabla(\epsilon \nabla \phi)  d^3x  = \int \rho_f v d^3x \nonumber \\
+    \int (\nabla v \cdot \nabla \phi ) d^3x - \int \epsilon \frac{\partial \phi}{\partial n} d^2x= \int \rho_f v d^3x\\
+    \int (\nabla v \cdot \nabla \phi ) d^3x + \int \sigma_f d^2x- \int \rho_f v d^3x=0~.
+    \label{eq:weak_formulation_derivation}
+\end{align}
+
+Without free charge accumulation, it is unnecessary to insert the dimensionful value of $\epsilon_0$.
+For the LZ simulation I exploit the approximate axisymmetric symmetry of LZ, which requires a change to cylindrical coordinates, given by:
+
+\begin{equation}
+    \int (\partial_r u \partial_r v + \partial_z u \partial_z v) r dr d z +
+    \int \sigma_f (r dz~dr)
+    - \int \rho_f v r dr~dz=0~.
+    \label{eq:axi_diff_form}
+\end{equation}
+
+\subsection{LZ Axisymmetric model}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Assets/EFieldSims/GMSH_LZ.png}
+  \includegraphics[width=0.4\textwidth]{Assets/EFieldSims/GMSH_Chain.png}
+   
+    \caption[The LZ 2D axisymmetric finite element mesh, produced and rendered in GMSH.]%
+    {The LZ 2D axisymmetric finite element mesh, produced and rendered in GMSH.
+    \textit{Left}: The complete mesh. Colors indicate distinct volumes, but are not necessarily the same material.
+    Note the PMT banks on the top and bottom of the detector, and the relative sizes of the facets.
+    \textit{Right}: A zoom-in of the field shaping rings. The mesh has a far higher resolution near the resistors because the field changes drastically in that area. 
+    The region around the rings is the PTFE wall. The fine details such as the small gaps between the pieces are not modelled.
+    The dielectrics are mismatched by $\approx 0.25\;\epsilon_0$, but the areas are relatively small, so are not expected to affect the result considerably.}
+    \label{fig:gmsh_lz}
+\end{figure}
+
+To simulate the electric fields, a simplified, axially symmetric model of the LZ TPC was constructed 
+Primarily this was used to evaluate the field nonuniformities, both in magnitude and in trajectory.
+Fine details that would not affect the overall solution of the TPC were excluded, such as wires and assorted connectors.
+Insulating spacers and PMTs were included, but  were modelled as an annulus with the same side-view cross section.
+The electrode grids, while in reality are woven meshes, were modelled as rings with the same diameter as the physical wires.
+In order to match the characteristics in the bulk, I followed the recommendation from Ref. \cite{bevilacqua_procedure_2015}, and halved the pitch of the simulated grid. 
+This was shown in simulations to perform similarly to the full 3D simulation when at least 1 pitch distance away from the grids.
+
+The sagitta(the greatest distance between an arc of a circle and a chord) of the grids was found via an iterative procedure done by described in Ref. \cite{linehan_high_2022}. 
+There, the grids were deformed in a hyperbolic cosine profile and the fields resimulated until the electrostatic forces balanced the tension and weight of the grids.
+% More detail may be found in his thesis \todo{cite Ryan}.
+The sagitta were  of order 1~mm and these values were compared against extraction region data taken during commissioning. 
+The cathode was similarly simulated, however its sagitta has relatively diminished impact on the overall result.
+
+Under the force of gravity, a wire of density $\rho$, cross-sectional area $\sigma$, and length $L$ under a tension $T$, will curve to a sagitta determined by the following equation\cite{blum_walter_particle_2008}:
+
+\begin{equation}
+    s = \frac{\rho g \sigma L^2}{8T}~.
+\end{equation}
+
+In the presence of an external field $E_0$, each element will experience a force $dF = \lambda E_0 dx$, which effectively subtracts from the differential weight $dF = \rho \sigma g dx$.
+Additionally, the sagitta will perturb the electric field to first order in $s/d$, where $d$ is the distance between the grids.
+This results in an enhancement of the sagitta relative to the nominal ($d=\infty$) case.
+Since both the external field $E_0$ and the charge density $\lambda$ depend linearly on the applied voltage $V$, then the overall sagitta scales as $s \propto V^2$. 
+
+The case of a wire grid with pitch $a$, radius $r_0$, and wire-electrode distances $b_1$,$b_2$, and $b = b_1+b_2$ is worked out in \cite{mcdonald_kirk_pdf_nodate}, where the charge density is given by
+\begin{align}
+    \lambda = \frac{abV_0}{4 \pi b_1b_2(1+K)}\\
+    K \equiv \frac{ab}{2 \pi b_1b_2} \ln \frac{a}{2 \pi r_0}~,
+    \label{eq:k_def}
+\end{align}
+\noindent
+with a bulk fields on either side of $E_1=V_0/b_1$ and $E_2=-V_0/b_2$, evidently resulting in the $V_0^2$ scaling.
+
+Particular attention was paid to keeping the number of elements in the simulation large enough to ensure accuracy, and small enough to fit into memory.
+While mesh refinement methods were explored for the purposes of automating this process, it was decided that the resolution would be set manually.
+This decision was guided by the fact that process of adding the basis fields for each electrode together in superposition is faster when all fields are calculated on the same mesh.
+Resolutions of 1~mm were set over the PTFE walls, and the grids were forced to have the resolution necessary to model  their circumference.
+This small facet size was unnecessary in the middle of the TPC, so certain volumes were cut out and a larger resolution (generally~cm-scale) was applied to their boundaries.
+In order to make the increased resolution necessary to model the grid wires not ``spread" to other regions, the grids were placed in holder volumes.
+These generally specified the locations where the resolution needed to drop to 1mm in order to keep the simulation tractable.
+These volumes had to have additional height to manage the sagitta of the grids.
+These holder volumes can be seen as a change in color in the mesh zoom-ins in Fig. \ref{fig:gmsh_electrodes}.
+The mesh was generated in GMSH using the \textit{Frontal-Delaunay} algorithm.
+
+
+\begin{table}
+\centering
+\begin{tabular}{|cc|}
+\hline
+     Parameter & Value \\
+     \hline
+     Liquid Xenon dielectric & 1.874 \cite{amey_dielectric_1964} \\
+     Gas Xenon dielectric & 1 \\
+     PTFE dielectric & 2.1 \cite{baker-jarvis_dielectric_2001} \\
+     PEEK relative permittivity & 3.2 \cite{noauthor_supplier_2003} \\
+     Cathode-Gate distance & 1456~mm \\
+     Gate-Anode distance & 13~mm \\
+     Gate-Liquid surface distance & 5~mm \\
+     Cathode-Bottom grid distance & 137.5~mm \\
+     PTFE radius & 728~mm \\
+     PMT photocathode bias & -1250~kV \\
+     Bottom grid bias & -1250~kV \\
+     \hline
+\end{tabular}
+\caption {Parameters used in the LZ electrostatics simulation. The electrode biases are a parameter which was explored as part of this work.}
+\label{tab:efield_params}
+\end{table}
+
+\begin{figure}
+    \centering
+ \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/GMSH_Cathode.png}
+     \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/GMSH_ER.png} 
+     \caption[The zoomed-in 2D mesh for the LZ cathode, gate, and anode rings.]%
+     {The zoomed-in 2D mesh for the LZ cathode, gate, and anode rings.
+     \textit{Left}: The cathode at $z=0$ in LZ simulation coordinates. The shape juts out in all directions, causing a distortion of the electric field in the vicinity. Note the holder volume for the cathode mesh.
+     Also visible is the first reverse field region (RFR) field shaping ring.
+     \textit{Right}: The extraction region, consisting of the gate, anode, and PEEK spacer which separates the TPC and Skin volumes.
+     Particular features include the fact that the final ``ring" is actually an extension of the gate, and the relative proximity of the gate electrode to the liquid surface.}
+    \label{fig:gmsh_electrodes}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.8\textwidth]{Assets/EFieldSims/TPC_nonlinear.png}
+    \caption[The resulting simulated electric field for the LZ forward field region from Fenics.]%
+    {The resulting simulated electric field for the LZ forward field region from Fenics.
+    This simulation uses the SR1 electrode configuration, and the equipotentials are steps of 1~kV.
+    The field is highly uniform, with most of the nonuniformities located along the edges of the TPC.}
+    \label{fig:sim_tpc_field}
+\end{figure}
+
+
+\subsection{Resistor chain optimization}
+A preliminary model developed in Quickfield\footnote{quickfield.com} was initially examined, which indicated a large amount of uniformity.
+It was desired to explore possible interventions to make the field more uniform.
+These interventions were restricted to decisions that could be made at that point in the assembly process.
+Since LZ could not be redesigned from the ground up, this meant that the options were limited to swapping out the resistor values in the field cage.
+The field cage consisted of titanium field shaping rings connected to one another with two 1~G$\Omega$ resistors in parallel.
+The assayed resistors included values of 500~M$\Omega$, 1~G$\Omega$, and 2~G$\Omega$, allowing 7 possible values per gap. 
+With 57 field shaping rings plus the gate, this makes 58 resistor gaps to search.
+While the electron trajectories are nonlocal, the overall field is only sensitive to the difference in potential between the middle of the TPC and the edge/wall.
+This means that the largest effects come from the fields at the edge of the field shaping ring, allowing an approximate ordering of the configurations.
+
+The starting field exhibited a large amount of electron deflection towards the center, which I intended to mitigate.
+This is caused in part by the size and shape of the cathode ring. 
+The ring extends past the cathode grid wires in both the vertical and horizontal directions. 
+Similarly, the gate ring also extends below the gate electrode.
+These geometric changes cause the distance over which the potential must vary to decrease relative to that of the center of the detector, increasing the field in that location.
+The effect of the grid wires exacerbates this, as the thin wires enhance the local electric field relative to a flat plane.
+While the net effect could not be helped, an increase in the resistor values in the final gap, below the gate, would lead to an increased $\Delta V$ between those surfaces, distorting the field lines into a more vertical direction at a critical juncture.
+
+The optimization procedure was conducted by utilizing  Quickfield's python bindings. 
+This allowed simulations to be controlled in software, rather than a tedious manual search.
+At each point in the solution space of resistors, the fields were calculated.
+The metric for success was the volume-weighted field uniformity as calculated in the fiducial volume.
+The solution was reweighted by the radius $r$ due to the cylindrical coordinates.
+Then, proposed solutions were explored in the vicinity of the current configuration.
+This was limited to changing the resistors one value up or down (among the seven options), and was limited to the first and last two resistor values in the chain.
+Then, the ``direction" with the largest decrease in fiducial volume E-field variance was chosen, and the procedure repeated.
+The previous solutions were cached to save time on recalculation.
+
+The aforementioned procedure converged on a tentative solution, but it was later discovered that the model itself had been causing some of the observed field nonuniformity.
+The preliminary mesh modelled the wires with a diameter far exceeding that of the physical wires. 
+Additionally, there were fewer simulated wires than in reality.
+This was done to avoid the computationally expensive meshing procedure  which would result from accurate wire placement.
+However, setting the appropriate diameter and pitch is crucial for accurate simulations.
+
+The wires were simulated with the same diameter, half-pitch configuration and the procedure repeated. 
+The nonuniformity in the starting configuration was found to be acceptable, but there was room for improvement.
+At the goal cathode voltage of -100~kV, with 11.5~kV $\Delta V$ in the extraction region, the optimal solution ended up being simple: replace one of the final$\approx 1$~G$\Omega$ resistors with a 2~G$\Omega$ resistor, effectively increasing the resistance in that stage from $500$~M$\Omega$ to $667$~M$\Omega$.
+This improved the field uniformity to the point where the fiducial volume had less than 1~$\mathrm{V}/\mathrm{~cm}$ volume-weighted standard deviation.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/Cathode_linear.pdf}
+       \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/Cathode_nonlinear.pdf}
+
+    \caption[ Radial electric fields and equipotentials near the cathode region.]%
+    {
+    Radial electric fields and equipotentials near the cathode region.
+    \textit{Left}: Before the modification to the resistor chain.
+    \textit{Right}: After the modification to the resistor chain.
+    The change to the electric field near the cathode results from the modifications to the resistor chain grading.
+    Each equipotential is a step of 100~V from its neighbors.
+    The nonlinear grading results in a larger initial voltage step between the cathode and FFR1. 
+    This has the effect of pulling the field lines straighter, reducing the magnitude of $E_r$, the radial component of the electric field.}
+    \label{fig:cathode_resistor_optimization}
+\end{figure}
+
+The impact of the change to the field uniformity is shown in Fig. \ref{fig:gradings_uniformity}. 
+The volume-weighted average is computed over $z\in[20, 1336]$~mm and $r<688\mathrm{~mm}$.
+The change to the resistor grading causes insignificant impact on the mean field, and reduces the standard deviation from 3.2~V/cm to 1.0~V/cm at the goal cathode voltage of $-50$~kV and gate voltage of $-5.75$~kV.
+In order to investigate the field uniformity outside of the strict WIMP search fiducial volume, an ``engineering fiducial" volume was also used.
+This was defined as being 2~cm from the grids and PTFE wall.
+This region unsurprisingly has a slightly higher nonuniformity at 1.6~V/cm when using the nonlinear resistor grading.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45
+    \textwidth]{Assets/EFieldSims/Resistor_Gradings.pdf}
+    \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/EngFiducial.pdf}
+    \caption[Volume-weighted histograms of simulated field magnitudes in the LZ TPC.]%
+    {
+    Volume-weighted histograms of simulated field magnitudes in the LZ TPC.
+    \textit{Left}: The impact of the resistor grading change on the fiducial volume electric field uniformity.
+    The curves indicates the volume-weighted field magnitudes within the fiducial volume, \textit{i.e.} a grid of points is used to sample the electric field, and the average is calculated by weighting each point by $r$.
+    The blue(orange) curve indicates the unoptimized(optimized) resistor gradings.
+    \textit{Right}: The impact of the choice of ``engineering" vs ``analysis" volumes on the uniformity. 
+    The engineering fiducial is a a larger volume meant to encapsulate the full nonuniformity without being sensitive to the fine details of the grids.
+    }
+    \label{fig:gradings_uniformity}
+\end{figure}
+
+\subsection{Anode Correction}
+The primary focus of this work was finding the map of real space to reconstructed S2 space $f:(r,z)\rightarrow(S2R, DT)$ within the TPC, along with the electric field magnitude $|E|(r,z)$.
+While the anode voltage is an important component of the overall physics, it is not crucial for these quantities.
+Because the anode grid would increase the facet count by nearly a half (since the facet count is dominated by the cathode and gate grids), it was simplified to being a plane.
+This plane is not parallel, but still maintains the predicted sagitta.
+
+However, the electric field near a wire is not identical to a plane even in the idealized situations.
+The potential near an infinitely long cylinder of charge is  $\phi(r) = \lambda \ln (r/a)$, and therefore on the scale of a pitch distance the infinite place approximation must break down.
+Modelling the grid wires as a collection of unit cells, with a wire placed between two Dirichlet boundaries in one direction, and two Neumann conditions in the other, a correction can be calculated.
+The field far (multiples of the pitch) from the wires with voltage $V_0$, with electrode voltages on either side $V_1$, $V_2$, at distances $b_1$, $b_2$, is given by
+\cite{mcdonald_kirk_pdf_nodate}:
+\begin{equation}
+    E_1 \approx \frac{V_1 - V_0}{b_1} + \frac{b_2}{b}[\frac{V_0-V_2}{b_2} - \frac{V_1-V_0}{b_1}]\frac{K}{1+K}~.
+    \label{eq:kirk_mcdonal_correction}
+\end{equation}
+
+In order to correct the anode grid, $V_1$ is taken as the gate voltage, while $V_2$ is taken to be the PMT voltages.
+The factor $K$ is given by Eq. \ref{eq:k_def}.
+This is additionally complicated by the change in dielectric between the anode and gate due to the liquid-gas phase change at $z=1461\mathrm{~mm}$.
+For the purposes of this calculation both grids are temporarily modelled as having zero sagitta, i.e. perfectly level.
+Since the goal is to find the voltage to apply to the planar anode such that the electric field in the extraction region is matched, the sensitivity of the gas field to the anode voltage was calculated:
+
+\begin{equation}
+    \frac{dV_0}{dE_1} =  s_0 + s_1 \frac{\epsilon_0}{\epsilon_1}~,
+\end{equation}
+\noindent
+where $s_0$ is the liquid surface-anode distance and $x_1$ is the liquid surface-gate distance, with $\epsilon_0$ and $\epsilon_1$ begin the gas and liquid dielectric constants, respectively.
+From these calculations, a correction factor of $\Delta V =-430\mathrm{~V}$ on the anode was found to match the gas extraction region field between the grid and place conditions.
+
+\subsection{Cathode Voltage Simulation}
+It was not known at simulation time which voltages the detector would run at, particularly that of the cathode grid.
+Therefore, it was necessary to understand the results at a range of cathode voltages in order to make informed decisions during commissioning.
+Therefore, the analysis done for the resistor chain optimization was repeated at a number of cathode and voltages, and the engineering and fiducial volume averages were computed.
+The cathode scan was performed at a fixed gate voltage of -4~kV, while the gate scan was performed at a fixed cathode voltage of -32~kV.
+An ideal cathode voltage from the perspective of field uniformity was found at -45~kV.
+It was observed that the gate voltage has a disproportionate effect on the field nonuniformity, \textit{i.e.} changing the gate voltage by a kilovolt had a larger impact on the nonuniformity in the fiducial volume than changing the cathode by an identical amount.
+This is caused by the field leakage from the extraction region, as well as the interaction between the gate grid and the upper corner of the detector.
+These effects are illustrated in Fig. \ref{fig:cathode_uniformity}.
+The ideal cathode voltage, conditional on a particular gate voltage, increased by approximately 10~kV for every 1~kV on the gate (with the same polarity).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Cathode_Uniformity_Scan.pdf}
+     \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Gate_Uniformity_Scan.pdf}
+    \caption[The field nonuniformity (RMS magnitude) as a function of cathode and gate voltage, averaged over the analysis and engineering fiducial volumes.]%
+    {The field nonuniformity (RMS magnitude) as a function of cathode and gate voltage, averaged over the analysis and engineering fiducial volumes.
+    Note the outsized impact the gate has relative to the cathode.
+    \textit{Top}: Scans over the negative cathode voltage. 
+    Blue: Sensitivity paper\cite{akerib_projected_2020} fiducial volume.
+    Orange: less restrictive fiducial volume, 2~cm away from the grids and wall.
+    \textit{Bottom}: Scans over gate voltage. 
+    Note that the engineering fiducial has a larger RMS value, and the optimal value is shifted closer to zero.
+    }
+    \label{fig:cathode_uniformity}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{LZElectricField simulations package}
+\subsection{Drift simulation}
+While particular tools such as \textit{Garfield} exist for drift simulations, it was decided that the particular parameters of interest were best suited with a bespoke simulation.
+In addition to the electric field, the features calculated across the TPC are the:
+\begin{enumerate}
+    \item Drift time: the time it takes for the electrons to drift from their point of creation to the liquid surface at $z=1461\mathrm{~mm}$.
+    \item S2 radius: the radial coordinate where the electron cloud, on average, crosses the liquid-gas boundary.
+    \item Probability of an electron attaching to the PTFE walls. This occurs when the field lines either intersect the PTFE walls at $R=728\mathrm{~mm}$, or pass nearby them such that electrons have a chance to diffuse past the boundary. 
+    \item Transverse diffusion. This is parameterized by the diffusion constant $D_T$. The probability distribution function (pdf) of the electron's displacement in the direction transverse direction is a Gaussian distribution with standard deviation $\sigma_T = \sqrt{2 D_T t}$, where $t$ is the drift time\cite{mcdonald_electron_2019}.
+    EXO-200 measured this quantity to be $D_T\sim$55~cm$^2$/s\cite{collaboration_measurement_2017}.
+    \item Longitudinal diffusion: similar to transverse diffusion but in the direction of drift. 
+    For the fields used in LZ the values for $D_L$ are approximately 25$\mathrm{~cm}^2/s$\cite{njoya_measurements_2020}. 
+    This diffusion is still parameterized in terms of distance, so the effective diffusion in drift time is then
+    \begin{equation}
+        \sigma_t = \sqrt{\frac{2D_L t^3 }{ L^2} }~,
+    \end{equation}
+    \noindent
+    where $L$ here is the drift length in~cm and $t$ is the drift time.
+\end{enumerate}
+
+The observable boundaries of the TPC are of particular interest, as the fiducial volume is defined relative to them.
+As a result of the low background design of the experiment, the only features with which to compare simulations and data are the edges themselves.
+These edges are the cathode and gate electrodes, along with the PTFE walls.
+Therefore, the initial conditions of the simulation must be chosen so that the boundary is sufficiently explored.
+The algorithm consists of the following steps:
+
+\begin{enumerate}
+    \item Place the starting points for the trajectories.
+    This is a nontrivial task, since it is desired for the resulting maps to be approximately uniform in sampling density. 
+    A subset of starting  points are initialized along the top and wall, with points along the top displaced a short distance beneath the gate grid.
+    The placement is uniform in $R^2$, with the caveat that points are ``snapped" to the pitch if the simulated grid wires. This is to guarantee to a high degree of confidence that the resulting field lines drift vertically through the gaps in the mesh, rather than be deflected radially. 
+    The density of points is specified near the wall to be $2.5\mathrm{~mm}$, and the snapped points are placed a distance of $3\mathrm{~mm}$ below the gate grid. 
+    Along the wall, points are placed in a manner which is aware of the field shaping rings. 
+    In the middle of the height($Z$) of each ring, points are placed at intervals of $\Delta R=1\mathrm{~mm}$ inwards, without snapping to the grid wires.
+    Along the gaps between each field shaping ring, points are placed a small distance($\epsilon_R=100\;\mu \mathrm{m}$) from the wall in vertical intervals of $\Delta Z=500 \mu \mathrm{m}$.
+    The choices ensure that the regions where electron trajectories intersect the wall are mapped adequately, along with the boundaries between the intersecting and non-intersecting trajectories.
+    Points are not placed along the bottom boundary since they are adequately explored via the other points.
+    The cathode excursion into the TPC has additional points placed on its corners.
+    \item Map the points bidirectionally, \textit{i.e.} find the trajectory which begins on boundary of the TPC and which passes through this particular point ($r,z$). These trajectories integrate the electric field $\vec{E}(r,z)$ using RK4 (explained in the following section \ref{sec:RK4}).
+    When a boundary is crossed in a particular timestep, the crossing location is linearly interpolated. The drift time between each step is logged, and after the trajectory is found the drift time at each step is integrated from the point where it crossed the liquid surface. 
+    Similarly the local contributions to the diffusion $\Delta_{\sigma^2}=2D\Delta T$ are logged and then integrated backwards to the bottom(right) boundaries.
+    \item Downsample the points.
+    The timestep is chosen to precisely map out the shape of the trajectories, but it is unnecessary in most parts of the detector to use every single timestep as the trajectories are fairly straight.
+    As such, a ``stride" value in either direction is specified, which enforces a fixed number of sample points within each cell.
+    Sampled points near the wall relax this requirement, instead specifying a fixed distance from their starting points within which all points are kept. 
+    This is done in an attempt to not save an excessive number of points, which would be detrimental to the resulting interpolator performance. 
+    \item Perform corrections. Due to the funneling effect of the grids, the trajectories have deflections inwards and outwards in $R$.
+    This is an artifact of the simulation not expected to appear in the actual data, since the physical grids are woven mesh, and therefore the funneling effect is averaged over $2 \pi$. 
+    Therefore, the radial coordinate where the trajectory crosses a specified boundary slightly under the gate grid is logged, and this is then written as the $S2_R$ which is expected to be observed.
+    This standoff distance which accomplishes this task is approximately one (simulation) pitch distance away, or $2.5 \mathrm{~mm}$.
+    The other correction which must be performed deals with trajectories which do not end at the liquid surface, i.e. on the PTFE wall.
+    Because these points do not produce S2s, they do not have values to write out. However, leaving these areas blank would result in challenges for the interpolator, as it would then be attempting to interpolate between valid and invalid points.
+    To deal with this, the valid points are grouped in tranches of $z$. 
+    The invalid points on wall-intersecting trajectories select the $S2$ positions from the valid point in that tranche with the largest $R$ coordinate. 
+    The $S2_R$ value is then extrapolated based on the ratio between the valid and invalid physical $R$ values.
+    \item Conduct Monte Carlo simulations. While points near the center of the detector may have their diffusion simulated analytically with little error, this is not true for points near the wall.
+    This is because many such trajectories experience charge loss, which then skews the distribution of the surviving cloud.
+    Because the trajectories are somewhat oscillatory, the transverse and longitudental components mix somewhat, with the resulting $\sigma$ differing from values at the same $z$ but closer to the center.
+    Because of this, points at most 2~cm from the PTFE wall are selected for monte carlo diffusion.
+    A set of paths are simulated from the same starting point. 
+    At each time step, the transverse and longitudinal $\delta x$ are drawn from their respective Gaussian distributions.
+    Since the simulation is axisymmetric, at each timestep the points are transformed from cylindrical to Cartesian coordinates, the azimuthal diffusion simulated, and projected back into cylindrical coordinates.
+    The resulting value is not critical for the resulting analysis but does serve as a control to measure the aforementioned transverse-longitudinal mixing against. Points which intersect the wall or otherwise fail to reach the liquid surface are not counted for the purposes of calculating the resulting $\sigma_R(x)$ and $\sigma_T(x)$, but do allow for the calculation of a real-valued \textit{attachment probability}. 
+    \item Augment the boundary.
+    In order to prevent errors resulting from points outside the boundary of the TPC, points were duplicated. 
+    Points within a small distance $\epsilon$ from the wall and inner boundary at $r=0$ are copied an inserted a distance $\epsilon$ away from the wall.
+    This allows points to be queried along the boundaries without running into errors at the wall, but is particularly helpful for points on the inner $r=0$, $z=0$ boundaries. 
+    Because the coordinate system breaks down, one can not sample points exactly at $r=0$. 
+    Similarly, since the cathode wires are a finite radius, and the reverse field region leaks into the forward field region, electron trajectories often do not reach $z=0$ when drifting backwards in time.
+    In order to make the maps even more resilient against meshing issues, a special behavior was implemented in the LZElectricField software.
+    When the nearest facet does not actually contain the query point, the interpolation method switches from barycentric interpolation (details below) to a simple nearest-neighbor method.
+    In other words, instead of taking a linear combination of the facet vertices, the closest vertex to the point is selected as the returned value.
+\end{enumerate}
+\subsubsection{Runge-Kutta Method}
+\label{sec:RK4}
+In order to integrate the field lines without requiring too fine of timesteps $\Delta t$, a higher order method was used.
+Runge-Kutta methods are a family of integrators which solve the first order differential equation $\frac{dy}{dt} = f(y(t),t)$.
+In the case of integrating the field lines, the velocity field is static and therefore any time dependence can be removed.
+The fourth order method, known colloquially as ``RK4," has a local error of $\mathcal{O}(\delta t^5)$ and a global error of $\mathcal{O}(\delta t^4)$.
+This small error is necessary in order to accurately handle the probability of trajectories intersecting the wall without decreasing the time steps to a prohibitively expensive degree.
+The RK4 update step is given by the following equations:
+\begin{align}
+    \vec{x}_{i+1} = \vec{x}_i+\Delta t (\frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)\\
+    \label{eq:rk4}
+    k_1 =  \vec{v}(\vec{x_i})\\ 
+    k_2 = \vec{v}(\vec{x_i} + \frac{\Delta t}{2}k_1 )\\ 
+    k_3 = \vec{v}(\vec{x_i} + \frac{\Delta t}{2}k_2 )\\ 
+    k_4 = \vec{v}(\vec{x_i} + \Delta t k_3 )~,
+\end{align}
+where $\vec{v} = v(|E|(\vec{x}))\hat{E}(\vec{x})$ is the drift velocity at a given location as a function of the electric field.
+\subsubsection{Interpolation}
+The points which make up the drift map are not sampled on a grid, but rather the trajectories/field lines themselves are selected.
+As such, query points between the samples can't be interpolated using methods used on regular grids, such as bilinear interpolation. 
+Instead, a triangulation must be created, such that the triangles enclosing the query points can be interpolated instead.
+
+Given a set of points, there are many ways to form a triangulation, where no two triangles overlap. 
+There is one arrangement, the \textit{Delaunay} triangulation, which forms a graph such that each triangle's circumcircle contains only that triangle's vertices.
+This has the side effect of keeping the vertices of each triangle a minimal distance from their centroids.
+Delaunay triangulations are dual to the \textit{Voronoi} diagram, which is the set of regions defining the nearest vertex to a particular location.
+A Delaunay triangulation can be calculated using the \textit{quickhull} algorithm.
+
+An $n$-\textit{simplex} is a shape consisting of $n-1$ points   $x \in \mathcal{R}^n$. 
+The 3-simplices in the Delaunay triangulation are also referred to as the \textit{facets}. 
+The $(n-1)$-simplices are referred to as \textit{ridges}.
+For $n=2$, the facets are triangles and the ridges are line segments.
+For $n=3$, the facets are tetrahedra and the ridges are triangles.
+
+The quickhull algorithm is a method for calculating the \textit{convex hull} of a set of points.
+The convex hull is the smallest convex shape which encloses the given vertices.
+For instance, in 2D one can visualize the convex hull by placing nails in a board, then stretching a rubber band around the perimeter.
+Likewise in 3D this would look like a balloon extending around a cloud of points.
+The quickhull algorithm is conducted by selecting the two points farthest from one another.
+It then draws a line segment between those two points, and sorts the remaining points into two sets depending on which side of the line they fall. 
+The algorithm then proceeds recursively on these subsets.
+For each set, the point farthest from the dividing line is selected as a boundary point and a line is drawn perpendicularly to the line from the previous iteration.
+This eventually results in a series of vertices and line segments defining the convex hull.
+
+Unfortunately the quickhull algorithm does not automatically result in the Delaunay triangulation of a set of points in $\mathcal{R}^n$, only its convex hull.
+However, a particular transformation will allow the quickhull algorithm to compute the desired graph.
+Each point is extended to $\mathcal{R}^{n+1}$, with the last component being the sum of the squares of the remaining elements, \textit{i.e.} $z_{in} = \sum_{j=0}^{n-1}x_{ij}^2$.
+This transformation is known as ``lifting."
+The convex hull is computed on these "lifted" points, and the resulting $(n+1)$-simplices are projected downwards onto the original space.
+This results in the desired triangulation.
+
+The popular open source software qhull\footnote{qhull.org} is used to perform these calculations.
+While this work was conducted in 2D, it was thought that a 3D implementation might be used at some point in the future. 
+Qhull has the ability to compute the convex hulls for arbitrary dimension $n$.
+It also contains an implementation for a directed search of the conjugate graph.
+This implementation was augmented with an additional caching trick for the LZ problem.
+The previous query point was stored, which made repeated requests to nearby locations cheap. 
+This speeds up the calculation of electron clouds initiated from a single location.
+
+While the points in the simulation are generally highly irregular, there are regions where the repeating patterns of the system can lead to uniform spacing of vertices.
+The grid wires, forward field rings, and photomultiplier tubes are all evenly spaced, and therefore may result in regions of regularity.
+Normally this would be desirable, but the condition for the Delaunay triangulation is that no point is only contained within its own circumcircles.
+Therefore, a regular grid would result in a non-unique Delaunay triangulation, and in fact qhull exits with a failure code in this condition.
+To circumvent this in general, I ``joggle" the points slightly, adding a small random component to each dimension before calculating the mesh.
+
+
+After the facet enclosing a query point is located, the values of the field at each vertex are collected.
+These are then interpolated using \textit{barycentric} interpolation.
+This type of interpolation is calculated by, in effect, selecting one vertex as an origin, and using the remaining points on the facet to define (non-orthogonal) axes.
+The unit vectors are then orthogonalized, and the field at the query point is calculated in this new space.
+The barycentric coordinates $\lambda_i$ of a point $\mathbf{x}$ of a triangle defined by $\mathbf{r_1},\mathbf{r_2},\mathbf{r_3}$ are given by:
+
+\begin{align}
+    [(\mathbf{r_1} - \mathbf{r_3}),(\mathbf{r_2} - \mathbf{r_3}) ] \mathbf{\lambda} =  \mathbf{x} - \mathbf{r_3}~.
+    \label{eq:barycentric}
+\end{align}
+The typical use case for barycentric coordinates is the interpolation and smoothing of images.
+In this case, each vertex maps to a color, and the pixel value at each point within the triangle is a mixture of the vertices according to the barycentric coordinates. 
+This is illustrated with Fig. \ref{fig:barycentric}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{Assets/EFieldSims/barycentric.png}
+    \caption[Illustration of the principle of barycentric coordinates. 
+    Each vertex is a primary color (red,green,blue).]%
+    {Illustration of the principle of barycentric coordinates. 
+    Each vertex is a primary color (red,green,blue).
+    The color at any point within the triangle is an RGB vector with values given by the barycentric coordinates $\lambda$.}
+    \label{fig:barycentric}
+\end{figure}
+\subsection{Wall Attachment}
+\subsubsection{Charge Loss Simulations}
+It was noticed early on that the fields near the wall are highly non-uniform.
+Field lines initiated near the edge often intersected the wall, a feature which did not abate with smaller time steps.
+This resulted in the particular attention paid to the simulations near the wall, detailed above.
+
+The particular cause of this effect is the aspect ratio of the field shaping rings. 
+Each section is $25$~mm tall, with $3$~mm gaps between each ring.
+The inner radii of the rings themselves are 5~mm from the inner radius of the PTFE wall. 
+This results in the equipotentials needing to transition from the approximately parallel lines in the center of the detector to approximately concentric lines surrounding the rings. 
+Field lines near the wall therefore alternately point inward and outward in a pattern following the field shaping rings.
+The somewhat sinusoidal pattern intersects the wall, resulting in regions where any free electron is directed towards the wall.
+
+The fate of electrons which attach to the wall is unknown. 
+They may eventually detach and form a source of delayed electron noise, or recombine with ions.
+They could perhaps conduct along the surface of the PTFE into the field shaping rings themselves.
+In principle these electrons could accumulate over time, causing distortions of the electric fields over the lifetime of the experiment.
+Xenon-1T reported a change over time of their wall position, which indicated the possibility of wall charging.
+They also reported regions absent of S2s due to the polygonal cross section of their wall.
+
+These wall attachment zones extend approximately 3~mm inwards from the wall and are contained entirely outside the fiducial volume.
+These charge loss/wall attachment zones are illustrated in Fig. \ref{fig:paraview_sim_wall}.
+Attenuation of S2 size contributes to  loss of position resolution, which increases the likelihood that scatters are misreconstructed into the fiducial volume.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/EFieldSims/wall_icecream.png}
+     \includegraphics[width=0.4\textwidth]{Assets/EFieldSims/Attachment_Fieldlines_Mid.pdf}
+    \caption[ Illustration of the ``dead zones"/ charge-loss regions near the TPC wall.]%
+    {
+    Illustration of the ``dead zones"/ charge-loss regions near the TPC wall.
+    \textit{Left}: Oscillatory field lines near the PTFE wall.
+    The color indicates the field magnitude, and the black lines indicate the equipotentials.
+    Electrons ionized between intersections will be directed towards the wall.
+    \textit{Right}: The simulation results near a section in the middle of the wall. 
+    Each dot indicates a point sampled along a field line.
+    While the field line density does not indicate field strength, the apparent oscillations are real trajectories.
+    The color represents the attachment probability, or the fraction of electron trajectories which begin at the particular point and end on the PTFE wall at 728~mm.
+    The attachment probabilities were found through the Monte Carlo diffusion method.}
+    \label{fig:paraview_sim_wall}
+\end{figure}
+
+\subsubsection{Comparison to data}
+
+While charge loss model was not used in SR1 simulations, a wall model is planned for SR2 and beyond.
+I examined the charge loss present in a dispersed source near the wall, $^{83m}$Kr.
+This affords high statistics in the charge loss and non-charge loss region.
+The calibration injection datasets were selected for physical drift times $dT \in [60, 950]~\mu \mathrm{s}$, S1 areas $\in [100, 300]$~phd, and S2 area $< 10^{4.8}$~phd, to efficiently tag the Krypton data.
+Basic SR1 livetime cuts, \textit{e.g.} e-train, muon, OD, and skin vetoes, were applied.
+The S2 areas were corrected based on position.
+Two slices of radius were chosen to compare: the first, between 68 and 70~cm, was near the wall, but not subject to significant charge loss.
+The second was S2 radius $>$ 70~cm, which  is partially subject to charge loss.
+
+For simulations I take the uncharged wall as a baseline.
+Positions are uniformly sampled with radii within 4~mm of the wall at $R=72.8\mathrm{~cm}$, and the attachment probability was interpolated from the simulated drift map.
+The corrected S2 areas were sampled from the $^{83m}$Kr events within the inner $R \in [68,70]$~cm slice and attenuated by the attachment probability.
+The boundary for the simulated events (4~mm) was chosen to match the approximate power law of the charge loss ``rain," shown in Fig. \ref{fig:charge_loss_validation}. 
+The rise, fit on the calibration data between $\log_{10} \mathrm{S2c} \in [10^3.2, 10^4]$ is described by:
+
+\begin{equation}
+    \frac{dR}{d\log_{10}(cS2  [\mathrm{~phd} ])}  = R_0 \times (19.5 \pm 0.2 [L]) \times  (\log_{10} cS2 [\mathrm{~phd}])^{0.69 \pm 0.02}
+\end{equation}
+\noindent
+where $R_0$ is the activity per liter of the Krypton 41 keV$_{\mathrm{ee}}$ line, and $R$ is the total charge loss  activity across the drift times $[60,950]\mu$s.
+A broad agreement was seen between simulations in data.
+The peak of the Gaussian in $\log_{10}$S2c is shifted lower than in data.
+Otherwise, the low area slopes are largely consistent, validating the diffusion model for charge loss.
+In order to obtain this agreement, the slices in radius had to be tuned appropriately due to the fact that the data is being compared against S2$_R$ and real radius, and the position resolution is on the~cm scale.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/ChargeLoss_comp.pdf}
+    \caption[The volume-weighted charge loss probability distribution function, used for  validation of simulations against data.]%
+    {The volume-weighted charge loss probability distribution function, used for  validation of simulations against data.
+    The blue peak is $^{83m}$Kr calibration single scatter events which pass a fiducial selection criterion.
+    The orange distribution is selected from the same $^{83m}$Kr calibration, but events with reconstructed radius near the wall. 
+    For the green histogram, points are drawn from a grid in real space near the PTFE wall, and the ``attachment probability" $p(r,z)$, is interpolated.
+    These interpolated values are then used to attenuate corrected S2 areas drawn from the $^{83m}$Kr spectrum: $\mathrm{S2}' = p(r,z) S2$.
+    Binomial fluctuations were considered insignificant due to the large number of electrons in the Krypton peak ($10^{4.5}/g_2 \approx 672$), leading to fluctuations on the $\sigma_p = \sqrt{\hat p (1- \hat p) /n } \approx  0.02$ level.
+    }
+    \label{fig:charge_loss_validation}
+\end{figure}
+
+\subsubsection{Cancellation}
+It is not known on what timescale the electrons which attach to the wall eventually detach.
+Fluorine is highly electronegative, so it is conceivable that they remain there for some time.
+PTFE has a surface resistivity of $10^{15}-10^{18}~\Omega$\cite{noauthor_overview_nodate}.
+It is conceivable that the electrons which do not make it to the surface remain on the PTFE for an extended period of time, or are recharged by new events rapidly enough, to reach an equilibrium.
+The production rate of electrons, inferred from random trigger data, is 77kHz, or 0.012~pA across the entire detector.
+This provides an extremely optimistic timeframe of 17 years to charge the surface of the detector to 1~$\mu$C/m$^2$.
+Then, the radial component of the electric field can be made strictly nonnegative, preventing further charge loss.
+
+
+The complexities of the boundary conditions near the wall create challenges for attempting to arrange charges such that the charge loss zones shrink or are removed entirely.
+Several charge profiles were attempted. 
+The profiles were strictly negative charges, as it is not expected that the positive ions will attach to the walls.
+Additionally, trap energies are 0.05-0.1~eV lower for electrons than for holes \cite{zhang_surface_2006}, meaning positive charges will be cleared out of the bulk slightly faster.
+
+All attempted charge profiles were a pattern which repeated on the scale of the field shaping ring heights, $Z_0 = 24.925$~mm.
+Generally these patterns were smoothly varying with the exception of rectification, and placed a larger charge density in areas where the unperturbed electric field  points away from the wall.
+These profiles were inspected:
+\begin{enumerate}
+    \item Sinusoid raised to a power: $\sigma \propto \sin^4(\pi(\frac{Z}{Z_0} -\frac{1}{4} ))$
+    \item Rectified sinusoid: $\sigma \propto \max(1+\sin(2 \pi (\frac{Z}{Z_0} -\frac{1}{2} )),0)$
+    \item Square wave function: $\sigma \propto \theta(\sin(2 \pi (\frac{Z}{Z_0} - \frac{1}{2}))+0.2)$
+    \item Rectified Sinusoid, raised to a power: $\sigma \propto (\max(1+\sin(2 \pi (\frac{z}{Z_0} -0.52 )),0.)^4 $
+\end{enumerate}
+
+This eclectic set of  models were analyzed by evaluating the radial component of the electric field along a contour of constant $r$.
+In order to not be overly sensitive to the finite element modelling of the change in dielectric, $\epsilon$ from LXe to ptfe, the contour was chosen at $r=727.4\mathrm{~mm}$.
+The radial component oscillates in a manner reminiscent of a sinusoid, as seen in Fig. \ref{fig:cancellation}.
+The figures of merit for these models were the amplitude of oscillations along this contour, $A$ and the mean around which they oscillate, $\mu$.
+The phases were adjusted to to achieved maximum cancellation for each model.
+The maximum local charge density was similarly adjusted until the smallest peak $E_r$ was observed.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Wall_Cancellation.pdf}
+    \caption[The radial component of the electric field near the TPC wall boundary, with and without a particular charge distribution.]%
+    { The radial component of the electric field near the TPC wall boundary, with and without a particular charge distribution.
+    The blue contour is the original contour, and the orange is after the attempted cancellation.
+    Reduced amplitude of the oscillations comes at the cost of smaller oscillation period.}
+    \label{fig:cancellation}
+\end{figure}
+
+
+Model (1) was observed to have the best performance, resulting in oscillations of slightly higher frequency but lower amplitude than the others.
+This was achieved at a charge density amplitude of $-0.675\; \mu$C/m$^2$.
+As the macroscopic charge is on this scale based on the wall position, it is conceivable that the charge profile is similar to this.
+
+However, arranging the charges in this way is predicated on the electrons having sufficient mobility to move and achieve equilibrium.
+From the observed event rate, it is unlikely that the charge loss itself could provide this charge.
+The likely source of such charge is from the VUV light from the grids and S2s, creating electron hole pairs within the surface traps of the teflon \cite{zhang_surface_2006}.
+If this is the case, then the charge profile is likely smooth over the scale of individual field shaping ring panels, making the motivation of field cancellation tenuous.
+For these reasons, the fast-charging profile needed for charge cancellation is not included in the final simulation, only the  
+slow-varying charges needed to match the wall profile.
+
+\subsection{Grids}
+A similar phenomenon to the charge loss on the walls is seen near the cathode. 
+Because the cathode wires are the lowest potential in the TPC, and they define the boundary between the forward field region and reverse field region, there is necessarily a contour of local minima in electric potential.
+This contour extends outwards from the cathode wires themselves, and causes volumes nominally in the FFR to direct charge downwards into the RFR, and eventually to the bottom grid.
+These volumes extend approximately 1.1~mm upwards at their greatest extent.
+These ``cathode excursions" contribute to the multiple-scatter-single-ionization (MSSI) background near the cathode.
+This topology is where a multiple scatter event loses all but one of its distinct S2s, causing an artificially low $S2/S1$ ratio, placing an electron recoil within the nuclear recoil band.
+The simulated electric fields surrounding these excursions are shown in Fig. \ref{fig:grid_fields}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/EFieldSims/cathode_excursions.png}
+    %   \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/Funneling.png}
+    \caption[The equipotentials which trace out the cathode excursions. ]%
+    {The equipotentials which trace out the cathode excursions. The saddle points between each wire define the locations where electrons are directed upwards or downwards.}
+    \label{fig:grid_fields}
+\end{figure}
+
+In addition to the field at distances larger than one pitch from the electrode grids, two quantities of interest are the electron \textit{transparency} and the shielding \textit{inefficiency} of the gate grid.
+The inefficiency is defined in Ref. \cite{bunemann_design_1949} as \begin{equation}
+    \sigma = \frac{dE_{A}}{dE_{C}} \approx \frac{a}{2 \pi d_{A}}\log \frac{a}{2 \pi r_0}~,
+\end{equation}
+\noindent
+where $d_{A(C)}$ is the distance between the gate grid and either the anode(cathode), and $E_{A(C)}$ is the asymptotic electric field between the gate and anode(cathode).
+Thus an efficient gate will isolate the two regions effectively, while an inefficient gate will have a larger dependence between the two volumes.
+The LZ gate grid, ignoring the impact of the change in dielectric at the liquid-gas boundary, is 5\%.
+
+The transparency of the grids is defined as the fraction of field lines initiating in the cathode-gate region which end on the wires.
+Based on the density of field lines, one may presume that if the electric field in the gate-anode region is higher, then the gate would be 100\% transparent.
+It turns out that, due to the anisotropic charge induced in the surface of the wires, it is possible for electric field lines to both initiate and terminate on the electrodes even when the field changes across the boundary.
+Requiring that the grid wires have strictly nonpositive induced charges along their circumference leads to a requirement for the ratio of fields on either side\cite{mcdonald_kirk_pdf_nodate}:
+
+\begin{equation}
+    \frac{E_{GA}}{E_{CG}} \geq 1 + \frac{4 \pi r_0}{a}(1+K)~,
+\end{equation}
+\noindent
+which, when applied to LZ, yields a minimum ratio of fields for full transparency of 1.53.
+The LZ drift field-extraction region field ratio for flat grids, taking into account the phase change, is 21, safely placing LZ into the full transparency region.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/EFieldSims/Grid_Transparency.png}
+    \caption[Illustration of the principle of partially transparent grids, taken from Ref. \cite{bunemann_design_1949}.]%
+    {Illustration of the principle of partially transparent grids, taken from Ref. \cite{bunemann_design_1949}.
+    A cathode at point \textit{A}, and anode/collector at point \textit{P}, establish a bulk field.
+    The gating grid placed at \textit{G} to shield it from the induced fields from the positive charges produced by the ionizing radiation at point \textit{Q}.
+    The wire radius $r$, pitch $d$, and  distances \textit{GP} and \textit{AG} allow one to calculate the inefficiency of the grid $\sigma = \frac{dE_P}{dE_Q}$, along with the bulk fields from specific voltages.}
+    \label{fig:grid_transparency}
+\end{figure}
+
+With full transparency, the field lines from the cathode side will compress away from the wires, or ``funnel", as they pass into the extraction region. 
+This means that the electron trajectories for short drift lengths the S2 reconstructed positions will deviate from their axisymmetric predictions on the scale of the gate grid wire pitch (5~mm).
+At longer drift lengths the transverse diffusion 
+cause the electron cloud to straddle multiple grid ``holes."
+Events with many extracted electrons ($>$10) can still have excellent position resolution due to the position reconstruction algorithm averaging over the electron positions at the liquid level.
+
+In order to study the grid funneling effect, an example grid cell was modelled using the same software as the LZ axisymmetric model(gmsh and FENICS), but in 3D.
+This grid cell was a rectangular prism, with the central axis of the prism running through the middle of a hole in the mesh.
+In other words, the grid wires appeared as a square along the edge of the cell, with half of their circumference cut away.
+Cyclical boundary conditions were applied to the edges of the cell.
+While not matching the full aspect ratio of LZ, the electric field ratio on either side of the wires matched using planar electrodes. 
+A map of (x,y) coordinates below the gate were mapped to (x', y') positions above the gate using the same RK4 integration as before.
+The spatial compression ratio, along with the path length/temporal dispersion were then obtained.
+These are shown in Fig. \ref{fig:funneling}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/Grid_Timedelay.pdf}
+        \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/Funneling.pdf}
+
+    %   \includegraphics[width = 0.45\textwidth]{Assets/EFieldSims/Funneling.png}
+    \caption[The funneling and time delay effect of the woven mesh grid as a function of displacement from the middle of a cell.]%
+    {
+  The funneling and time delay effect of the woven mesh grid as a function of displacement from the middle of a cell.
+  \textit{Left}: The time delay, relative to the middle of the cell, of electrons displaced from the middle.
+  This is fit to a hyperbolic cosine.
+  \textit{Right}: The compression, or scaling factor, of electrons within a grid cell.
+  The larger the ratio of bulk field magnitudes, the more the image of the cell is shrunk.
+  }
+    \label{fig:funneling}
+\end{figure}
+
+\subsection{Superposition}
+
+In order to rapidly test changes to the electrode configuration, I developed a set of user-friendly tools which can recalculate the new fields and drift maps.
+The field map calculations exploit the linearity of the Poisson equation.
+As long as the geometry which defines the Dirichlet boundary conditions do not change, solutions may be added or subtracted in a linear combination.
+A set of ``basis fields" for LZ was created, where each electrode was biased to a unit voltage (1~V) and the remaining boundaries were grounded. 
+The voltage basis fields which were created are the PMT arrays(biased to their actual voltages, as these are not expected to change significantly), bottom, cathode, gate, and anode.
+From a command line interface, each of these voltages may be specified and the correct field is output.
+
+A limitation of this method was that the sagitta could not be easily changed, as they are a geometric feature, so they are fixed at the nominal SR1 values.
+Changes to the gate-anode extraction voltages will have a significant impact due to their proximity to one another, but changes to the cathode voltage has a negligible effect on the sagitta.
+This method can not easily create new drift maps, as the integrated field lines are not local.
+The drift maps must be resimulated with every change to the potentials.
+However, for rapid testing the Monte Carlo diffusion was disabled, which allowed for quick scans over detector parameters.
+
+
+\section{Comparisons to SR1 data}
+
+
+\subsection{Cathode Voltages}
+\label{sec:cathode_voltages}
+In order to quantify the effect of the wall attachment areas, and compare against SR1 data, two metrics were considered.
+First is the total volume which sees charge loss.
+This is parameterized by the minimum charge loss fraction and is compared against the charge loss events within calibration data.
+Second is the fraction of the wall which is invisible to S2s.
+This metric is compared against events known to take place on the surface of the walls, in this case $^{210}$Po $\alpha $ decays.
+Between SR1 and SR2 a series of data were taken at a variety of voltages on the electrodes. 
+This afforded an opportunity to study the impact of changes to the drift field on the wall attachment probability.
+The predictions for the charge loss volumes are shown in Fig. \ref{fig:attachment_cathode_charge}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Po210Scan.pdf}
+    \caption[The fraction of charge loss regions near the wall ($R=728\mathrm{~mm}$) as a function of drift field.]%
+    {The fraction of charge loss regions near the wall ($R=728\mathrm{~mm}$) as a function of drift field.
+    A charge loss region is a surface where either the radial component of the electric field points inwards, or the field line eventually reconnects with the wall radius.
+    The ``dead fraction" indicates the ratio of the total surface area of these patches to the total surface area of the wall.
+    The data points were evaluated using isolated S1 data from $^{210}$Po $\alpha$s during the post-SR1 drift field scan.
+    For the simulations (orange line) the trajectories were evaluated at a small standoff distance (100~$\mu$m) from the wall.
+    Higher drift fields cause the electron trajectories to become more vertical, which increases the probability that an electron will eventually diffuse into the wall.
+    The different curves indicate volumes where at least the specified amount of charge loss occurs.}
+    \label{fig:attachment_cathode_charge}
+\end{figure}
+
+The wall events studied here are $^{210}$Po $\alpha $ scatters.
+These are the result  of $^{210}$Pb atoms plating out on the PTFE during construction.
+The $^{210}$Pb half life is 22.2 years, and it $\beta$-decays to $^{210}$Bi with a Q-value of 63.5 keV.
+The $^{210}$Bi then $\beta$-decays with a half life of 5.01 days to $^{210}$Po, which itself has a half-life of 138.4 days.
+Somewhat uniquely, the $^{210}$Po decays with a $5.3$~MeV $\alpha$ which causes the daughter $^{206}$Pb nucleus to recoil with kinetic energy 106keV.
+Depending on the direction the $\alpha$ is emitted, the $^{206}$Pb could be the only detected event, which is problematic as it is just barely outside the WIMP search ROI for LZ.
+
+The method for evaluating the wall rate relied on \textit{isolated S1}s (more detail in \ref{chap:accidental}).
+These are S1 pulses without an associated S2. 
+Since LZ triggers off of S2s, a special ``long random" acquisition mode was utilized.
+Here, a square wave triggered the DAQ to write to disk at a rate which maximized the livetime.
+Additionally, the event window was expanded from 4.5~ms to 11.1~ms.
+This allows a search for S1s which did not have an associated S2.
+Events with near or total charge loss will show up in this dataset.
+Since the  $^{210}$Po $\alpha$s are quite energetic, it is common to see photoionization on the grids from the large S1, even when no charge actually drifts to the surface from the location of the decay.
+As such, events with an S2 below 1000~phd were considered to be isolated S1s if their S1 area was consistent with being a $^{210}$Po $\alpha$ decay.
+This is far below either the nuclear recoil band.
+
+In order to select the S1s by area, a position dependent area correction had to be applied.
+Due to the different collection efficiencies of the top and bottom PMT arrays, the raw S1 area ends up being larger for events of the same energy near the cathode than events near the gate.
+This is corrected for single scatters based on drift time, but for isolated S1s this is not possible. 
+However, the relative difference between the light collected in the top and bottom arrays, or \textit{top-bottom-asymmetry} can be used as a proxy for drift time instead.
+At small S1, the binomial fluctuations between the two arrays makes the uncertainty on this estimate quite large, but with $\mathcal{O}$(10$^4$) photons these fluctuations become subdominant to other sources.
+
+After the TBA corrections are performed, a window of $S1c \in [34.25, 36.75]$~phd is searched for S1 pulses. 
+This is taken as the rate of charge-loss $^{210}$Po $\alpha$-decays.
+This rate is divided by the rate calculated at zero drift field in order to estimate the fraction of the wall which remains S2-dead at various cathode voltages.
+
+For the comparison against simulations, a scan of cathode voltages was performed.
+The wall attachment was calculated a short standoff distance (0.5~mm) from the wall. 
+The fraction of that contour which exceeded 95\% loss was considered the loss fraction and compared against the $^{210}$Po-$\alpha$ data.
+
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Attach_Cathode.pdf}
+%     \caption{The fraction of the wall which is single-scatter insensitive, as a function of drift field.
+%     This is evaluated on a contour along $R=727.5mm$, or 500$\mu m$ from the wall.}
+%     \label{fig:attachment_volume_line}
+% \end{figure}
+
+
+\subsection{Wall Charge}
+\subsubsection{Wall Positions}
+It  was observed early into SR1 that the wall position was highly uniform. 
+For simplicity, it was decided that simulations would use an uncharged drift map for the initial SR1 result, without any wall attachment modelling.
+The fiducial volume was then chosen in a data-driven manner.
+It is informative to validate this decision against data.
+Here, I compare the observed wall positions against the uncharged simulations, and perform an optimization in order to estimate the wall charge.
+
+There are several ways to estimate the wall position.
+Here, I use the $^{83}$Kr$^m$ calibration data.
+The $^{83}$Kr$^m$ is produced via the decay of $^{83}$Rb and is injected into the TPC volume.
+The isotope mixes with the LXe and decays with a 1.83 hour half life\cite{kastens_calibration_2009}.
+This provides a high-activity, monoenergetic, quasi-uniform calibration source.
+The decay proceeds via two internal conversion electrons at $9.4$ and $32.1$~keV, respectively.
+The combined energy of $41.5 \mathrm{~keV}_{\mathrm{ee}}$ is just beyond the WIMP search ROI, which allows it to be regularly injected during the search itself, although this was not done during SR1.
+
+The $^{83}$Kr$^m$ spatial distribution was not perfectly uniform, but it was sufficiently uniform on the scale of $\sim 10$~cm that analyses can perform analyses on spatial bins as if it was.
+Two methods of identifying the wall using this source were examined. 
+The first was to divide the data into drift time bins, and find the radius where the activity within that bin dropped to half of its value at the center.
+The second was to look for charge loss events (events with S1 consistent with the $^{83}$Kr$^m$ source, but with severely diminished S2s), and calculate the mean of the S2 radii within drift time bins.
+The first method benefited from higher statistics, and had smaller uncertainties for the same drift time bins, so was used instead of the charge loss.
+
+When searching for the loss of activity near the edge, it is assumed that the underlying distribution of scatter locations is an ideal step function, going from a flat rate when $r<r_{wall}$ to zero when $r> r_{wall}$.
+This underlying distribution is effectively convolved with a Gaussian which models the accuracy of the position reconstruction.
+The resulting profile at constant drift time then appears as an error function (erf), multiplied by radius due to the cylindrical volume element:
+
+\begin{equation}
+    f_t(r;A, \mu, \sigma) = r\frac{A}{2}(1+\text{erf}[-\frac{(x-\mu)}{\sigma \sqrt{2}}])~,
+\end{equation}
+\noindent
+where the $\mu$ parameter is the estimated wall position within the drift time bin, $A$ is a normalization factor, $\sigma$ is the resolution at the wall.
+The covariance matrix of the fit provides the uncertainty.
+
+The proposed fields are then used to drift the individual points backwards in time using RK4, starting at the liquid level.
+In a perfect reconstruction, the points are all located at the wall radius at the specified drift time.
+Due to the complexity of the charge loss zones, instead of drifting all the way to the wall, the reconstructed $\hat{\mu}$ were scaled inwards to some standoff distance, and the locations were compared to that radius instead.
+For this work I used the modified wall radius of $r$=72~cm, but all plots here rescale the results to the actual radius of 72.8~cm.
+In order to not bias the result, the drift times are similarly corrected for the $8\mathrm{~mm}\sim5 \mathrm{~\mu s}$ loss of drift distance.
+The loss function is the sum of the squares of the residuals of the reverse-drifted points from the modified radius.
+
+The wall charge is parameterized as an azimuthally symmetric polynomial function.
+Each basis field was calculated from a charge profile of
+
+\begin{equation}
+    \sigma_i(z) = A_i \tilde z^i~,
+\end{equation}
+\noindent
+where $A_i$ is a scaling coefficient and $\tilde z \equiv z / 146.1 \mathrm{~cm}$ is the reduced height in the TPC.
+I calculate fields using polynomials up to $i=4$.
+The function is not analytically differentiable, so a non-derivative based minimization algorithm had to be used.
+For this purpose the \textit{Nelder-Mead} algorithm\cite{nelder_simplex_1965} was selected.
+Nelder-Mead uses simplices to identify a local minimum, and therefore does not require a derivative to converge.
+The downside is that a covariance matrix does not get calculated automatically.
+
+The result of the fits to the various krypton injections is shown in Fig. \ref{fig:sr1_charge_fit_profile}.
+A general decrease in the integrated charge was observed, shown in Fig. \ref{fig:charge_over_time}, at a rate of approximately 12.5~nC m$^{-2}$day$^{-1}$ over this time period.
+This data period straddles both SR1 and some calibration data sets.
+The charging rate increases over time, possibly related to the changes in event rate during these time periods.
+Between the first two injections was almost the entirety of SR1, which was significantly lower activity than the calibrations data taken after the conclusion of SR1. 
+As the grids were debiased on occasion during this time period, it is unlikely that the change in  the charging rate is due to electron attachment on the walls.
+It is more likely that this is a function of VUV photons impinging on the PTFE over time, an effect implied by LUX RUN04 \cite{lux_collaboration_3d_2017}.
+There, after a period of grid conditioning, the field was observed to be highly nonuniform, requiring extensive drift corrections in order to analyze the data.
+
+
+\begin{figure}
+    \centering
+    %   \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/Walls_Charge.pdf}
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/SR1_Fit.pdf}
+    \caption[The results of the estimated charge density on the reconstructed location of LZ PTFE walls.]%
+    {
+    The results of the estimated charge density on the reconstructed location of LZ PTFE walls.
+    This was evaluated over all of the available high-statistics Kr83m injections. 
+    The total integrated charge has the largest impact on the radius of the bottom of the detector.
+    While certain time bins exhibit larger errors, the overall profile is able to be accommodated with the polynomial charge profile.
+    A trend of increasing estimated wall charge at later injections can be observed.
+    The notation D$XX$ indicates the day of the injection relative to the first (\textit{i.e.} the first injection is D0).}
+    \label{fig:sr1_charge_fit_profile}
+\end{figure}
+
+Some general features are apparent.
+All of the fits favor distributions with larger absolute charge density near the edges.
+The charge near the bottom of the detector is generally denser than that at the top.
+Because of the positive induced charge in the TPC field shaping rings, the charge on the 
+This may be due to the effect of the cathode ring.
+The electric field is highly nonuniform due to it jutting into the TPC by approximately 5~mm. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/EFieldSims/Charge_Time_Arb.pdf}
+    %   \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/sr1_fit_charge.pdf}
+       \caption[ The estimated total surface charge accumulated on the TPC walls over time.]%
+       {The estimated total surface charge accumulated on the TPC walls over time.
+       The date is relative to the date of the first injection.
+       The charging rate appears to increase over time, possibly due to the post-SR1 calibrations, which had an elevated event rate, along with changes to the grid voltages which produced copious light.
+     }
+    \label{fig:charge_over_time}
+\end{figure}
+
+\begin{figure}
+    \centering
+    % \includegraphics[width = 0.7\textwidth]{Assets/EFieldSims/Charge_Time_Arb.pdf}
+       \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/sr1_fit_charge.pdf}
+       \caption[ The estimated surface charge density profile for the calibration data.]%
+       {
+    %   \textit{Top}: The surface charge accumulated on the TPC walls over time. The date is relative to the first injection.
+        The estimated surface charge density profile for the calibration data.
+        Note the relatively larger density near the top and bottom of the TPC.
+        Higher degree polynomials, or a spline fit may accommodate the data better.}
+    \label{fig:charge_over_time_profiles}
+\end{figure}
+
+\subsubsection{Impact of wall charge on TPC Field}
+
+Beyond the effect that the charging of the PTFE wall has on the reconstructed wall positions, it is important to understand the overall impact on field uniformity and wall attachment.
+It might be tempting to assume that the addition of surface charge would result in an overall decrease in the charge loss near the wall, due to the increase in the radial component of the electric field, $E_r$.
+However, this is only true for a plane of charge without Dirichlet boundary conditions.
+Because the field shaping rings enforce a nearby voltage, the addition of negative charge on the walls induces positive image charges in the conducting volumes.
+This makes it so that the field far from the wall falls off more similarly to that of a charged capacitor.
+Near the walls, the field is highly nonuniform due to the alternating pattern of induced charges, as shown in Fig. \ref{fig:wall_field_lines}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Wall_Charge_FieldLines.png}
+    \caption[The impact of a uniform wall charge on the field lines near the walls. ]%
+    {The impact of a uniform wall charge on the field lines near the walls. 
+    Both images were produced in Paraview, with the starting points of the streamlines being the same.
+    The left image is uncharged, while the right image shows a wall charged with uniform $1\;\mu C/m^2$ on the PTFE surface.
+    The color maps the radial component of the electric field.
+    The closest field lines to the wall begin to intersect with the addition of new charge.
+    Those that manage to not intersect immediately are instead pushed further away, where they have in increased chance of surviving until the surface.
+    }
+    \label{fig:wall_field_lines}
+\end{figure}
+
+The overall impact on the charge loss volumes is shown in Fig. \ref{fig:attachment_volume_charge}.
+Somewhat disappointingly, addition of negative charge has little impact on the volume of near-complete charge loss.
+Negative charge on the walls has a slight beneficial effect on the partial charge loss areas. 
+This is likely due to the nonuniformities that are enhanced under the presence of surface charge: trajectories are either captured immediately (within the 25~mm distance between the  field shaping ring resistors), or they are pushed further away, where diffusion is less likely to cause a loss of the electron.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/Attachment_Volume_Charge.pdf}
+    \caption[The charge loss volume vs uniform charge density.]%
+    {The charge loss volume vs uniform charge density.
+    These are the volume of xenon near the wall with charge loss probabilities exceeding 80\% (blue), 90\% (orange), and 95\% (green), and were found with the stochastic diffusion model and not the deterministic integration.
+    Due to the boundary conditions imposed by the nearby titanium field shaping rings, the impact on charge loss volume is relatively muted across this range of values.
+    The field is distorted near the wall, which affected the charge loss \textit{surface area} far more.}
+    \label{fig:attachment_volume_charge}
+\end{figure}
+
+
+\subsection{Electron lifetime}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/EFieldSims/FiducializedIntrinsicLifetime.pdf}
+    \caption[ Uncorrected S2 areas as a function of drift time with simulated perfect xenon purity. ]%
+    { Uncorrected S2 areas as a function of drift time with simulated perfect xenon purity. 
+    The impact of the nonuniform electric field on S2 size is indicated with the red trend line.
+    Monoenergetic 40~keV $^{83m}$Kr events are simulated, illustrating the artificial/intrinsic lifetime due only to the electric field nonuniformities.
+    The slope indicated in the red line is the result of the slight change of recombination probability as a result of the change in e-field magnitude over the height of the TPC.
+    }
+    \label{fig:field_lifetime}
+\end{figure}
+Due to the small amount of nonuniformity in the field magnitude, the electron recombination probability will vary from point to point within the detector. 
+If there is a correlation between the height where a scatter occurs in the detector and the electric field, this can mimic the effect of electron attenuation due to electronegative impurities.
+To investigate this effect, a monoenergetic source was simulated using the LZ simulations package LZLAMA.
+
+Single scatter electron recoils with energy 40~keV (approximately $^{83}\text{Kr}^m$-like) were placed uniformly throughout the TPC.
+The S1 and S2 response were calculated based on the local electric field. 
+The electron lifetime for the simulation was set to infinity so as to remove the effect from the actual impurities.
+The resulting events were fiducialized away from the walls, in order to remove the nonuniformities at extreme $r$.
+Events with $r<688$~mm were selected and binned in drift time.
+The mean $S2$ area was calculated within each bin, and a trendline was fit between 200 and 900~$\mu$s.
+
+The intrinsic lifetime due to the electric field was found to be 289~$\pm$~72~ms.
+This far exceeds the measured electron lifetime in SR1, 5~ms.
+Since the effective lifetime adds in inverse $\tau^{-1} = \tau_1^{-1} + \tau_2^{-1}$, I conclude that this has a negligible effect on the SR1 result.
+At drift times shorter than 200~$\mu s$ a shorter intrinsic lifetime is seen.
+With real data, this would be confounded by the effects of the grids.
+Overall, this result is shown in Fig. \ref{fig:field_lifetime}.
+
+\section{Handoff}
+
+These simulations were incorporated into the larger LZ analysis and simulations toolchains.
+The handoff includes three components: the electric field map, the drift map, and the software to read and query the maps.
+Each field map is a mesh mapping $(r,z) \rightarrow (E_r, E_z)$, while the drift map projects $(r,z)\rightarrow(S2_R, S2_T, P_a, \sigma_R, \sigma_\phi, \sigma_t)$, where $P_a$ is the probability for the electron to become attached to the wall and the assorted $\sigma$ are the relevant diffusion quantities.
+The points which are interpolated are not the same in real $(r,z)$ space, because the drift map is based on integrating individual trajectories, and not the points from the field map.
+A method for a reverse drift map was developed.
+This involved a map from $(S2_R,S2_T) \rightarrow(r,z)$, and was accomplished in a rather straightforward manner.
+Since the maps were stored in comma-separated-value format, the real and S2 points could be transposed before running the quickhull algorithm to create the mesh.
+Due to the grid funneling affect, and the wall attachment, the points were downsampled prior to this step when doing the reverse map.
+
+Together these form the \textit{LZElectricField} package, or LZEF.
+LZEF is used in \textit{BACCARAT}\cite{akerib_simulations_2021}, the Geant4\cite{agostinelli_geant4simulation_2003}-based Monte Carlo particle tracker for LZ.
+Within BACCARAT there are two methods of event generation: raytracing and deposit-only simulations.
+
+Raytracing mode makes calls to NEST\cite{szydagis_review_2021}, where the quanta (photons and electrons) are generated. 
+The electric field in raytracing mode queries the electric field at the location of each deposit, and uses that field as an input to NEST in order to calculate the recombination probabilities.
+The drift maps are queried in order to find the mean S2 location and drift time.
+Each electron within the cloud is then randomly perturbed in the transverse and longitudinal directions, with Gaussian distributions with standard deviations $\sigma_T$, $\sigma_L$, also interpolated from the maps.
+Note that the electrons, despite having access to the electric field vectors, are not transported step by step within the BACCARAT simulation.
+
+In the deposit only BACCARAT mode, the LZEF package is not queried.
+Only the real locations, particle type, and magnitude of the energy deposits are stored.
+This is much faster, as individual photons and electrons are not tracked.
+The final S1 and S2 values are calculated in a post-processing simulation package called LZLAMA.
+Here, LZEF is queried for electric fields and S2 coordinates like in the raytracing mode.
+The main difference comes in the form of the effect of diffusion.
+With a parametric model, the electrons are not simulated, so the effect of the diffusion on the position resolution has to be simulated in a separate step.
+A single-electron resolution $\sigma_1$ is calculated, and the resulting S2 resolution is then $\sigma_N= \sigma_1/\sqrt{N}$. 
+The single-electron resolution is a function of drift time and radius.
+In the end, the S2 reconstructed position is then sampled from a Gaussian distribution with the unperturbed location as the mean, and standard deviation $\sigma_N$.
+These parameters were tuned on data, and more detail is provided in Chapter \ref{chap:sims}.
+
+Within the Raytracing mode, the work in the chapter has two additional features.
+The first is the ability to utilize the attachment probabilities which are calculated on a per-deposit basis.
+The number of electrons generated locally is calculated by NEST.
+This number is then used to calculate the size of the S2 based on the electron lifetime.
+The electron lifetime being $\tau_e$, and the drift time being $dT$, the survival probability per electron is then $\lambda = \tau_e dT$.
+This $\lambda$ becomes the expectation value for a Binomial distribution.
+Near the PTFE wall, the attachment probability $P_A$ simply modifies the $\lambda$ from the electron lifetime:
+
+\begin{equation}
+    n_{\text{extracted}} \sim \text{Binom}(n_{e}, (1-\tau_e dT)(1-P_A) )~.
+\end{equation}
+
+The second additional feature is the handling of the electron funneling through the gaps in the gate grid.
+In raytracing mode each electron has its diffusion simulated between the initial point and the liquid surface. 
+When the grid-funneling flag is set in BACCARAT, the  electrons are binned into their respective pitch centers.
+From there, the compression ratio and temporal dispersions are calculated based on the field ratios, as shown in Fig.  \ref{fig:funneling_sim}.
+The electron positions are then uniformly scaled inwards towards the center of the grid square, and the drift times are corrected.
+This has minimal effect within the fiducial volume, but short drift times have a larger impact.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/funneling_sim_before.png}
+        \includegraphics[width=0.45\textwidth]{Assets/EFieldSims/funneling_sim_after.png}
+
+    \caption[Electron location scatter plots at the liquid level from grid funneling simulations. ]%
+    {Electron location scatter plots at the liquid level from grid funneling simulations. 
+    A gamma ray Compton scatters multiple times, producing distinct S2 positions.
+    The energy deposit locations are indicated by the red x's.
+    \textit{Left}: The original distribution of electron positions at the liquid level.
+    \textit{Right}: The distribution of electron positions for the same event after the grid funneling feature was enabled.}
+    \label{fig:funneling_sim}
+\end{figure}
+
+For the SR1 simulations and analysis these additional features were not enabled.
+Since the events within the fiducial volume are largely insensitive to the wall attachment and the grid funneling, these effects were believed to be a complicating feature for the first science result.

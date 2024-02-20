@@ -1,0 +1,1371 @@
+\chapter{Cathode High Voltage for LZ}
+\label{chap:chv}
+
+\section{Introduction}
+An electric field must be established and maintained across the drift length of a TPC for successful operation.
+For dark matter searches, a large field is necessary since the electric/nuclear recoil discrimination improves with field magnitude up to a maximum between 240-290 V/cm\cite{lux_collaboration_discrimination_2020}.
+Meter-scale TPCs are faced with the challenge of delivering large negative high voltages on their cathodes in order to establish these fields.
+While the drift fields are far below the minimum necessary to generate electroluminescence, localized regions of enhanced field carry additional risk.
+While the region around the wires have enhanced field, the cathode field is generally much lower than the field across the electroluminescence gap in the top of the detector.
+A volume of particular concern is the space where the cathode high voltage cable makes the connection with the electrode ring itself.
+
+Previous LXe-TPCs have  found it challenging to achieve their high voltage aspirations.
+Xenon-10 operated with a cathode biased to -13~kV for a drift field of 730 V/cm\cite{aprile_design_2011}.
+LUX Run-03 saw a drift field of 180 V/cm\cite{the_lux_collaboration_improved_2020}, corresponding to a cathode voltage of $\sim$8.7~kV.
+Xenon-1T\cite{aprile_xenon1t_2019} ran at 120~V/cm in their first science run and at 80 V/cm in their second, with a cathode voltage of -12~kV and -8~kV, respectively. 
+PandaX-4T \cite{meng_dark_2021} biased their cathode to values ranging from -20~kV to -16~kV (decreasing over time), which established drift fields between 93-121~V/cm.
+The dual phase LAr-TPC experiment Darkside-50\cite{the_darkside_collaboration_darkside-50_2018} operating under similar grid biases of -12~kV on their cathode, which provided a drift field of 200~V/cm.
+
+
+During LZ's design and construction, a \textit{design} cathode voltage was specified at -100~kV, corresponding to what was thought to be an optimal drift field.
+A \textit{requirement} cathode voltage was established as -50~kV, which equated to the perceived acceptable drift field for the experiment.
+The cathode high voltage (CHV) feedthrough would be the limiting factor in these scenarios, and therefore a novel design for TPCs was used.
+
+In this chapter I detail the prototype testing, assembly, and deployment of the production CHV feedthrough for LZ.
+Following the success of the test a production version was machined and assembled in a clean room at LBNL.
+Finally the cable and feedthrough on-site at SURF, making the final seals on the cryostat vessels.
+I explain the purpose, results, and challenges of this subsystem, along with my contributions.
+
+This project was one of the first that I contributed to when I joined LZ in 2016.
+At that point in time the  design and test parameters had already been selected, and the testing procedure was largely in place.
+I contributed to the construction of the test stand, working with project scientist Ethan Bernard.
+Modifications to and characterization of the photomultiplier tube (PMT) and other electronics were performed by myself.
+I assisted in the conduction of all tests and was responsible for the data collection and software.
+All data analysis was performed with code written by myself and run on local machines.
+The production feedthrough and cable was assembled, checked out, and packaged by myself and Ethan Bernard.
+The final connection was performed with a three-person team, including me, who used self-contained breathing apparati (SCBA) to align the seals while under a nitrogen purge-induced low oxygen risk.
+
+\section {Design Considerations}
+\label{sec:design}
+\subsection{Structure}
+The high voltage for LZ is generated outside the detector in high voltage power supply (HVPS) and delivered via a feedthrough.
+The feedthrough facilitates a continuous electrical connection between the cathode ring in the LXe space and the laboratory space where the HVPS is located.
+LZ made the unique decision to place the feedthrough itself on the side of the outer cryostat vessel.
+A popular choice for TPCs is to place the feedthrough on the top of the vessel, and extend a rod or cable vertically downwards to the cathode position. 
+The extension is usually a coaxial design, with a high voltage wire surrounded by an insulating layer and grounded outer conductor.
+In order to minimize the electric field magnitude, the layers terminate in succession, with the ground layer ending first, followed by the insulating layer, leaving the bare high voltage wire to make the final connection.
+This technique benefits from simplicity, but comes at the cost of enhanced electric fields in the region outside the field shaping cage.
+Feedthroughs of this type are shown in Fig. \ref{fig:hwang_design}.
+
+
+The higher fields resulting from this design are problematic if one desires to instrument the region outside of the field cage.
+A top-down design impedes the light collection, generates high fields between the cable and the PMTs, act as an additional background source, and establishes a complicated, nonuniform electric field.
+The primary issue is the increased risk of electroluminescence near the connection, due to the small standoff between the high voltage and the inner cryostat vessel.
+
+Since LZ aimed to instrument the ``skin" region in order to reduce external backgrounds, these issues had to be resolved.
+One possible solution would be to simply increase the standoff between the field cage and the inner cryostat vessel. 
+The increased distance at the same field would reduce the field, at the cost of additional xenon, making it uneconomical.
+Instead, LZ opted for a novel design of making the connection horizontally from the side, making consecutive seals to the inner and outer cryostat vessels (ICV and OCV, respectively).
+
+The horizontal feedthrough design consists of a single high voltage cable which connects the HVPS to the cathode through a set of concentric cones extended outwards from the ICV and OCV.
+The cone shape allows the ground and insulation layers of the cable to end relatively close to the seal while maintaining a lower peak electric field.
+On the surface of the inner cone (connected to ICV) copper cooling straps were placed to help maintain the temperature at that of the rest of the ICV.
+Multi-layer insulation was also wrapped around the inner cone in order to supress bubble formation, which would weaken the dielectric strength.
+The cable itself is carbon-doped polyethylene, which greatly reduces the risks from mechanical stress when cooling from room temperature to liquid xenon temperatures (177~K at 2~bar).
+To further limit the field magnitude, a linear potential grading is established by a resistor-divider network formed from a series of doped polyethylene rings.
+The structure is shown in \ref{fig:grading_cone}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/side_view_my_annotations.png}
+    \caption[A side-view cross section of the  LZ Cathode High Voltage (CHV) feedthrough. ]%
+    {A side-view cross section of the  LZ Cathode High Voltage (CHV) feedthrough. 
+    Visible is the HV cap(purple) and spring connection on the right hand side.
+    The rings (pink and gray) form the grading structure which maintains a relatively uniform electric field.
+    The smaller and larger cones seal to the ICV and OCV, respectively.
+    The white cylinder is the ``Xe displacer" which prevents LXe from coming into contact with the regions of highest electric field.
+    The yellow lines indicate cooling straps which help to regulate the temperature of the cone.
+    For scale, the xenon displacer (the white cylinder and cone) structure is approximately 30 inches long.
+    Rendering by Ethan Bernard.}
+    \label{fig:grading_cone}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/darkmatter/High-voltage-feed-throughs-designed-for-the-LBNE-DarkSide-and-CAPTAIN-liquid-argon.png}
+    \caption[ Photographs of examples of traditional feedthrough designs for dual-phase TPCs.]%
+    { 
+    Photographs of examples of traditional feedthrough designs for dual-phase TPCs. 
+    From top to bottom: the designs for DUNE far-detector, Darkside, and CAPTAIN TPCs.
+    Photograph taken from \cite{rebel_high_2014}.
+% High voltage feed-throughs designed for the LBNE, DarkSide, and CAPTAIN liquid argon TPCs, from top to bottom. 
+    }
+    \label{fig:hwang_design}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[height=.9\textwidth,angle=-90,origin=c]{Assets/CHV_Files/CHV_topology_diagram_LC.png}
+%     \caption{The CVH topology diagram. Credit: Ethan Bernard}
+%     \label{fig:chv_topology}
+% \end{figure}
+
+The high voltage cable  makes a direct connection between the HVPS and the cathode ring located in the inner TPC volume. 
+Shortly past the end of the inner cone, the ground layer terminates, flush with a polyethlyene xenon displacer, which prevents direct contact between the LXe and the cable's insulating core.
+This increases the standoff distance between the LXe and the regions of highest electric field, reducing the risk of electroluminescence and breakdown.
+The fit between the cable and the xenon displacer is virtually gapless, achieved through a cryofitting procedure which inserted the slightly oversized cable into the bored hole.
+The high voltage wire itself makes contact with a stainless steel detent, which captures a conductive plastic cap.
+A spring is inserted into this cap, and makes the final connection to the cathode ring.
+Using a flexible connection makes for a simpler installation procedure, and limits the mechanical stresses from thermal contraction.
+It separates the concerns of aligning the inner cone seal and the high voltage connection itself, while vastly improving the tolerance of the design.
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\textwidth]{Assets/CHV_Files/water_tank_my_annotation.png}
+    \caption[CAD rendering of the LZ water tank with components relevant to the CHV feedthrough annotated.]%
+    {
+    CAD rendering of the LZ water tank with components relevant to the CHV feedthrough annotated.
+    This illustrates the scale of the CHV feedthrough relative to the LZ OCV and water tank.
+    Note the turn the bellows makes, as well as the ``spool can" at the top of the water tank, which forms the seals to the outside.
+    Rendering by Ethan Bernard.
+    }
+    \label{fig:chv_water_tank}
+\end{figure}
+
+
+The small current flowing into the cathode can return to ground through the TPC forward field region resistor-divider network, the reverse field regions resistor-divider network, or the CHV grading structure.
+The grading structure is another resistor-divider network which reduces the peak field on any one part of the design. 
+The large, round end cap is held at the cathode voltage and lacks sharp points which can enhance the field.
+Concentric, conducting plastic rings form the rest of the network, with 1~G$\Omega$ resistors connecting them.
+The large, round shape of the rings is again to avoid sharp, proud points which can enhance the electric field.
+This design limits the peak electric field magnitude to 35~kV/cm at a cathode voltage of 100~kV.
+
+
+Because made of plastic, the cable is flexible, and when warm can be fit with an o-ring seal to separate volumes.
+The two spool can seals at the top of the water tank,  one air-to-vacuum and the other vacuum-to-gxe, are made this way.
+Because the plastic loses pliability at LXe temperatures the seals could not be made there, so for the length of the water tank the cable is routed through a vacuum-jacketed (VJ) hose to the spool can. 
+Rather than make a seal between the VJ hose and the OCV, The OCV vacuum space extends the length of the water tank through a bellows which surrounds the VJ hose.
+This thermally insulates the VJ hose, and adds extra protection against any ingress into the xenon space.
+
+\begin{figure}
+    \centering
+     \includegraphics[width=.7\textwidth]{Assets/CHV_Files/CHV_3D_sims.png}
+    \caption[The results of a finite element field simulation in Maxwell.]%
+    {The results of a finite element field simulation in Maxwell, performed by then graduate student Evan Pease.
+    The region of peak field is seen to be the corner of the first field shaping ring after the HV cap.
+    This simulation was performed assuming a -100~kV cathode voltage.}
+    \label{fig:grading_field_sim}
+\end{figure}
+
+Unfortunately the polyethylene emanates radon, which is exacerbated by the large distance spanned while in xenon.
+This is mitigated through several methods.
+Firstly, there is a flow restrictor immediately inside the inner cone, which limits the exchange of LXe between the TPC and the VJ hose.
+An FEP sleeve is fit over the cable, acting as a guard against radon emanation by routing the gasses away from the TPC and into the circulation loop, where is passes through an inline radon reduction system.
+A small diameter tube runs partially down the outside of the sleeve, allowing some Xe to bypass the radon removal system and connect to the detector cooling and circulation system.
+
+
+\begin{figure}
+    \centering
+     \includegraphics[width=.7\textwidth]{Assets/CHV_Files/spool_can_my_annotations.png}
+    \caption[ An annotated diagram of the spool can connection / warm feedthrough at the top of the water tank.]%
+    {
+    An annotated diagram of the spool can connection / warm feedthrough at the top of the water tank.
+    The interior of the spool is in the GXe space, and is topologically connected to the TPC.
+    Inside the circle, the cable makes a loop, which allows it to contract as the temperature drops and reduces mechanical stress.
+    On the side of the can are small outlet tubes, one of which connects to a bypass tube, and the other goes to the inline radon reduction system.
+    The cross at the top is evacuated and forms the warm o-ring seals.
+    At the bottom, the GXe-to-vacuum seal is formed, then the cable makes a right angle and  feeds through the vacuum-to-air seal.
+    The remaining plumbing exists for pumping out the cross and for leak checking purposes.}
+    \label{fig:spool_can}
+\end{figure}
+
+The connection of the VJ hose to the warm end is also topologically complex.
+In order to protect the VJ hose from the water in water tank, a protective bellows surrounds, joined with the outer cryostat vacuum.
+The VJ hose has a risk of softening over time, necessitating access to a pumpout port.
+These constraints require the installation of a CF tee connection between the reverse side of the VJ hose flange and the outer bellows flange.
+Because the VJ hose must also connects to the water tank feedthrough, this results in a triple-stack CF seal, with two gold gaskets on either side of the VJ flange.
+% \todo{add the picktures of the triple stack and inlet}
+
+
+\subsection{Electroluminescence}
+In LXe the threshold for electroluminescence is 412~kV/cm\cite{aprile_measurements_2014}.
+This exceeds the surface fields of the design but can be achieves by asperities on the conducting surfaces.
+The overall goal of the LAr prototype tests are to ensure that this threshold is never crossed.
+In XeBrA (Chapter \ref{chap:xebra}) it was observed that it is possible to observe enhanced light production without breaking down, at least over a period of several minutes.
+
+The TPC is separated from the CHV feedthrough by the PTFE wall and field cage.
+Significant light leakage was not observed between the two regions.
+As such the main area of concern is either degradation of the skin tagging efficiency, or loss of exposure, as a result of elevated  light rates.
+% \subsection{Field Emission}
+
+
+\section{LAr Prototype Test}
+\subsection{Purpose and overview}
+
+As explained above, the unique design of LZ's CHV feedthrough was expected to pay dividends by enabling the skin veto within LZ.
+However it was necessary to verify the integrity of the design as built, in order to inform possible design changes or recommendations for commissioning.
+A prototype of the feedthrough was machined and tested in LAr with the goal of identifying the maximum voltage which could be applied without generating a single photon background, as measured with a large area PMT.
+The design of the prototype was identical to the intended production design, save for those features necessary for installation (e.g. bolt holes, access ports for leak checking, seals between the inner and outer cones).
+Only the inner cone (which attaches to the ICV and is filled with xenon during the lifetime of LZ), was tested, as the outer cone will not experience any large fields.
+LAr was chosen as a proxy for LXe due to its low cost and similar dielectric strength\cite{tvrznikova_direct_2019, tvrznikova_sub-gev_2019}.
+
+The metric for success was the maximum voltage held for at least one hour.
+It was intended to reach the LZ design voltage of -100~kV for this period of time.
+Two runs were performed in order to isolate features in case of failure.
+The first run tested the grading structure, while the second tested the spring connection.
+
+
+
+\subsection{Grading Structure}
+The construction of the prototype grading structure took place in several steps.
+First, a section of cable was removed from a spool and a short section, approximately one foot long, had its outer conductive layer removed.
+This section was chilled in an environmental chamber to shrink and stiffen the plastic.
+The polypropylene Xenon displacer was heated with a heat gun to exploit a small amount of thermal expansion.
+The cable was quickly cryofit into the displacer in order to make a gapless connection.
+
+Taking place inside a class 100 clean room, the grading rings were placed one by one over the exposed insulating layer on the polyethylene cable.
+Between each ring was placed a delrin spacer to establish the fields.
+Each division had four 5~G$\Omega$ resistors placed between them, in two parallel sets of two.
+The resistors were attached to each grading ring with Harwin pins, shown in Fig. \ref{fig:Harwin}.
+
+The cable was connected to the high voltage power supply.
+The supply itself was a Cockroft-Walton generator which multiplied the high voltage sourced from a Spellman power supply.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/CHV_Files/Build/series_resistor_interconnect.png}
+    \caption[A photograph of Harwin pin which connects the resistors in series between the CHV grading rings.]%
+    {A photograph of Harwin pin which connects the resistors in series between the CHV grading rings.
+    Note the slightly canted edges of the 5~G$\Omega$ resistors.
+    These are particular high voltage risks due to the proximity of the voltage drop between the rings and the pins.}
+    \label{fig:Harwin}
+\end{figure}
+
+\subsection{Test Stand}
+
+The prototype CHV feedthrough was tested in a 16 inch inner diameter dewar.
+Threaded rods suspended the entire structure from the lid.
+An electropolished stainless steel cone stood in for the production cone.
+All wiring was similarly routed through the top.
+In the first run the structure terminated in the HV cap, instead of completing the electrical connection.
+For the second run, an electropolished stainless steel mock spring extended from the plastic HV cap.
+This took the place of the spring connection from the grading structure to the cathode ring itself, but due to space constraints it remains on axis.
+
+The CHT test stand was instrumented with a Hamamatsu R5912-02-MOD PMT\cite{noauthor_large_nodate}, and two Cremat CR-150\cite{noauthor_cr-150-r5_nodate} charge sensing circuit boards. 
+These three channels were digitized using a CAEN 1720 DAQ with custom software.
+The base of the PMT circuit was modified from a previous configuration to support cathode biasing, and furthermore to saturate at a lower voltage.
+The latter modification was necessary due to the potential for copious amounts of light to impinge on the photocathode during the testing.
+The resulting circuit board is shown in Fig. \ref{fig:pmt_circuit}.
+
+
+The charge amplifiers were put in place primarily to identify the location of breakdowns if one were to occur during testing.
+With this knowledge, interventions could be taken as necessary if the goal voltage was not achieved. 
+The two modes that were distinguished were breakdowns withing the grading structure, and breakdowns from the grading rings to the inner cone.
+Each location can be seen in Fig. \ref{fig:struct2CAD}, where the second ``cone" is the ground cone which surrounds the high voltage cap terminating the grading structure.
+
+\begin{figure}
+\centering
+    \includegraphics[height=.75\textwidth]{Assets/CHV_Files/struct1photo.png}
+    \includegraphics[height=.75\textwidth]{Assets/CHV_Files/struct2photo.png}
+    \caption[A photograph of the CHV prototype test stand.]%
+    {A photograph of the CHV prototype test stand. 
+    \textit{Left}: The design in Run 1, without the spring connection.
+    The baffles which contain the cables are seen, along with the clean room tent.
+    This entire column is lowered into the argon dewar with a crane.
+    \textit{Right}: The design used in Run 2, with the mock spring connection.
+    The PMT and HV cap can be seen in finer detail.}
+    \label{fig:test_stand_1}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width = .9\textwidth]{Assets/CHV_Files/charge_sense_scheme.png}
+\caption[ Schematic of the charge sensing circuit for the CHV feedthrough test.]%
+{ Schematic of the charge sensing circuit for the CHV feedthrough test.}
+\label{fig:charge_sense_scheme}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/pmt_schematic.png}
+    \caption[The schematic for the base for the CHV photomultiplier tube.]%
+    {The schematic for the base for the CHV photomultiplier tube.
+    Note the capacitors in parallel with the final stages of the voltage divider.
+    This help to keep the PMT response linear to higher numbers of photoelectrons.
+    The anode signal is read across the 51$\Omega$ resistor on the right side of the diagram. Further details on the base design may be found in the Hamamatsu guide\cite{noauthor_photomultiplier_2007}.
+    }
+    \label{fig:pmt_circuit}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=.55\textwidth]{Assets/CHV_Files/struct1CAD.png}
+\includegraphics[width=.35\textwidth]{Assets/CHV_Files/struct2CAD.png}
+\caption[CAD rendering of high voltage test structure and surrounding instrumentation.]%
+{CAD rendering of high voltage test structure and surrounding instrumentation.
+\textit{Left}: The structure during Run 1.
+\textit{Right}: The structure during Run 2. 
+Note the addition of the ``mock spring" which extends out from the cone.
+}
+\label{fig:struct2CAD}
+\end{figure}
+The circuit employed in the test is shown in Fig \ref{fig:charge_sensing_circuit}.
+The two charge amplifiers were Cremat CR-111 charge sensitive amplifiers, with a gain of 130 mV/pC.
+These were simulated in PartSim\footnote{Partsim.com} to find the response to shorts across various locations in the system.
+It was observed in simulations (and in data) that there was significant cross-talk between the channels due to the capacitive connection between the cone and the grading structure.
+However, the simulations predicted a difference in polarity between the two modes.
+Charge entering the mount through the grading structure show up as negative current (and therefore, positive voltage signals due to the inverting amplifier) in that particular charge amplifier, while breakdowns to the cone showed up as negative current in the other charge amplifier.
+The results of the simulations are shown in Fig \ref{fig:chargeamp_sims}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Circuits/chargeamp.png}
+    \caption[The schematic of the  charge sensing circuit for the CHV prototype test. ]%
+    {The schematic of the  charge sensing circuit for the CHV prototype test. 
+    The trapezoids are custom components representing the resistance and capacitance matrices of the grading rings.
+    The connections on the bottom of the diagram represent the charge-sensitive amplifiers.
+    One amplifier is connected to the inner cone, while the second is connected to the lowest potential grading ring.
+    Also visible is a current source which simulates the effect of a short between the grading rings.
+    }
+    \label{fig:charge_sensing_circuit}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.45\textwidth]{Assets/CHV_Files/Circuits/Ring1.png}
+        \includegraphics[width = 0.45\textwidth]{Assets/CHV_Files/Circuits/418toconev2.png}
+
+    \caption[Results of SPICE simulations using the schematic in Fig. \ref{fig:charge_sensing_circuit}.]%
+    {Results of SPICE\footnote{http://bwrcs.eecs.berkeley.edu/Classes/IcBook/SPICE/MANUALS/spice3.html} simulations using the schematic in Fig. \ref{fig:charge_sensing_circuit}.
+    The first figure shows a short across the first set of 5 G$\Omega$ resistors.
+    The second shows a short from the end of the grading structure (referred to as the ``mushroom head" to the inner cone. 
+    In both cases the black voltage trace indicates the mount charge amplifier and the black the cone charge amplifier. 
+    }
+    \label{fig:chargeamp_sims}
+\end{figure}
+
+In addition to the digitizing of the PMT voltage, the signal was split and drove an analog  Ortec ratemeter.
+This allowed for real time monitoring of small spikes in the light production, guiding the ramp rate.
+When the ratemeter fluctuated too much in a short amount of time the voltage was immediately reduced.
+
+\subsection{Spring connection}
+
+In order to test the ergonomics and feasibility of making the spring connection on site, a practice rig was constructed at LBL.
+A slide was assembled from 80-20 pieces which allowed the prototype grading structure to slide forwards and backwards.
+The cap and spring was placed at the other end of the rig.
+A steel plate was installed to mimic the clearance the operator would have while working on the seal on the OCV.
+This successfully demonstrated that an operator could reliably stretch the spring and make the final connection.
+My role on this portion of the project was assembly of the rig, and as an independent data point confirming the ease of the eventual procedure.
+
+\subsection {Signal Processing}
+\subsubsection{Strategy}
+The signal processing procedure consists of the following algorithm for each event window.
+\begin{enumerate}
+    \item Attenuate the noise from the signal and find the pedestal from which to measure the pulses.
+    \item Locate the pulse boundaries for PMT signals.
+    \item Cluster the pulses together and merge them appropriately.
+    \item Calculate the reconstructed quantities for the merged pulses.
+\end{enumerate}
+
+This is performed on the PMT channel. 
+For the charge amplifier channels, the clustering and noise reduction steps are omitted.
+This is due to the fact that the impulse response of the charge multipliers are much longer than that of the PMT, obviating the need to detect the merging of short pulses.
+
+
+\subsubsection{Noise filtering}
+The unamplified voltage signal from the PMT was digitized by a CAEN 1720 DAQ board and stored on disk using the custom software \textit{PixeyCalc} \cite{bodnia_electric_2021}.
+The DAQ operated at a frequency of 250~MHz, allowing each PMT pulse to span several 4~ns samples.
+Data was taken using a heartbeat trigger, wherein a fixed acquisition window was written to disk whenever a square wave signal from a Rigol function generator crossed a specified threshold.
+The trigger rate and acquisition window was approximately tuned in order to maximize livetime.
+This was conducted by adjusting the frequency on the function generator until the PixeyCalc software failed to yield an event rate identical to the input threshold crossing rate.
+Final values were a 64~$\mu s$ window (=$2^{14}$ samples) with a 650 Hz signal, for a $4.16\%$ total livetime.
+When additional channels were digitized, the trigger rate was reduced  proportionally.
+
+
+A persistent challenge when analyzing the digitized PMT signal offline was the spectrum of noise present in the signal.
+Ideally a power spectrum is white, i.e. constant in magnitude across the sampled frequencies.
+However, in the prototype testing the noise environment exhibited a combination of low and high frequency signals, as shown in Fig. \ref{fig:chv_psd}.
+The power spectrum $P_k$ itself is defined as
+
+\begin{align}
+    P_k = \frac{X_k X_k^*} { \Sigma_{j=0}^{N-1} X_j X_j^*}\\
+    X_k = \sum_{j=0}^{N-1} x_j e^{-i 2 \pi jk / N}~,
+\end{align}
+\noindent
+where $N$ is the number of samples and $X_k$ is the discrete Fourier transform (DFT).
+An example of the appearance of this noise is shown in Fig. \ref{fig:ch_event}.
+Significant effort was undertaken to reduce this error, in order to achieve a high single photon efficiency.
+A bandpass filter method, where the frequencies found in the noise spectrum was  tried initially, but this was found to distort the PMT single photon response in an undesirable way.
+Since the noise spectrum is dominated by a small number of pure tones, it was decided instead to fit a sinusoid $A\cos( \omega t - \phi)$ to the data.
+The amplitude returned by this method, $A$, differs from the Fourier analysis components in that $\omega$ is unconstrained, no longer necessarily a multiple of $2\pi/N$.
+This is similar to the Lomb-Scargle periodigram \cite{lomb_least-squares_1976}, which is used for irregularly spaced data.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/PSD_Run1_May23.pdf}
+    \caption[The noise power spectrum for Run 1 of the CHV Prototype tests. ]%
+    {The noise power spectrum for Run 1 of the CHV Prototype tests. 
+    There is a significant DC component, along with numerous sharp high frequency peaks.}
+    \label{fig:chv_psd}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/event_1535411882_11.pdf}
+    \caption[A representative waveform from a CHV prototype test stand acquisition.]%
+    {A representative waveform from a CHV prototype test stand acquisition.
+    This particular event is from an LED calibration.
+    The DC roll of the pedestal is visible, along with three apparent detected photons.}
+    \label{fig:ch_event}
+\end{figure}
+
+
+Prior to the Lomb-Scargle periodigram, the DC component had to be subtracted. 
+This was done by finding the mean and rms of the waveform, masking the outliers (more than three standard deviations from the mean), and repeating the process until no more outliers are observed.
+The outliers are recalculated at each step in order for large pulses to not bias the initial step.
+
+The fitting procedure employed in the analysis consisted of two stages: one to find the optimal relative values globally, and then to actually fit the template to individual waveforms.
+The baseline model consisted of a sum of $N_c$ cosine  functions, each with parameters $A_i$, and $\phi_i$. 
+The frequencies were taken to be harmonics of a fundamental frequency, i.e. $\omega_i =(i+1)\omega_0 $.
+An initial pass through the data was performed, removing outlier data points so that the waveforms were free of SPE pulses.
+Then, an unconstrained fit was performed with the harmonics.
+The fitted values for each waveform were collected, and the mean values for $A_i$, $\phi_i$, and $\omega_0$ were found.
+Using these results, the relative values, $A_i/A_0$ and $\phi_i - \phi_0$ were frozen. 
+This effectively created a noise template of fixed shape, with remaining free parameters $A_0$ and $\phi_0$.
+The analysis to follow fit this noise template to the outlier-removed waveforms, and then subtracted this function from the waveform so that the residuals could be searched for PMT pulses.
+An example of the procedure can be seen in Fig. \ref{fig:baseline}, and the effect on the noise spectrum is shown in Fig. \ref{fig:baseline_frequency}.
+After some optimization, a value of $N_c=4$ was determined to provide adequate results.
+This achieved excellent low frequency noise reduction with minimal distortion of the signal pulses.
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/Baseline.pdf}
+    \caption[Waveform results from the CHV baseline subtraction technique.]%
+    {Waveform results from the baseline subtraction technique.
+    \textit{Top}: the raw waveform (blue), along with the fit sinusoidal harmonics(orange) which accurately follow the slow component.
+    \textit{Bottom}: The residuals from subtracting the Lomb-Scargle pedestal.}
+    \label{fig:baseline}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/NoiseSubtractedPSD.pdf}
+    \caption[The noise power spectrum (FFT) before and after the baseline subtraction technique.]%
+    {The noise power spectrum (FFT) before and after the baseline subtraction technique.
+    The spectrum is forms from the average over many power spectrums $|F(\omega)|^2$.
+    Note the much stronger attenuation of the DC component.}
+    \label{fig:baseline_frequency}
+\end{figure}
+
+
+A short ``chirp" was observed in some, but not all, datasets.
+An example is shown in Fig. \ref{fig:chirp}.
+These events are barely above the noise threshold.
+It is possible that it is some encoded cell phone traffic or similar digital signal.
+The carrier frequency was located in the Fourier transform at 7.95 MHz.
+A wavelet of with that frequency and a cosine envelope was created and convoluted with the waveform, revealing regions contaminated by the chirp signal.
+Pulses inside or nearby those regions discarded as being too unreliable.
+This was found to reduce the size of the background by a factor of $\sim$2, but it was not enough to completely eliminate it. 
+In any case, the size of this signal does not affect the calibration greatly, though it does pollute the data.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/chirp.png}
+    \caption[A representative ``chirp" waveform which was observed in the data.]%
+    {A representative ``chirp" waveform which was observed in the data.
+    These chirps require an additional technique to remove, as they are barely above the noise level, but can skew the results of the remaining analysis.}
+    \label{fig:chirp}
+\end{figure}
+\subsubsection{Pulse Finder}
+No matter the methodology for baseline removal, a signal model must be used in order to not also filter out the PMT response.
+This was obtained by examining LED calibration data and running a simple threshold-based pulsefinder. 
+This resulted in pulses which were biased upwards in amplitude.
+Locations with amplitudes below a threshold were selected, and shifted in time such that the minimum of the pulses were aligned.
+In order to improve the spectral resolution, eliminate boundary effects, and reduce the overall length of the filter, the impulse response was multiplied with a window function.
+The spectral response of a finite impulse response is the convolution of the signal with the window it was observed over.
+For a basic truncation at some length, this results in a rectangular window, which has the frequency response of an \textit{aliased sinc function}, $\text{asinc}(\omega M) = \sin(M \omega / 2) / M \sin(\omega/2)$.
+The rectangular window has the narrowest main lobe, but worst frequency sidebands.
+Other windows attenuate the sidebands at the cost of a wider main lobe.
+For my purposes I found that a cosine window, where $H(t) = \cos( \pi t/2M)$, was able to adequately smooth out the impulse response boundaries.
+The averaged pulse converged to the true impulse response of the PMT-DAQ system, shown in Fig. \ref{fig:template}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{Assets/CHV_Files/template_annotated.pdf}
+    \caption[The Hamamatsu PMT impulse response, obtained from CHV prototype waveforms. ]%
+    {The Hamamatsu PMT impulse response, obtained from CHV prototype waveforms. 
+    Note the double peaks in the first 50~ns, following by an AC pulse some time later. This pulse is possibly due to improper termination of some cable, though this phenomena was taken into account during the design process for the electronics chain.
+    This template is consistent with previous characterizations of the R5912-02 MOD PMT\cite{caldwell_characterization_2013}.}
+    \label{fig:template}
+\end{figure}
+
+One method for pulse finding used the ``optimal filter" method, similar to the method used in the Edelweiss surface run\cite{armengaud_searching_2019}.
+This consists of constructing a finite-impulse-response (FIR) filter using the impulse response $H$ of the PMT to the PSD $N^2$ of the noise spectrum, as described in Eq. \ref{eq:optimal_filter}.
+This filter is normalized such that the convolution of the filter with itself is one.
+By convolving this optimal filter with the input signal, the resulting waveform indicates regions of high similarity with the template, which can then be identified as pulses.
+Since much of the noise is low frequency, this design has the side effect of removing much of the DC signal. 
+Thus, the filter response is not in general suitable for reconstructing the pulse areas and amplitudes.
+
+\begin{equation}
+    F(\omega) = \frac{H^\dagger(\omega)}{N^2(\omega)} \frac{1}{\int d \omega H^\dagger H / N^2(\omega) } ~.
+    \label{eq:optimal_filter}
+\end{equation}
+
+The result of this equation as applied to the PSD and single photon response in the CHV test stand is shown in Fig. \ref{fig:optfilt}. 
+Following convolution with the optimal filter, regions of high amplitude are identified as pulses.
+An additional step is used when accurate timing information is desired, such as when the triplet lifetime was being measured.
+This is accomplished by minimizing the $\chi^2$ between the optimal filter and the waveform, but with the filter shifted continuously in time through convolution with the following all-pass filter:
+\begin{equation}
+    T_{\text{shift}}(t) = e^{-i 2 \pi kt/N}~.
+    \label{eq:timeshift}
+\end{equation}
+\noindent
+This affords sub-sample timing precision, along with more accurate amplitude reconstruction due to minimizing the time offset between the filter and the signal.
+
+Due to the computational cost of this procedure, it was only employed for specific sub-analyses that required this level of precision (e.g. the triplet lifetime analysis).
+In other cases, a simpler, threshold-based algorithm is used.
+This algorithm consists of setting an ADCC threshold and collecting the indices where the voltage signal crossings.
+Upwards-going crossings are merged with nearby downwards going crossings in order to be robust against fluctuations.
+This proceeds iterates until no more merge candidates exist.
+Pairs of downgoing and upgoing crossings are then grouped together into pulses.
+After some testing a minimum distance of 5 samples between adjacent pulses was established, with a minimum number of samples below threshold of 2.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = .45\textwidth]{Assets/CHV_Files/OptimalFilter.pdf} 
+    \includegraphics[width = .45\textwidth]{Assets/CHV_Files/OptimalFilter_TD.pdf} 
+    \caption[The optimal FIR filter for the CHV PMT response.]%
+    {The optimal FIR filter for the CHV PMT response.
+    The left plot shows the filter and its inputs in frequency space, while the right plot shows the filter in the time domain. 
+    Note that the optimal filter mostly resembles the template response, with some distortions. The filter is shifted here so that the peak is in the same location as the template. }
+    \label{fig:optfilt}
+\end{figure}
+
+\subsubsection{Pulse Merging}
+The pulse finding algorithm described above is adequate for finding the spikes corresponding to the PMT impulse response.
+However, due to the issues of reflection, combined with the particular shape of the impulse response (seen in Fig. \ref{fig:template}), it is necessary to perform an additional clustering step to determine if adjacent peaks are actually from the same scintillation signal.
+This is accomplished through a procedure known as \textit{deconvolution}.
+If the impulse response of a system is $H(s)$, and the input is $X(s)$, and $Y(s) = X(s)H(s)$ is the response of the system, then deconvolution attempts to find the most likely value of the input, $X(s) = H^{-1}(s)Y(s)$.
+
+With a noiseless system with a finite impulse response, this process is as  simple as presented above. 
+In the presence of noise, and when the signal response might run past the window, this becomes far more challenging.
+Two popular techniques which were explored for this purpose were the Weiner filter\cite{noauthor_extrapolation_nodate} and the Richardson-Lucy deconvolution\cite{richardson_bayesian-based_1972}.
+Additionally, a fit-and-subtract method was attempted, using the $\chi^2$ minimization technique described above.
+This involved fitting the pulse using a continuous time shift, subtracting the fitted impulse response from the signal, and then repeating the process until no prominent pulses remained.
+This was found to be prohibitively slow, and having a higher error rate, than the other two techniques.
+All three strategies were initially attempted in a global fashion, i.e. replacing the initial pulsefinder.
+However, this proved to be computationally expensive, and therefore these strategies were then incorporated into the \textit{narrow phase} of the pulse finding, which checked if nearby pulses were to be merged.
+The \textit{broad phase} consisted of either the threshold-based pulsefinder, or the optimal filter, depending on the analysis.
+
+The nearby pulse merging was resolved via Richardson-Lucy deconvolution, which was found to reconstruct the delta functions of pulse arrivals better than the Weiner filter, which tended to result in more oscillatory behaviour near large pulses, the very phenomena that I intended to remove.
+This procedure works with the point spread function $p$, the observed signal $y$, to estimate $\hat{x}$, the posterior probability for the underlying source, such that $y = \hat{x} \star p$.
+This procedure begins with an initial prior $x^{(0)}$ and iteratively refines the posterior $x^{(i+1)} = f(x^{(i)})$, with the full equation given by:
+
+\begin{equation}
+    x^{(i+1)} = x^{(i)}\cdot(\frac{y}{x^{(i)} \star p} \star p^T )~.
+    \label{eq:richardson_lucy}
+\end{equation}
+
+The base algorithm is further modified to exploit the expected signal.
+The first modification consists of specifying a noise threshold. 
+All samples with amplitudes below the noise threshold are set to zero. This exploits the fact that the signals are only a single polarity.
+Setting the threshold at a nonzero value has the additional benefit of preventing the RL algorithm from inadvertently amplifying on noise and producing instabilities at later iterations.
+The second modification is that a smoothed waveform is periodically generated in order to capture the low frequency noise, and not force the RL algorithm to estimate it using the point spread function.
+This is accomplished by periodically (every 5 or so iterations) taking the residuals and applying a butterworth filter, and then adding them to the current estimation of the pedestal.
+This pedestal is subtracted from the signal before each iteration of the RL algorithm.
+The last modification is a standard tactic in deconvolution, which is the use of regularization.
+The second derivative of the signal is calculated, and this curvature value is used to attenuate the residuals that the RL algorithm attempts to fit. 
+Thus, the error values at each point become $\epsilon_i = (\hat{y_i}-y_i)/(1+\lambda \nabla^2 y|_i)$, where $\lambda$ is a hyperparameter which controls the strength of regularization.
+The results of this algorithm is shown for a representative multi-pulse event in Fig \ref{fig:richardson_lucy_example}.
+After the deconvolution is calculated, prominent peaks are located and identified as individual, distinct pulses.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/RL_demo.pdf}
+    \caption[An example CHV prototype test event waveform with the zero-suppressed Richardson-Lucy deconvolution algorithm applied.]%
+    {An example event waveform with the zero-suppressed Richardson-Lucy deconvolution algorithm applied.
+    This shows the benefits of noise suppression and allows for higher confidence in identifying pulses close to one another.}
+    \label{fig:richardson_lucy_example}
+\end{figure}
+
+\subsection {Data selection criteria}
+Following the subtraction of the baseline and the pulsefinding procedure, pulses within $\Delta t = 1.6~\mu \mathrm{s}$ in time were grouped into clusters.
+The cluseters were then classified into three categories based on a cut on $M$.
+
+\begin{enumerate}
+    \item \textbf{Single photons} / coincident single photons. These are events with $N_\mathrm{pulses}< M$. They are considered to be accidental coincidences and counted as $N_\mathrm{pulses}$ SPEs.
+    \item \textbf{Multiple photoelectrons} (MPE). 
+    If $N_\mathrm{pulses} \geq 3$, the pulses are considered to be causally related, because the probability to observe $3$ pulses in the same trigger under normal circumstances is astronomically small.
+    An SPE rate of $\sim200~\mathrm{Hz}$ was typical, making the expected number of SPEs in a waveform 0.01.
+    \item \textbf{S1s}.
+    These are a subset of MPEs that are suitable for triplet lifetime measurements. 
+    They have total length  $> 1600~\mu \mathrm{s}$ and $N_\mathrm{pulses} > 10$.
+    These events are selected to fail the long-timescale production, described below, in order to distinguish scintillation from electroluminescence. 
+    \item \textbf{Long-timescale light production}.
+    These are the events which are most likely to be caused by charge moving as a result of the high-voltage structure.
+    Events with an center of mass/ first moment  $>2~\mu s$ and $N_\mathrm{pulses} > 100$ are selected, and are considered on a waveform-by-waveform basis. 
+    This means that there are a maximum of one long-timescale light event per waveform.
+    This is motivated by the fact that the charge amplifiers respond slowly, and in those channels only one charge event can be counted per waveform. 
+    The presence of long-timescale light events in a PMT channel are compared to the presence of charge events in order to look for correlations.
+    These cuts were chosen to provide low false-positive rates but also to correlate with large spikes in the Ortec ratemeter.
+  
+    \item 
+    \textbf{Charge amplifier events}.
+    Similar to the long-timescale light production, these are counted on a trigger-by-trigger basis due the slow response time.
+    The charge amplifier signals were found to have a low-frequency noise component which grew in proportion to the voltage across the grading structure.
+    The charge amplifier response would happen at similar timescales to the noise, which frustrated attempts at a filtering approach to locating  charge events.
+    Instead, it was observed that the mean value of any particular waveform did not change in proportion to the high voltage power supply, \textit{i.e}. there was no bias.
+    As such, the mean value of the waveforms became the discriminating value to find charge events
+    .
+    Due to the low-frequency noise  the estimators of the mean $\bar{y}$ became non-gaussian, so the standard deviation underestimated the errors.
+    The distribution was double-peaked, and changed as a function of grading structure voltage.
+    The final selection criteria was then chosen as $|\bar{y} - \mathrm{med}[\bar{y}]| > \mathrm{min}(2*\mathrm{IQR}[\bar{y}] $, where $\mathrm{IQR} = \mathrm{Q}3 -\mathrm{Q}1$ is the interquartile range of the distribution, estimated in bunches of data approximately 5 minutes long.
+    
+\end{enumerate}
+  An example of a waveform satisfying criteria (4) and (5) is shown in Fig. \ref{fig:spark}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/SparkMay23.pdf}
+    \caption[An event waveform classified under criteria (4) and (5), showing all three channels: PMT and both charge amplifiers.]% 
+    {An event waveform classified under criteria (4) and (5), showing all three channels: PMT and both charge amplifiers.
+    This event illustrates activity in all channels, i.e. the PMT and both charge amplifiers.
+    As such it is likely the result of a breakdown in the xenon.}
+    \label{fig:spark}
+\end{figure}
+
+\subsection{Calibration}
+\begin{figure}
+\centering
+\includegraphics[width = .7\textwidth]{Assets/CHV_Files/CAimpulseresponse.png}
+\label{fig:charge_amplifier_impulse}
+\caption[The CHV purity monitor charge amplifier impulse response.]%
+{The charge amplifier impulse response.
+This was produced by completing the sense circuit with a fast switch, sending a quick surge of current into the CR-111.}
+\end{figure}
+
+\subsubsection{LED Calibration}
+At two points during the testing, the PMT was calibrated, with an aim towards locating the single-photo-electron (SPE) peak.
+The first calibration took place between Run 1 and Run 2, while the dewar was filled with nitrogen Gas.
+The second took place following the conclusion of Run 2, while the dewar was filled with a combination of LAr and GAr vapor as it boiled off.
+An LED with a white phosphor was placed in the dewar near the top of the baffles and was triggered with a function generator.
+The signal from the function generator was split and triggered the DAQ.
+The trigger location was placed in the middle of the waveform so that the background spectrum could be subtracted from the LED-on spectrum. 
+Examples of this procedure for the two calibrations are shown in Fig. \ref{fig:led_calib}.
+
+The event rate in nitrogen gas was much higher than the event rate in LAr, and as such, the analysis was very sensitive to the subtraction of the two spectra.
+An example of these spectra is shown in \ref{fig:pmtnitrogen}.
+After fitting the difference between the LED on and LED off histograms to a sum of several Gaussians, the single photoelectron gain was extracted.
+The model used was such that there were two background Gaussians with unconstrained mean, standard deviation, and amplitude. 
+The last Gaussian is interpreted as the single-photo-electron peak, corresponding to a gain of $\sim 4.6 \times 10^8$.
+The second Gaussian is interpreted as some anomalous reduction of gain in the SPE peak.
+This skipping could occur by a photon striking the first dynode, or electrons missing a stage due to some unknown effect.
+Due to the uncertainty on the second peak's location, a rather poor constraint on the interstage gain is found at 11.9 $\pm$ 52.
+The Hamamatsu specifications list 4-5 as the interstage gain. 
+The $\chi^2/DOF$ of this fit is 1.29.
+
+When statistics were sufficient at a particular voltage, a 2-PE peak was added at $\mu = 2 \mu_\mathrm{SPE}$, $\sigma = 2 \sigma_\mathrm{SPE}$, with unconstrained amplitude.
+This was repeated at several PMT photocathode voltages and the results are shown in \ref{fig:pmtgain}.
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.8\textwidth]{Assets/CHV_Files/n2_pmt_curve_1750.png}\\
+\includegraphics[width = 0.8\textwidth]{Assets/CHV_Files/lar_led_calib.png}
+\label{fig:pmtnitrogen}
+\caption[The Pulse area spectrum for the two PMT LED calibrations. ]%
+{The Pulse area spectrum for the two PMT LED calibrations. 
+Double Gaussians + pedestal (either constant or exponential) were fit to the histogram.
+\textit{Top}: the calibration taken in nitrogen.
+\textit{Bottom}: the calibration taken in liquid argon after Run 2.
+}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width = .8\textwidth]{Assets/CHV_Files/LEDCalib.png}\\
+\includegraphics[width = .8\textwidth]{Assets/CHV_Files/LEDSpectrumN2.png}
+\label{fig:led_calib}
+\caption [ Overview of the LED background subtraction procedure.]%
+{ Overview of the LED background subtraction procedure.
+\textit{Top Left}: The pulse start time distribution, with the LED trigger indicated with the dotted vertical orange line.
+\textit{Top, right}: The area spectra of pulses found in the pre-and post trigger regions in liquid argon.
+\textit{Bottom}: The results of same procedure for nitrogen gas. 
+The LED-off spectrum is subtracted from the LED-on spectrum before the SPE area is extracted from a Gaussian+Exponential fit to the residual.
+}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width = .9\textwidth]{Assets/CHV_Files/GainCurveBias.png}
+\label{fig:pmtgain}
+\caption[The R5912-02-MOD gain as a function of applied cathode voltage.]%
+{The R5912-02-MOD gain as a function of applied cathode voltage.
+This curve was found through LED calibrations, scanning the PMT photocathode voltage in nitrogen and locating the single photon gain from the double-Gaussian fitting procedure described above.
+The data was taken at room temperature.
+The ``X" indicates the gain measured at the LAr boiling point (only one data point was available).}
+\end{figure}
+
+After the conclusion of Run 2, the PMT was again calibrated on 08/27/2018.
+At the time the LAr level height meter read 1312~pF.
+This time, the dewar was still filled with mostly liquid argon, so the characteristics of the PMT were most similar to what they were during testing.
+The LED off background was negligible compared to the LED on signal, in stark contrast to the room temperature data. 
+Calibration data were taken at a single voltage, -1550V, the same voltage used in the high voltage ramps.
+
+A previous calibration of this model of Ref. \cite{nikkel_demonstration_2007} demonstrated the temperature dependence of the location of the SPE peak.
+That calibration was made with a slightly different base design using a grounded cathode and a 1500~V anode bias.
+Because the base designs were different, it was decided to simply verify that the \textit{relative} drop in temperature was the same between our test and the Nikkel data.
+The SPE curves in our room temperature calibration lack the large populations of smaller pulses we find in the LAr calibration.
+The results of that calibration are shown in Fig. \ref{fig:pmttemp}.
+The gain obtained at this work at room temperature is clearly lower that that obtained in Ref. \cite{nikkel_demonstration_2007}.
+
+
+After fitting the room temperature gain results to a power law $y = (x/a)^b + c$ (physically motivated by the discrete number of gain stages in a PMT), the gain at $V_\mathrm{cathode} = -1550$~V  was interpolated. 
+This was then compared to the calibration data taken at -1550~V cathode at LAr temperatures. 
+A ratio of $\alpha \equiv G_{300K}/G_{85K}  \sim 1.7$ was obtained. 
+In Fig. \ref{fig:pmttemp}, a vertical line for the liquid argon boiling point is shown, along with a horizontal line for the $T=300~\mathrm{K}$ gain from \cite{nikkel_demonstration_2007}, divided by $\alpha$.
+The vertical, horizontal, and data lines intersect, demonstrating that we observe the same temperature effect as in Ref. \cite{nikkel_demonstration_2007}.
+
+\begin{figure}
+\includegraphics[width = .9\textwidth]{Assets/CHV_Files/GainCurveTemp.png}
+\label{fig:pmttemp}
+\caption[The PMT gain as a function of PMT temperature.]%
+{The PMT gain as a function of PMT temperature. 
+Data from Ref \cite{nikkel_demonstration_2007} is shown in blue.
+The purple dotted line indicates the gain from Ref \cite{nikkel_demonstration_2007}, reduced by the temperature dependence shown in Fig. \ref{fig:pmtgain} ($\approx 1.7$).
+This coincides with the argon boiling point (orange), indicating that we observe the same temperature dependence.
+Ref \cite{nikkel_demonstration_2007} observed a large gain overall, possibly due to the change of HV bias from anode to cathode.
+}
+\end{figure}
+
+\subsubsection{Triplet lifetime}
+Argon scintillates via the formation of dimers following ionization and excitation of argon atoms.
+The dimer then decays into two ground state argon atoms and a VUV photon.
+Argon is largely transparent to its scintillation light because the decay occurs from a molecular state, which has a different spectrum than the atomic state, and the three body interaction of two argon atoms and the photon is exceedingly unlikely to occur.
+The lowest energy states are the singlet and triplet states, with lifetimes of $\sim 1$~ns and 1.6 $\mu\mathrm{s}$ respectively.
+Triplet excitations happen to be more likely during electron-recoils than nuclear recoils, a fact which some experiments exploit in pulse-shape discrimination analysis. 
+Because the triplet lifetime is so long, the dimers have time to find impurities and undergo a non-radiative decay, a phenomenon referred to as quenching. 
+The effect of this quenching can be seen in the triplet lifetime, which becomes shorter with increasing impurities.
+The quenching coefficient was measured by \cite{acciarri_oxygen_2010} to be 0.54 $\mathrm{ppm^{-1}} \mu\mathrm{s}^{-1}$ oxygen equivalent.
+
+Due to mechanical failure of the purity monitor, the triplet lifetime was used to estimate the oxygen-equivalent impurities. 
+The datasets used for the triplet lifetime estimation are the zero-field conditions taken when no voltage was applied to the grading structure. 
+The selection cuts for this portion of the analysis are as follows:
+
+\begin{enumerate}
+    \item Event length $> 1.6~\mu \mathrm{s}$.
+    \item $N_\mathrm{pulses}>15$.
+    \item Event 1st moment $< 8~\mu \mathrm{s}$.
+\end{enumerate}
+
+The event traces were summed, after which a low-pass IIR filter was applied to compensate for an apparent signal overshoot only seen in large pulses, i.e. S1s.
+The average waveforms were then fit to an exponential for the time windows $1 -8~\mu \mathrm{s}$ after the first pulse in each event.
+The results of these fits are shown in Fig. \ref{fig:puritytime}.
+For Run 1, the purity was found to be~10 times worse than the value measured by the purity monitor. 
+A possible explanation for this is the presence of an unknown quantity of nitrogen dissolved in the liquid argon.
+The argon is obtained at a purity better than 1ppm of any contaminant, and the purifier only reacts with Oxygen, so potentially 1~ppm of N$_2$ could be dissolved at the end of filling.
+Nitrogen differs from Oxygen in both the scintillation quenching factor and the electron attenuation length factor.
+However, an identical concentration of nitrogen will attenuate drifting electrons orders of magnitude less than Oxygen \cite{biller_effects_1989}, but quench the scintillation by a similar amount (0.11~ppm$^{-1}~\mu \mathrm{s}^{-1}$) \cite{acciarri_effects_2010}.
+This could explain how the triplet lifetime implies a worse purity than the purity monitor.
+
+\begin{figure}
+\includegraphics[width = .9\textwidth]{Assets/CHV_Files/lifetime.pdf}
+\caption[The measured oxygen-equivalent impurity level, obtained via the Argon triplet lifetime, over the course of CHV Run 2.]%
+{The measured oxygen-equivalent impurity level, obtained via the Argon triplet lifetime, over the course of Run 2.
+An apparent rise in impurity was observed over time, due to a possible ingress of air.
+Later the contamination decreases for unknown reasons.
+The boiling off of argon may have changed the dissolved amount of oxygen and nitrogen over time.}
+\label{fig:puritytime}
+\end{figure}
+
+\subsection{Purity Monitor}
+The purity monitor failed to operate to specifications during these tests.
+While passing continuity tests, it did not demonstrate the ability to observe the electron lifetime.
+One troubleshooting attempt was performed near the end of the testing.
+The bottom heater was run at 75 W(31 V) to stimulate boiling.
+An inconclusive cathode signal was observed, along with what was interpreted as microphonics from the boiling of the argon.
+The fiber feedthrough was then bypassed to improve transmission.
+A healthy cathode signal was seen after unscrewing the flashlamp and barely touching it to the port, as shown in Fig. \ref{fig:puritymonitorhailmary2}.
+The oscilloscope was photographed with  anode voltage = +2800V and cathode voltage = -400V.
+Since a clear cathode signal was observed absent an anode signal, only a weak limit on purity could be set.
+This is consistent with impurity levels higher than what the monitor can estimate.
+%Background photo no field at 4:29pm on Reed's phone at long timescale.
+
+%Now add -250 to the cathode.
+
+%Cathode only photo is at 4:31 pm on Reed's phone.  There is a weak feature after the pulse that might be real signal.
+
+%4:33pm:  Photo of bizzare much larger feature about 1 msec later.
+
+%Now anode to +2~kV and cathode at -250
+
+%pics of this at 4:36 and 4:38
+
+%signal is super bouncy with the anode on, probably microphonics from the rapid boiling.  Stopped boiling.  Still too bouncy.
+
+%4:55pm  25 microsec photo of cat and anode on.
+%4:57 25 micosec cathode only.
+%4:58 25 microseconds no fields
+
+%Now fiber bypasses feedthrough.   Boiler is on.
+
+% 5:19 is fields off photo, 5 mv / div
+% 5:21 is cathode only.  
+% 5:23 is cathode and anode.  It is not better than last time..
+
+% But!  We notice that moving it into the flashlamp but unscrweed gives a fairly healthy signal if things are held just right.  (weird)
+% \begin{figure}
+%     \centering
+%     \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_162939.png}
+%     \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_165840.jpg}
+%     \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_165713.jpg}
+%     \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_165557.jpg}
+%      \caption{Initial test of the purity monitor under conditions similar to the high voltage ramps. This was conducted after the conclusion of Run 2.}
+%      \label{fig:puritymonitorhailmary1}
+% \end{figure}
+     
+     
+    \begin{figure}
+    \centering
+
+%         \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_172000.png}
+%   \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_172157.png}
+%     \includegraphics[width =0.45\textwidth]{Assets/CHV_Files/PM/20180824_172348.png}
+    \includegraphics[width =0.6\textwidth]{Assets/CHV_Files/PM/20180824_174955.png}
+   
+     \caption[A photograph of an oscilloscope from a test of the purity monitor performed while bypassing the feedthrough. ]%
+     {A photograph of an oscilloscope from a test of the purity monitor performed while bypassing the feedthrough. 
+     It shows the cathode charge signal, as integrated by the CR-111 charge amplifier, when a pulse of light from a xenon flash lamp is incident on the gold-plated cathode.
+     In this particular test the threaded feedthrough coupling was bypassed, and the flash lamp was pressed directly against the fiber optic connection.
+     This was attempted due to problems seeing a stable signal from the purity monitor.
+     The success of this test, in that a cathode signal is evident, shows that the feedthrough contributed to these issues, and that the argon purity was sufficient for testing.}
+     \label{fig:puritymonitorhailmary2}
+     \end{figure}
+\afterpage{\FloatBarrier}
+\section{Prototype Testing Results}
+\subsection{Run 1}
+\label{sec:run1_chv}
+
+The first iteration of the prototype testing examined the design of the grading structure without the mock spring connection.
+Each day the dewar mass was examined to ensure that the liquid argon had not boiled off to the point of weakening the feedthroughs.
+The capacitive level meter was also examined to make sure that the LAr was at an acceptable fill.
+LAr loss rate was estimated as 2~kg / hour by the dewar scale.
+The purity monitor struggled with stability, but the presence of any cathode signal indicated purity sufficient for our initial testing.
+Success was defined as the ability to reach 120~kV without producing excess light for one hour.
+
+The cameras were tested with infrared LEDs, and only one fiber achieved an acceptable focus. 
+Following an attempt to modify the LabView program, the PLC lost the ability to communicate with the logging computer.
+Due to the limited time span we had before the LAr boiled off, it was decided to proceed with the test, but logging the voltages and ratemeter manually.
+Following a small modification to the charge amplifier circuit, the test began on May 23, 2018 and ran until May 25, 2018.
+
+% The results of the test are shown in Fig. \ref{fig:May23Ramp} for the PMT channel and Fig. \ref{fig:May23Charge} for the charge amplifier channels.
+% For some unknown reason, the aforementioned radio chirps were absent from this dataset.
+
+During the ramps, the rate almost immediately spiked upwards and stayed high for the duration of the test.
+This is believed to be due to a fault in the PMT high voltage feedthrough which flickers slightly.
+This feedthrough is near the top, where the gas pocket forms.
+Intermittent dips in the rate seem to support this hypothesis.
+
+
+Though the PLC was malfunctioning, the Ortec ratemeter, coupled to the PMT, was monitored by eye, along with the current and voltage produced by the HVPS.
+Larger breakdown events would be observable on the HVPS readout.
+Transient light production events were observed at various times during the test.
+Whenever the Ortec ratemeter saturated the dynamic range of its scale, the scale was adjusted and the high voltage partially ramped down until the rate was extinguished. 
+Light production could last from seconds to minutes and correlated with movement in the charge amplifier attached to the cone.
+Charge entering the mount was observed regularly throughout the ramp which was not coincident with observable light production..
+This is  likely a result of capacitive coupling between the mount and the grading structure.
+Occasional charge and light events were missed in the ratemeter.
+Sustained light production in the PMT can appear to be a single pulse, which would not show up in the ratemeter and would fail the selection criteria used in Fig. \ref{fig:May23Ramp}.
+The longest static hold on this day was terminated by a single large-timescale light event. 
+This event is shown in \ref{fig:May23Terminal}.
+
+It was discovered during these tests that the two ceramic alumina feedthroughs are partially translucent and leak light into the system.
+A cell phone flashlight, when shined at the feedthroughs, would produce an increase in the ratemeter by a factor of a few.
+Unused feedthroughs were obtained, and it was confirmed that they allow through visible light.
+Electrical tape was placed over the installed feedthroughs, as replacing them at this point would have spoiled the purity of the argon.
+Despite this intervention, the ratemeter still read 1250 Hz. 
+The room and utility lights were then shut off, and the rate remained at $\sim$1250 Hz. 
+We concluded that the light leak was sub-dominant to whatever source was producing this light, presumably the feedthrough.
+
+Occasionally two ramps were performed during a single day.
+Background data at 0V with 10Hz trigger rate were taken overnight when possible.
+In these ramps, the previous sustained increase in SPE rate was observed, as well as the sporadic \textit{dips} in rate.
+No transient upward spikes in SPE, no non-ohmic behaviour, no cone events, and no large light events were observed during the second two days of data taking.
+Though, the rate during the ramps was persistently higher than the OV data.
+No apparent drop in LAr purity was observed in the purity monitor cathode signal.
+The grading structure was ramped up and no bursts in light were observed. 
+
+Following the conclusion of this run the 5W heater was turned on for two weeks, followed by a larger 80W  (32 V) heater. 
+Afterwards the scale read 427.5 kg, implying $\sim$ 95 kg of argon remaining.
+The jacket space was confirmed empty by blowing gas into the liquid fill tube.
+Cold gas was felt leaving, but no sound of liquid.
+The large and small valves were opened to atmosphere.
+The small supply was set to 10W and left until the argon was boiled off.
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width =0.95\textwidth]{Assets/CHV_Files/Rates/May23Ramp.eps}\\
+    \includegraphics[width=0.95\textwidth]{Assets/CHV_Files/Rates/May23Ramp_charge.eps}
+    \caption[PMT (top) and charge amplifier(bottom) data from the first day of Run 1 high voltage ramps.]%
+    {PMT (top) and charge amplifier(bottom) data from the first day of Run 1 high voltage ramps.
+    Spikes in rate were seen in two locations, but a quiet region was observed following.}
+    \label{fig:May23Ramp}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/May23LastEvent.eps}
+    \end{center}
+    \caption[The waveforms  from terminal event in the first day of CHV Run 1's high voltage ramps. ]%
+    {The waveforms  from terminal event in the first day of Run 1's high voltage ramps. 
+    This is the activity which defined the length of the quiet region for later analysis.}
+    \label{fig:May23Terminal}
+\end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/May24Ramp1.eps}
+% \end{center}
+% \caption{PMT data from the first May 24 high voltage ramp.}
+% \end{figure}
+% \begin{figure}
+% \begin{center}
+
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/May24Ramp1_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the first May 24 high voltage ramp.}
+% \end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/May24Ramp2.eps}
+% \end{center}
+% \caption{PMT data from the second May 24 high voltage ramp.}
+% \end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/May25Ramp.eps}
+\end{center}
+\caption[PMT time series data from the CHV Prototype - May 25 high voltage ramp.]%
+{PMT time series data from the May 25 high voltage ramp.
+This ramp was far less eventful than the first day, with the rate maintaining a consistent value overall.}
+\end{figure}
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files//Rates/May25Ramp_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the May 25 high voltage ramp.}
+% \end{figure}
+
+
+
+\subsection{Run 2}
+\label{sec:chv_run2}
+
+This test examined the grading structure equipped with a mock spring connection.
+The mock spring was not  an actual spring but rather electropolished steel which was inserted into the HV cap. 
+As the mock spring was proud of the cone, some protection for the PMT photocathode was necessary in the event of a breakdown.
+An additional grounded stainless steel cone extended from the PMT mount ring.
+The mock spring had ridges which approximated the pitch of the extended spring connection.
+The dewar was completely evacuated with a turbopump out between runs, and the resistance was checked.
+Between Run 1 and Run 2 the PLC software was repaired, so the ratemeter and HV power supply were logged to disk, and the voltage from the HVPS was controlled in software.
+The scaling factor between the voltage output from the control panel and the voltage output by the power supply was later confirmed.
+The purity monitor anode and cathode were confirmed to be connected to their respective power supplies. 
+At the beginning of each day the test stand was topped off with LAr
+The jacket was refilled before the start of testing to a scale weight of 530~kg.
+The level meter capacitor was read with a Craftsman multimeter showed 1010~pF.  
+Zero-field data was taken with  PMT photocathode voltage = -1750~V while the LAr was being refilled.
+
+
+Some troubleshooting of the purity monitor was done during this time with the goal of observing an anode signal.
+The gender changer in the purity monitor feedthrough was exchanged in order to improve the light transmission.
+The optical paths going into the dewar were taped up, which resulted in a loss our temp monitoring.
+
+ Zero field overnight data was taken throughout this run.
+ The ratemeter was logged and was mostly quiet, with rate 300 to 500 Hz.
+ Small bursts could be seen, as in Fig \ref{fig:Aug14overnight}.
+The temperature in the resistive temperature devices (RTDs) increased overnight, as well.
+ The PMT power supply seemed to fluctuated more than before.
+ It was decided to temporarily shut off the PMT.
+ A working hypothesis that we attributed this phenomenon to was a faulty PMT power feedthrough. 
+ The temperature read by certain RTD's were observed to gradually approach room  temperature, indicating the existence of a gas layer.
+
+For Run 2 a filter was used to clean the argon as it filled the dewar.
+This filter used activated copper to getter the impurities out the the argon, and relied on conditioning before the fill to use effectively.
+Conditioning consisted of passing hydrogen gas through the filter material at a temperatures exceeding 200C.
+The argon fill relied on a gas regulator between the storage dewar and the filter.
+
+An upper limit on the background rate was calculated for the ramps, indicated by the dotted black dotted line in Fig. \ref{fig:aug14_ramp}
+Sporadic deviations can also be seen in this limit, but these seem to be statistical fluctuations resulting from inconsistent livetimes in the bins.
+The changes in livetime can be seen in the dotted background rate limit.
+Upward deviations in that limit indicate less livetime, and these fluctuations correlate with the downward fluctuations in SPE rate.
+These fluctuations also occur at regular intervals, indicating that the DAQ may have been blind during some process e.g. saving a file.
+
+This run's data exhibits several interesting features. 
+There were sharp upward spikes in rate which decayed away over an approximately hour-long timescale, seen in Fig. \ref{fig:aug14_ramp}.
+This is in sharp contrast to the spikes observed in the first run, which had spikes which sharply turned on and off over a timescale of several minutes.
+These spikes correlated with charge events and large light events.
+Interestingly enough, even though the SPE rate remained high and slowly decayed, the charge+light ``sparks" only correlate with the initial rise, not with the tail.
+Uncorrelated large light events occurred during the entire ramp, in stark contrast to the entirety of Run 1.
+Large light events in excess of the uncorrelated rate were observed an the initial onset of the test.
+These events do not show up in the SPE rate, though.
+
+These spikes appeared at lower voltages than the apparently safe ranges indicated from Run 1.
+It was feared that this indicated that the mock spring was to blame.
+However, the low rates of pulses into the charge amplifier, along with general instabilities in the PMT voltage, indicated that the PMT feedthrough might be to blame.
+The fact that the rates of SPEs were maintained for some time, while the larger area pulses rapidly fell back to background levels was an indication that the noise came from a persistent, low-intensity source.
+Early into the run it was discovered that the LAr was not filled to the level expected.
+The regulator it seems did not maintain the desired pressure, and therefore the LAr had to be topped off before starting the tests.
+An additional gas layer likely weakened the HV feedthrough used for the PMT.
+It was discovered after the first day of testing that lowering the photocathode voltage from -1750~V to -1550~V extinguished the long-timescale light production.
+
+Ramps following this change to PMT gain still failed to achieve the voltages of Run 1, but were far more stable, as seen in Fig. \ref{fig:Aug24pmt}.
+For the purposes of maintaining the integrity of the test, if a burst of SPE was seen in the offline analysis, the ``clock" was restarted, and the time period following is considered a second static hold.
+An example of a terminal event is shown in Fig. \ref{fig:Aug24LastEvent}.
+Five ``holds" were recorded over a period of ten calendar days.
+In general voltages exceeding -70~kV were attainable, which when correcting for purity and surface area translates to a success for the LZ design voltages.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width = 0.9\textwidth]{Assets/CHV_Files//Rates/Aug14Ramp.eps}
+\end{center}
+\caption[PMT  data from the CHV - August 14 high voltage ramp.]%
+{PMT  data from the August 14 high voltage ramp.}
+\label{fig:aug14_ramp}
+\end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width = 0.9\textwidth]{Assets/CHV_Files//Rates/Aug14Ramp_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the August 14 high voltage ramp.}
+% \end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug14Night.eps}
+\caption[PLC and PMT data from the August 14-15 overnight zero field data.]%
+{PLC and PMT data from the August 14-15 overnight zero field data.}
+\label{fig:Aug14overnight}
+\end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug15Ramp.eps}
+% \end{center}
+% \caption{PMT  data from the August 15 high voltage ramp.}
+% \label{fig:aug15ramp}
+% \end{figure}
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug15Ramp_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the August 15 high voltage ramp.}
+% \end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug16LastEvent.eps}
+% \end{center}
+% \caption{The event which separates the plateaus in the August 16 high voltage ramp.}
+% \label{fig:Aug16LastEvent}
+% \end{figure}
+
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug16Ramp.eps}
+% \end{center}
+% \caption{PMT data from the August 16 high voltage ramp.
+% The region in the middle suffered a data loss.
+% No significant activity was observed in the charge amplifier data outside of the spike towards the beginning of the plateau shown in Fig. \ref{fig:Aug16LastEvent}.
+% }
+% \label{fig:Aug16ramp}
+% \end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug16Ramp_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the August 16 high voltage ramp.}\
+% \label{fig:Aug16charge}
+% \end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug17Ramp.eps}
+% \end{center}
+% \caption{
+% PMT data from the August 17 high voltage ramp.}
+% \label{fig:Aug17pmt}
+% \end{figure}
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug17Ramp_charge.eps}
+% \end{center}
+% \caption{Charge amplifier data from the August 17 high voltage ramp.}
+% \label{fig:Aug17charge}
+% \end{figure}
+
+
+% \begin{figure}
+% \begin{center}
+% \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug17LastEvent.eps}
+% \end{center}
+% \caption{The event which separates the initial ramp in the August 17 high voltage ramp from the second ramp.}
+% \label{fig:Aug17LastEvent}
+% \end{figure}
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug24Ramp.eps}
+\end{center}
+\caption[PMT time series data from the August 24 (Run 2) high voltage ramp.]%
+{PMT time series data from the August 24 (Run 2) high voltage ramp.
+Here the ratemeter data is indicated in green.}
+\label{fig:Aug24pmt}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug24Ramp_charge.eps}
+\end{center}
+\caption[Charge amplifier data from the CHV Prototype - August 24 high voltage ramp.]%
+{Charge amplifier data from the August 24 high voltage ramp.
+The initial spike in rate cause the ramp to pause for the remainder of the test that day.}
+\label{fig:Aug24charge}
+\end{figure}
+
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Rates/Aug24LastEvent.eps}
+\end{center}
+
+\caption[Waveforms from the terminal event in the CHV Prototype - August 24 high voltage ramp, defining the quiet time period for Run 2.]%
+{Waveforms from the terminal event in the August 24 high voltage ramp, defining the quiet time period for Run 2.}
+\label{fig:Aug24LastEvent}
+\end{figure}
+
+\afterpage{\FloatBarrier}
+\subsection{The Gaseous Argon Test}
+\label{sec:gar_chv_test}
+
+The liquid argon surrounding the test structure in the second liquid argon test was slowly boiled over several weeks and the structure reached room temperature. 
+High voltage was applied to the structure with the Glassman power supply in the same manner used in the liquid argon tests.
+An attempt to view light produced by the structure with the PMT failed because the PMT base was unable to sustain the voltage needed to operate the PMT without breakdown of the surrounding argon gas. 
+The current through the Glassman supply was monitored to determine the onset of excess conduction.
+
+Three voltage ramps were made, each at about 500~V/min.  In each case the current through the Glassman supply increased Ohmically(\textit{i.e.} $V \propto I$) until a threshold voltage was reached.
+At the threshold voltage the Glassman power supply current suddenly increased by about a factor of ten above the Ohmic current value. 
+The observed thresholds were 18.1~kV, 17.6~kV, and 18.0~kV.
+
+The reproducibility of the onset voltage suggests that this test does not damage the feedthrough and that it is suitable as a quality control check for the production feedthrough that will be installed in LZ.
+The magnitude of the sudden increase in current suggests that it is not due to conduction between rings of the feedthrough (as would be the case if the breakdown were bypassing a high voltage resistor).  The large magnitude of the current can only be generated by conduction to ground from one of the structures connected directly to the high voltage cable: the last grading ring, the hemispherical end, the spring mimic, or the hanging bean. 
+
+\subsection{Summary}
+
+For each run, any period of time longer than twenty minutes where no light or charge events was logged, along with the power supply voltage during that time.
+The goal voltage in any case was -100~kV LZ equivalent, after corrections.
+Several effects were taken into consideration to translate the LZ goal voltage to an equivalent test voltage for the setup used in these tests.
+One such effect is that of purity.
+It has been observed that electronegative impurities enhance the electric field noble liquids can hold before breakdown \cite{acciarri_liquid_2014}.
+Our setup is less pure than LZ's goal purity, so the goal of -100~kV must be adjusted upwards.
+Another effect is that of ``stressed electrode  area,"(SEA) or the surface area of an electrode exposed to the strongest electric fields (often 90\% of the maximum).
+As observed in Ref. \cite{tvrznikova_direct_2019}, the breakdown voltage exhibits a scaling given by 
+
+\begin{equation}
+E_B = C(\text{Area} [ 1\mathrm{~cm}^2])^{-b}~,
+\end{equation}
+\noindent
+where $C=124.26 \pm 0.09 \mathrm{~kV}/\mathrm{cm}$, $b = 0.2214 \pm 0.0002$.
+In Run 2, a mockup of the spring connection was inserted that mimicked the maximum field, but severely enhanced the stressed area. 
+Because of this, the -100~kV target is revised downwards to an equivalent target voltage, as seen in Table \ref{table:chv_results}. 
+The purity is a far weaker effect than the stressed area.
+
+\begin{table}
+\centering
+\begin{tabular}{|l|p{1.75cm}|p{1.75cm}|p{1.75cm}|p{1.75cm}|p{1.75cm}|p{1.75cm}|}
+\hline
+ Run & Highest\newline Voltage  [kV]& Target \newline Voltage  [kV] & Duration  & Purity [ppb] (Triplet)  & Stressed Area [$\mathrm{cm}^2$] & PMT Voltage [kV] \\ \hline
+ 5/23   &  109  &  105  & 1h3m  & 155 $\pm 11 $  & 68  &-1.75  \\
+  5/23  &  120 &  105   & 42m     & 155 $\pm 11 $  &  68 &-1.75\\
+  5/24  &  120  &  105  & 46m     & 155 $\pm 11 $  & 68  &-1.75  \\
+  5/25  &  120  &  105  & 1h7m & 155 $\pm 11 $  & 68  &-1.75   \\
+  8/14  &  58.6  &  70.1 & 39m     & 205 $\pm 6 $   & 387 &-1.75 \\
+ 8/15  &  63   &  71.8  & 50m32s &  418 $\pm 15$  & 387 &-1.55  \\
+  8/16 &  72.5 &  72.6  & 28m     &   587 $\pm 11$ & 387 &-1.55  \\
+  8/16 &  72.5  &  72.6 & 33m     &  587 $\pm 11$  & 387 &-1.55  \\
+   8/17 &  77.8 &  73.4  & 1h28m & 805 $\pm 1 $   & 387 &-1.55  \\
+   8/24 &  77.8 &  72.06  & 1h4m & 460 $\pm 13$   & 387 &-1.55 \\
+ \hline
+\end{tabular}
+\caption{Test results for the CHV feedthrough Runs 1 and 2. 
+The ``highest voltage" column is the actual recorded voltage from the HVPS, while ``target voltage" indicates the voltage necessary to achieve -100~kV on the LZ cathode, when correcting for surface area and purity.}
+\label{table:chv_results}
+\end{table}
+
+
+
+
+These tests suggest that the margin for functionality in LZ is wide, but two things can eat into the margin:  First, there are differences in dielectric strength between between liquid argon and liquid xenon.
+However, these appear to be minor, at least in terms of complete dielectric breakdown (spark discharges) \cite{tvrznikova_direct_2019}.
+Electroluminescence data were collected liquid xenon (Chapter \ref{chap:xebra}, but no direct comparison in the same configuration exists for liquid argon.
+Second, the `passing' criteria was for the feedthrough to hold a fixed voltage of 100~kV\cite{mount_lux-zeplin_2017} without light production or excess current conduction for one hour.
+For LZ to function, cathode needs to operate in a stable manner for years. 
+% In LUX, the approach of escalating the cathode voltage until light was observed and then retreating a few percent resulted in a stable operating condition that lasted for the duration of the experiment. 
+% The behavior in the liquid argon tests was similar, in that a small reduction in voltage often permanently extinguished a light production event, at least up to timescales of an hour. 
+The test data suggest that the feedthrough is not damaged by the events that cause the onset of light and excess conduction. 
+The occasional (at timescales $>$ 1 hour) occurrence of these events in LZ would probably not cause irreversible damage and could probably be eliminated by a small (a few percent) retreat in the applied cathode voltage.
+
+The two above considerations suggest that the feedthrough may not be able to operate long-term in LZ at the highest plateau voltages reached in the LAr tests, but almost certainly can operate above the requirement voltage of 50~kV.
+
+\afterpage{\FloatBarrier}
+\section{Deployment}
+\subsection{Clean room build}
+\subsubsection{Production Grading Structure}
+Following the success of the prototype design, work began on the production LZ grading structure.
+The prototype was not deployed itself due to the lax cleanliness standards used in the testing at LBNL.
+While there was a class 10,000 tent with a HEPA filter, this was insufficient to be allowed within the LZ xenon volume.
+Additionally, there was no way to guarantee that damage had not occured during the stress testing of the feedthrough.
+
+The construction of the production feedthrough proceeded much in the same way as the prototype feedthrough.
+One difference was that the cryofitting took place within a class 1000 cleanroom, rather than in the tent in building 77A.
+This required the transportation and installation of plumbing which transports liquid nitrogen from a 400kg dewar in the antechamber into the clean room.
+The modified cryofitting procedure took place by dipping the cable in a small, 5L dewar filled with LN$_2$, before inserting it into the polypropylene xenon displacer.
+
+The cryofitting procedure failed several times before the eventual successful fit.
+Initially it was believed that the displacer was not bored to a large enough diameter.
+Reaming plastic is challenging due to it deforming instead of chipping away, and its tendency to expand and deform due to the heat from the lathe.
+After the first failure to insert the cable, the displacer was removed and re-reamed with the closest size up.
+This again failed, with the cable becoming stuck part way.
+
+Several concerns made the rapid resolution of this problem pressing.
+Firstly, this work was time sensitive for the LZ construction timeline.
+Secondly, if the cable became stuck partway, a new displacer would have to be used, of which there were a finite number of spares.
+This was particularly concerning due to the possibility for the crystalline cable to shatter inside the displacer.
+Lastly, each time the cable failed, an additional section of cable would have to be cut. 
+At some point the slack built into the cable length would be exhausted, and the cable would not be able to stretch from the o-ring seals to the high voltage power supply.
+
+Therefore, in the final, successful attempt it was decided to cool the cable for a longer amount of time.
+The cable was instrumented with a resistive temperature device (RTD) in order to measure the temperature in real time.
+Over the course of half an hour, the cable temperature was observed to drop.
+When the temperature reached a minimum and began to rise again, the cable was quickly and successfully inserted into the displacer.
+
+The stress cone was then attached to the displacer, and the setup was affixed to the steel mount.
+Throughout this process, the displacer was wrapped with clean wrap at the end of the day.
+The final construction of the grading structure would take place beneath a HEPA filter within a class 100 clean room, shown in Fig. \ref{fig:grading_step0}
+
+\begin{figure}
+    \centering
+    \includegraphics[angle=90,origin=c,width=0.45 \textwidth]{Assets/CHV_Files/Build/grading_step0.png}
+     \includegraphics[angle=90,origin=c,width=0.45 \textwidth]{Assets/CHV_Files/Build/fep_tube1.png}
+    \caption[Construction photos of the LZ-CHV xenon displacer in the LBL clean room.]%
+    {\textit{Left}:The appearance of the xenon displacer before the grading structure was constructed.
+    The plastic wrap was to prevent any additional dust from collecting on the surfaces. 
+    While the structure was regularly wiped down with shed-free wipes saturated with ethanol, there was still the possibility for trapping dust during construction, thus the additional precautions.
+    \textit{Right}: The FEP radon guard tube connection.}
+    \label{fig:grading_step0}
+\end{figure}
+
+The FEP radon guard was affixed on the underside of the steel mount.
+This component redirected all of the emanation from the plastic to the gas phase of the xenon, where it was redirected into the inline radon reduction system.
+Each grading ring was then placed over the grading structure with delrin spacers establishing the gradient.
+Inside each grading ring is a small recess where the resistors reside, so as to not be too proud and create excess fields.
+The resistors hook into small plastic guards which prevents shorts to the conductive grading rings, which are nicknamed ``boomerangs" for their obtuse angle.
+These boomerangs, along with the first two grading rings, are shown in Fig. \ref{fig:boomerang}
+
+\begin{figure}
+    \centering
+    \includegraphics[angle=90,origin=c,width=0.45\textwidth]{Assets/CHV_Files/Build/grading_step1.png}
+    \includegraphics[angle=270,origin=c,width=0.45\textwidth]{Assets/CHV_Files/Build/grading_step2.png}
+    \caption[ Photographs from the production grading structure construction process in the LBL clean room.]%
+    { Photographs from the production grading structure construction process in the LBL clean room.
+    \textit{Left}: The placement of the first grading ring along with the resistor ``boomerang."
+    \textit{Right}: The placement of the first two grading rings, along with the attached resistors.}
+    \label{fig:boomerang}
+\end{figure}
+
+After all nine rings were placed and connected, the continuity of the chain was tested with a multimeter.
+Since the resistance of the grading structure is orders of magnitude larger than the internal resistance of the multimeter, it was necessary to test the resistance with the meter in voltage mode, rather than resistance mode. An external voltage supply provided a small voltage to one end of the grading structure, with the multimeter in series with the structure.
+The resistance of the chain is then given by $R_1/R_2 = V_2/V_1$, where $R_i$ is the resistance in that particular section and $V_i$ is the voltage drop across the same section.
+The proper resistance was confirmed, allowing the HV cap to be placed.
+This HV cap will attach to the spring connection to the cathode, and makes a tight connection via a detent and wave spring.
+The completed structure is shown in Fig. \ref{fig:completed_grading_structure}.
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{Assets/CHV_Files/Build/completion.png}
+    \caption[A photograph of the completed production grading structure in the LBL clean room. ]%
+    {A photograph of the completed production grading structure in the LBL clean room. 
+    Left: Ethan Bernard. Right: the author, Rhiannon Watson.}
+    \label{fig:completed_grading_structure}
+\end{figure}
+\subsubsection{Cable Routing}
+Following the construction of the production grading structure, the cable plumbing was built.
+This build took place in the class 1000 clean room due to space constraints.
+The main challenges for this stage were the careful planning of the topology and order of operations in order to not inadvertently trap components, and the elimination of torsion which can concentrate over the several meters on each component.
+It was found that spooling the cable prior to threading kept kinks from forming, which would have been challenging to work out.
+
+Two particularly challenging spots were the link between the inner and outer cones, which consisted of a small bellows, and the triple stack, where the VJ hose connects to the spool can.
+The first was a struggle due the need to carefully handle the inner cone to avoid shearing the cable.
+Additionally, the bellows required testing to confirm that it would not fail when placed under large positive pressure, since it had a head of several meters of LXe on one side, and vacuum on the other.
+The triple stack was challenging due to the weight on either side of the seals, along with the intrinsic difficulty on forming two CF seals on either side of a piece.
+The leverage caused the conflats to not be tightened uniformly, leading to failure to seal adequately.
+These failures were discovered and the gaskets replaced.
+Successful sealing took place after proper support was added to both sides of the seal, along with proper utilization of a tension wrench.
+
+After the system was sealed, a Helium leak check was performed.
+Each CF seal was checked, along with the spool can's o-rings.
+Each individual seal, along with the system as a whole, met its leak specification.
+
+\subsection{Delivery and Installation}
+Following the successful leak test, the entire system was packed up and shipped to the Sanford Underground Research Facility SURF).
+The entire structure was wound up in a double decker steel box, along with all tools necessary for testing and installation.
+This is shown in Fig. \ref{fig:crate}.
+During this process the xenon volume was completely sealed, so the only areas that were exposed were regions that would be exposed to the air post installation.
+Additionally the bellows was covered in plastic to prevent dust accumulation.
+Soft supports were placed beneath the grading structure to damp vibrations.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Build/crate.png}
+    \caption[A photograph of the cathode high voltage delivery crate.
+    Aluminum panels lined the box. ]%
+    {A photograph of the cathode high voltage delivery crate.
+    Aluminum panels lined the box. 
+    The plastic wrap kept the bellows relatively dust free, despite the box not being airtight.
+    Assorted tools necessary for installation were shipped in the same box.
+    The HV cable is seen spooled on the top, protected by a separate plastic sheath. 
+    A challenge of this method was orienting the bellows correctly to minimize strain and torsion.}
+    \label{fig:crate}
+\end{figure}
+
+Following delivery, the package was unpacked and leak checked once more.
+The cone was lowered through a hole in the LZ water tank and placed onto a custom cart.
+Following extensive training and preparation, the grading structure was connected to the cathode.
+This commenced while the ICV was under a nitrogen purge. 
+Due to the risk of asphyxiation in the confined space of the (then empty) water tank, the workers (including the author) wore self-contained breathing apparatus (SCBA), which provided oxygen.
+The final connection is shown in Fig. \ref{fig:lineup}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Build/CHV_lineup.png}
+     \includegraphics[width=0.9\textwidth]{Assets/CHV_Files/Build/cathode_connection.png}
+    \caption[Photographs taken during the  cathode high voltage feedthrough final installation at SURF.]%
+    {Photographs taken during the  cathode high voltage feedthrough final installation at SURF.
+    \textit{Top}: The preparations taking place within the water tank. While the TPC is visible at this point it was covered in a plexiglass cover.
+    \textit{Bottom}: Shortly before the final connection between the feedthrough and the LZ cathode. Pictured is technician Derek Lucero in SCBA.}
+    \label{fig:lineup}
+\end{figure}
+
+Following the final sealing, multi-layer insulation (MLI) was wrapped over the inner cone.
+Copper thermal links were installed prior to this, along with RTDs to monitor the cooling of the cone.
+The seals were leak checked one final time, and the the effective resistance was confirmed to be consistent with the forward field region, reverse field region, and grading structure resistances in parallel.
+
+
+\afterpage{\FloatBarrier}
+\section{Conclusion}
+
+The LZ cathode high voltage connection was successfully build and tested at LBNL.
+A prototype was tested in liquid argon, with charge and light sensors to examine changes in the rate over time.
+At 100~kV equivalent voltage, no elevated rate of single photons was seen for over an hour.
+A production design was constructed in a clean room, passed all checks, and transported to SURF.
+It was installed in LZ under a nitrogen purge and commissioned for SR1.
+
+For SR1 the goal was to reach a voltage of -50~kV on the cathode.
+A slightly elevated rate of light was observed in the skin PMTs facing the cathode connection. 
+As the design in functionally identical, it is possible this has to do with the link to the cathode ring itself. 
+In Chapter \ref{chap:accidental}, a scan over cathode voltages is analyzed, demonstrating that the cathode does not significantly affect TPC photon rates.
+Rather than troubleshoot the system while it reached stability, an acceptable voltage of -32~kV was chosen for SR1.
+The ER/NR discrimination the CHV feedthrough enables is a major contributor to the success of the first science result out of LZ.
+% One can compare the results of LZ to Xenon-NTon, which suffered a short, limiting the cathode to -2.75~kV\cite{aprile_search_2022}.
+

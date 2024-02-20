@@ -1,0 +1,1621 @@
+\chapter{The Xenon Breakdown Apparatus}
+\label{chap:xebra}
+\section{Introduction}
+The drift fields in dark matter direct detection experiments are optimized at $\sim$300~V/cm.
+Since the next generation of detectors is expected to be vastly larger, the applied cathode voltages must necessarily increase as well.
+While the bulk fields remain the same, this leads to challenges in the feedthrough design, as detailed in \ref{chap:chv}.
+However, in the design of these features, there is scarce LXe data available to reference.
+Fine features, like wires, have been studied for decades, but dielectric breakdowns in LXe at large stressed electrode area (SEA) have only recently been examined\cite{tvrznikova_direct_2019, tvrznikova_sub-gev_2019}.
+In this chapter, I detail my contributions to the XeBrA experiment, which studied the risk factors for dielectric breakdown up to SEA of 33~cm$^2$.
+This consisted of analyzing data from initial runs, refurbishing the system following a period of inactivity, and running and analyzing several further runs.
+
+\section{Dielectric Breakdown Theory}
+Breakdowns occur when an insulating material becomes conducting, deviating from an Ohmic relationship between voltage and current.
+This nonlinear behavior is achieved through multiplication of charge as it moves through the medium between cathode and anode.
+With a sufficiently large electric field $E$, the kinetic energy acquired over one mean free path, $\mu$, is $\Delta = E\mu$.
+When $\Delta$ exceeds the ionization energy $W_0$ an additional electron can be liberated, continuing the process until all electrons reach the anode.
+
+The process of electron multiplication is described by Townsend's first coefficient $\alpha = \frac{1}{N}\frac{dN}{dx}$, where $N$ is the number of free electrons and $dx$ is the distance traversed through the medium.
+The number of electrons eventually arriving at the anode is given by \begin{equation}
+    N(x) = N(0) \exp [\int_0^x \alpha(x') dx']
+\end{equation}
+
+The first Townsend coefficient represents the probability that an electron drifts long enough for its kinetic energy to exceed the ionization energy $E_I$. 
+The mean free path through a medium is given by $1/\mu = n \sigma$, where $\sigma$ is the interaction cross section.
+The Poisson probability for no interaction within distance $x$ is $\mu ^{-1} \exp(-x / \mu)$.
+When the electric field $\mathcal{E} = V/d$ is applied to an ideal gas $p = n kT$, this provides
+\begin{equation}
+    \alpha = \exp(-E_I n \sigma d/eV) = \exp(-\frac{E_I  \sigma pd}{eV\;kT})
+    \label{eq:firsttownsend}
+\end{equation}
+
+Generally speaking, this \textit{avalanche} does not in general lead to a macroscopic discharge current.
+In addition to impact ionization from drifting electrons colliding with neutral atoms, secondary ionization will enhance the current over time.
+Secondary ionization mechanisms involve positive ion impact on the cathode, as well as photoionization from the electrons excited by the initial current.
+Photoionization may play a large role with liquid xenon, as the 177~nm scintillation light has an energy of $\sim7$~eV, exceeding the effective steel-xenon work function of 3.8 eV\cite{wilson_vacuum_1966,tauchert_photoelectric_1977}. 
+These processes are encoded in Townsend's second coefficient $\gamma$, where the number of electrons produced at the cathode $N'(0) = \gamma (N(x)-N(0)) = N(0)\gamma (\exp(\alpha d)-1)$.
+When $\gamma >0$, the current $N$ becomes, after summing the infinite geometric series with $r = \gamma (\exp(\alpha d)-1$:
+
+\begin{equation}
+    N(x) = N(0)\frac{\exp(\int \alpha dx)}{ 1- \gamma(\exp(\alpha d)-1) }
+    \label{eq:secondtownsend}
+\end{equation}
+
+This equation diverges  when $\frac{1}{\gamma}+1 =\exp(\alpha d)$.
+Plugging Eq. \ref{eq:firsttownsend} into Eq \ref{eq:secondtownsend} yields the \textit{Paschen-Townsend Law}, giving the breakdown voltage in terms of the physical parameters:
+
+\begin{equation}
+    V = \frac{n \sigma d E_I}{\ln(n \sigma d) - \ln \ln (1 + \frac{1}{\gamma})}= \frac{ \frac{E_I\sigma}{kT} pd }{\ln( \frac{\sigma}{kT} pd) - \ln \ln (1 + \frac{1}{\gamma})}
+    \label{eq:paschen_townsend_law}
+\end{equation}
+
+The Paschen-Townsend law is usually written in terms of empirically determined, medium-specific constants $A =  \sigma / kT$ and $A=E_I B$.
+Without \textit{a prioi} knowledge of $\gamma_{\text{eff}}$ (which may in principle depend on the geometry of the apparatus), one can instead parameterize the equation with $A' = A/ \ln (1 + \gamma^{-1})$:
+\begin{equation}
+    V = \frac{Bpd}{\ln( A' pd)}
+    \label{eq:paschentownsend}
+\end{equation}
+\noindent
+Breakdown data collected in gaseous xenon are shown in Fig. \ref{fig:xe_paschen_curves}.
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/XeBrA/PaschenCurves.pdf}
+    \caption[Paschen-Townsend law / predicted breakdown curves in xenon vs pressure-separation distance.]%
+    {Paschen-Townsend law / predicted breakdown curves in xenon vs pressure-separation distance.
+    These data were collected in gas using a variety of electrode materials and shapes. 
+    High pressure gas xenon data provides the best \textit{a priori} prediction for the intrinsic dielectric strength of liquid xenon, when extrapolating to the appropriate density.
+    Data from \cite{ bhattacharya_measurement_1976, kruithof_townsends_1940, berzak_paschens_2006, massarczyk_paschens_2017, norman_dielectric_2021, postel_parametric_2001-1}
+    }
+    \label{fig:xe_paschen_curves}
+\end{figure}
+\subsection{Streamers}
+On centimeter scales, breakdowns typically require nonzero $\gamma_{\text{eff}}$ to observe macroscopic ($mA$ scale) breakdowns).
+Current also typically rise over the course of 100s of $\mu s$, owing to the need for several cycles of ionic drift.
+Breakdowns which occur short timescales ($ns$-$\mu s$) require a great deal of electron multiplication over the course of a single drift time.
+This phenomenon is known as \textit{streamer} breakdown.
+
+In Townsend avalanche, the space charge is typically considered negligible in comparison to the bulk field.
+However, when $\alpha d$ becomes large, then the electron cloud may generate significant space charge, resulting in \textit{streamers}. 
+This occurs as a result of space charge, which distorts the field at the leading edge of the electron cloud.
+Such a distortion enhances the local electric field, increasing the effective $\alpha$ in a positive feedback loop.
+Eventually the space charge field is comparable to the bulk field.
+This occurs when the the \textit{Raether-Meek} criterion\cite{meek_theory_1940} is met: 
+\begin{equation}
+    \int_0^d \alpha(x) dx \approx 18-20
+\end{equation}
+\subsection{Fowler-Nordheim theory}
+Because the intrinsic dielectric strength of the liquid xenon is predicted to be high, it is unlikely that electrons seeded in the bulk (by, for instance, radioactive decays) lead to breakdowns on their own.
+Therefore attention should be given to potential surface effects, due to their potential to generate large fields and currents which may seed streamers.
+Field emission is the process by which a large external field extracts electrons from a conductor into an insulating medium.
+Fowler and Nordheim\cite{noauthor_electron_nodate} calculated the current density as a function of external field and work function, which is shown in Eq. \ref{eq:fowler_nordheim}.
+This equation was derived by evaluating the amplitude for quantum mechanical tunneling through a rounded triangular boundary.
+
+\begin{equation}
+\begin{aligned}
+    J [\text{A}/\text{m}^2] = &\frac{1.54 \times 10^{-6}}{\phi} 10^{4.52 \phi ^{-1/2}} (\beta E)^2 \times  &\exp \left(\frac{-6.53 \times 10^9 \phi ^{3/2}}{\beta E}\right) ,
+    \label{eq:fowler_nordheim}
+\end{aligned}
+\end{equation}
+\noindent
+where $E$ is the external electric field in V/m and $\phi$ is the net work function in eV.  The parameter $\beta$ describes the local enhancement of the electric field around an emitter.
+The emitter could be a small, sharp asperity on the cathodic surface.
+It is also possible for the Malter effect\cite{malter_thin_1936} to contribute.
+There, an insulating layer forms on the cathodic surface, which traps ions an prevents their immediate neutralization.
+This locally enhances the field and contributes to field emission.
+
+The shape and size of the asperities determine the enhancement factor $\beta$.
+Cases with analytic solutions in the literature include a floating conducting sphere\cite{pogorelov_corrected_2010}, a hemiellipsoid \cite{pogorelov_enhancement_2009}, and a capped cylinder.
+All of these arrangements were solved with the method of images, in some cases summing an infinite series of image charges and dipoles to cancel the bulk potential at the boundary.
+In the limit of infinite anode-cathode distance, a floating sphere of radius $r$ in a bulk field $E_0$, whose center is a distance $h$ from the cathode, has a field of
+\begin{align}
+   E_{\text{sph}}(z) = E_0(\frac{hr}{(z-H)^2} + \frac{hr^2}{2h}\frac{1}{(z-h-r^2/2h)^2} +2 \frac{r^3}{(z-h)^3})
+  \end{align}
+  
+ Whereas an ellipsoid with eccentricity $\xi$, semi-major axis $H$, and focal point at $h=H\xi$, with infinite anode-cathode distance will have a field of
+  \begin{align}
+     E_{\text{ell}}(z) = \frac{E_0}{\log ({1 + \xi}{1- \xi}) - 2 \xi }\frac{2h^3}{z(z^2-h^2)}\;.
+\end{align}
+
+Taking into account the finite anode-cathode distance requires higher order terms that are suppressed by powers of $h/L$, where $L$ is the electrode gap.
+Plugging in $z = h+r$ for the sphere and $z = H = h /\xi$ for the ellipsoid provides the field enhancement factors $\beta_{sph}$ and $\beta_{\text{ell}}$, respectively.
+The case of a tube (cylinder capped with a sphere) can be approximated by the mean of the sphere and ellipsoid cases, $\beta_{\text{tube}} = (\beta_{sph} + \beta_{ell})/2 $\cite{pogorelov_enhancement_2009}.
+All three model $\beta$ can be approximated as functions of the aspect ratios $H/\rho$ and $h/L$.
+\subsection{Reliability Analysis}
+\label{sec:hazard_functions}
+The statistics related to analyzing the reliability of a system is distinct to that of other families of distributions.
+Typically physics experiments deal with independent, identically distributed quantities (\textit{i.i.d.} for short).
+These distributions are also usually representative of, or directly related to, the quantity of interest.
+When the experiment is instead testing the likelihood for a set of conditions to lead to a failure, this introduces interesting aspects to the analysis.
+
+Two typical experimental designs in reliability analysis are the \textit{time-to-failure} and \textit{linear ramp} configurations.
+In the former, a set of conditions are established over a short time window (compared to the typical time to failure) and the results of the experiment is the amount of time it takes for the setup to reach the failure state.
+The experiment is then reset and repeated many times to obtain an estimate for the distribution of failure times as a function of the conditions.
+The latter setup chooses one condition to continuously change, and the result of each experiment is the value of the condition at the time of failure.
+A side effect of the linear ramp is that if the expected time to failure changes slowly enough compared to the expected ramp time, this introduces a dependence on ramp rate.
+Each configuration yields distinct results, but the linear ramp can be recast in terms of the time-to-failure by noting that $t = x/\dot{x}$ if $\ddot{x}=0$.
+
+The formalism of the time-to-failure configuration will be introduced here.
+Suppose a distribution of failure times $f(t)$ with accompanying cdf $F(t)= \int f(t)$.
+The survival function is defined as the complement of the cumulative distribution function $S(t)\equiv 1-F(t)$ and is the probability of not seeing a failure in an experiment up to point $t$.
+One is frequently interested in the answer to the question ``if I have not seen a failure at time $t$, how likely am I to see a failure before $t+dt$?"
+The pdf $f(t)dt$ does not by itself provide this answer, because of the way it was obtained.
+To count a failure at time $t$, the experiment has to have survived up to that point, between $[0,t)$.
+Therefore, the answer to the question above comes in the form of the \textit{hazard function}, which is the differential failure rate, conditioned on surviving up to this point:
+
+\begin{equation}
+    h(t)\equiv \frac{f(t)}{S(t)}= -\frac{\dot{S}(t)}{S(t)}\;.
+    \label{eq:hazard_def}
+\end{equation}
+\noindent
+In some sense the hazard function is the more fundamental quantity, encoding how the system becomes more or less reliable over time.
+One can invert the equation, to find the survival function in terms of the hazard:
+\begin{equation}
+    \frac{dS}{S} = - h dt \rightarrow S(t) = \exp(-\int_0^t h(t') dt') =  \exp (-H(t))\;,
+    \label{eq:cum_hazard_def}
+\end{equation}
+\noindent
+where $H(t)$ is the cumulative hazard, a dimensionless, positive quantity.
+The interpretation of $H(t)$ is slightly less intuitive than $h(t)$.
+It is the number of failures expected before time $t$, if you were able to run the experiment after a failure without resetting.
+In other words, if a system could hypothetically observe a failure at time $t_1$, but instead of restarting back at 0, the clock kept running until the next failure.
+Therefore $H(t)$ may be larger than one, and is neither a pdf or cdf.
+
+The hazard function(s) are quite useful for answering questions related to reliability.
+For example, if one has a system with multiple subsystems, each of which has the potential for failure.
+If the entire system fails if any one system fails (as if it were a circuit in series), the survival probability is then the probability of not seeing a failure in any subsystem, or 
+
+\begin{equation}
+    S(t) = \prod_i^N S_i(t) = \prod_i^N \exp (-H_i(t)) = \exp( \sum_i^N H_i(t))\;.
+\end{equation}
+\noindent
+Therefore, for a composition of unreliable systems, the effective cumulative hazard is simply the sum of the cumulative hazard of the subsystems.
+A similar analysis can be performed for components in parallel:
+\begin{equation}
+    S(t) = 1-\prod_i^N(1- S_i(t)) = 1-  \prod_i^N (1- \exp (-H_i(t)) \approx \sum_i^N\exp (-H_i(t))\;.
+\end{equation}
+
+The approximation is valid if $H_i(t)>>1$ for all of the subsystems.
+If the hazard functions of the subsystems are identical, this makes $H'(t) \approx H(t) - \ln N$.
+For breakdowns in XeBrA, the series configuration is more fitting, as each ``subsystem" can be thought of as a surface element over the cathode.
+
+The parameterization of the cumulative hazard function can in principle be anything, but it it frequently chosen from a general family of functions.
+A popular choice is the \textit{Weibull} function, where 
+\begin{equation}
+    H_W(t;\lambda, \mu, k) =
+    \begin{cases}
+    (\frac{t-\mu}{\lambda})^k & t\geq \mu\\
+    0 & t < \mu
+    \end{cases}\;.
+\end{equation}
+
+The quantities $\lambda$, $\mu$, and $k$ are referred to as the \textit{scale}, \textit{location} and \textit{shape} parameters, respectively.
+When the location parameter $\mu$ is set to zero (implying no minimum threshold for failure) this is referred to as the two-parameter Weibull function.
+Inserting the two parameter Weibull cumulative hazard function into the series equation, assuming identical elements, yields the following scaling relationship:
+
+\begin{equation}
+    \lambda = N^{-1/k}\lambda_0\;.
+    \label{eq:weibull_area_scaling}
+\end{equation}
+
+The XeBrA procedure thus far does not utilize the time-to-failure experimental design, but rather the linear ramp.
+To do the linear ramp analysis, first we make the substitution $E= \dot{E}t$.
+Next is to determine the dependence of the hazard on $E$ and $t$.
+The system may fail immediately upon any element crossing a particular threshold, which has its own particular distribution\cite{hill_examination_1983}.
+The insulating medium between the electrodes could also progressively fail in a tree like manner, growing with fractal dimension $L\propto t^{r}$.
+Either the undisturbed material between the tree and electrode may fail, or the failure could occur when the tree finally bridges the gap between electrodes and forms a conducting path.
+In all of these cases the cumulative hazard function can be parameterized by 
+\begin{equation}
+    H(t,E) =  (\frac{t}{t_0})^a [\frac{(E -E_1)}{E_0}]^b
+\end{equation}
+\noindent
+Inserting $E=\dot{E}t$, with $E_1=0$, this becomes:
+\begin{equation}
+    H(E;E_0, E_1,k) =  \frac{E^{a+b}}{t_0^a\dot{E}^aE_0^b}\;.
+\end{equation}
+\noindent
+Therefore the effective Weibull shape parameter is $k=a+b$, and the effective scale parameter is $E_0'=(t_0^a\dot{E}^aE_0^b)^{1/k}$.
+It is evident that there is a dependence on the ramp speed; $E_0'\propto \dot{E}^{a/k}$, implying that faster ramps lead to larger breakdowns, assuming $a>0$.
+When this ramp speed dependence is estimated, the $a$ and $b$ parameters can be separated.
+The $a$ parameter is interpreted as the effect of the ``history." 
+When $a>1$, this implies that a progressive weakening occurs, with hazard increasing for later times.
+Whereas $a<1$ implies a progressive strengthening of the system over time, and $a=1$ indicating no effect of history.
+Strengthening can be due to a sort of ``conditioning" effect, where weak elements are eliminated during failures, leaving a stronger overall system at later times.
+In solid media the history effect is due to the breakdown of the crystal and chemical structures.
+Liquid media are not expected to show a significant effect of history, due to the ability for damaged chemical bonds to be cleared out of the regions of high electric fields.
+Ferrofluids showed an increased breakdown voltage with increased ramp rate\cite{bartko_effect_2020}, a trend also observed in oil-impregnated pressboard\cite{nedjar_weibull_2013}, borosilicate glass \cite{fischer_influence_2021} and alumina ceramic\cite{mieller_influence_2019}.
+Thin-film polymers \cite{thomas_effect_2006}, and polymer nanocomposites\cite{nedjar_weibull_2013} exhibit the opposite trend, becoming weaker with increased ramp rate.
+
+In XeBrA the testing was conducted with three sequential ramps.
+This was done to rapidly set the voltage to a value where breakdowns were conceivable in order to fit in more breakdowns in a given acquisition.
+In each run a preliminary dataset exists, where parameters for the initial two ramps were tested.
+When ramp rate scans were performed, the reported ramp rate was for the third and final ramp, where the breakdown occurred.
+
+\subsection{Factors Affecting Breakdown}
+The surface area of the electrodes exposed to high fields is referred to as the \textit{stressed electrode area} (SEA).
+As SEA increases, the number of asperities that could initiate a breakdown increases as well.
+In fact, an inversely proportional dependence of breakdown field with stressed area has been observed in several media~\cite{auger_electric_2016,hayakawa_breakdown_1997,blatter_experimental_2014,weber_area_1956,goshima_statistical_1994,gerhold_dc-breakdown_1999}.
+Other dependencies have been noted as well, the main ones being:
+
+\begin{enumerate}
+    \item \textbf{Volume:} if the medium itself is a point of failure, then the breakdown voltage would decrease in proportion to volume.
+    This can occur in cases in which high fields cause chemical reactions to occur or ionic bonds to dissociate. In noble liquids, neither are factors. However, one might observe such an effect in cases where bubbles are present throughout the stressed volume (if the medium is very close to the boiling curve).
+    \item \textbf{Purity:} electrons drifting in liquid attach to electronegative impurities, such as oxygen.
+    The reduction in charge decreases the  likelihood of triggering a breakdown. 
+    %A modest improvement in breakdown voltages with increasing contamination has been seen in LAr~\cite{blatter2014experimental}.
+    \item \textbf{Pressure:} bubble nucleation and growth are suppressed by increasing the liquid pressure.
+    It has been observed that increasing the liquid pressure resulted in higher breakdown voltages in both liquid nitrogen (LN) \cite{hayakawa_breakdown_1997} and liquid helium (LHe) \cite{gerhold_about_1996,phan_study_2021}.
+    %\item \textbf{Temperature:} Field emission has little dependence on temperature~\cite{millikan_laws_1926}.
+    %However, a larger ambient temperature can have an effect due to the small changes in density, and therefore the mean free path of electrons.
+    %Higher temperatures were associated with larger breakdown voltages in wet oils\cite{martin_evaluation_2008}.
+    \item \textbf{Ramp speed:} if the risk of breakdown is represented as a differential breakdown rate per unit time, then different ramp speeds might result in different  maximum breakdown voltages. 
+    This has been observed in borosilicate glass and alumina~\cite{fischer_influence_2021}, ferrofluid~\cite{ bartko_effect_2020}, and oil-impregnated pressboard\cite{nedjar_weibull_2013}.
+    However, an opposite correlation was found in thin film polymers~\cite{thomas_effect_2006}.
+    \item \textbf{Surface finish:} higher sustained electric fields have been observed in more finely polished electrodes in both LHe~\cite{gerhold_gap_1994,gerhold_breakdown_1989,phan_study_2021} and LN$_2$~\cite{goshima_statistical_1994}.
+    Furthermore, acid passivation and electropolishing have been shown to be effective methods at reducing emission rates in stainless steel wires~\cite{tomas_study_2018}.
+\end{enumerate}
+\afterpage{\FloatBarrier}
+
+\section{Apparatus}
+\subsection{Terminology}
+The data collected from XeBrA is hierarchical, and therefore I use the following meanings to refer to various concepts:
+\begin{itemize}
+    \item \textbf{Stressed Electrode Area} (SEA): the surface area of the cathode with electric field magnitude above 90\% of the maximum field magnitude.
+    \item \textbf{Run}: A cycle of xenon filling, data taking, and recovery.
+    \item \textbf{Ramp}/ a cycle of ramping the high voltage power supply on the cathode from 0V until a breakdown occurs, followed by a ramp back down to 0V.
+    This usually takes several minutes and constitutes several measurements.
+    \item \textbf{Breakdown} The discharge which causes a fault signal to be sent, and a ramp to terminate.
+    These are almost always bright, and particularly large breakdowns can actually be heard by conducting sound through the steel.
+    Each ramp may have multiple breakdowns in quick succession, since the slow control can not respond with a ramp down signal fast enough.
+    \item \textbf{Dataset}: A series of ramps at with fixed settings, such as electrode separation and pressure.
+    Changes to instrumentation do not cause a change in dataset number. 
+    Datasets are labelled according to which run they occurred, so dataset 3 from Run 5 would have a ``global dataset" identifier of 0503.
+    \item \textbf{Event}: a single acquisition of the fast DAQ. This happens continuously with no deadtime, but for each of analysis is divided into sections of 1E6 samples for each channel and analyzed as if it were a triggered event.
+    \item \textbf{Precursor}: a transient spike in light or charge production during a ramp which does not produce a fault signal.
+    \item \textbf{Glitch}: An intermediate size spike in current which is sufficient to distort the HVPS supply current but is insufficient to trigger a fault signal. These are typically not visible to the naked eye.
+    \item \textbf{Tilt}: The relative angle between the cathode and anode.
+    
+\end{itemize}
+\subsection{Overview}
+The Xenon Breakdown Apparatus (XeBrA) is a 5 liter stainless steel spark chamber designed to test dielectric breakdowns in noble liquids at large, variable stressed areas.
+It consists in part of an inner and outer cryostat, separated by a vacuum layer and suspended by an 80-20 test stand.
+The outer cryostat vessel (OCV) has two viewports which enable real time monitoring of the condition of the liquid.
+The inner cryostat vessel (ICV) is cooled by a pulse-tube refrigerator, which connects though the lid of the outer cryostat via a cold finger.
+Copper cooling links maintain a consistent temperature across the ICV.
+High voltage is delivered to the cathode from the bottom via a conical feedthrough.
+Xenon (or argon) gas flows though an inlet on the lid, condenses within a heat exchanger, and is injected below the cathode.
+The gas outlet from the heat exchanger returns to a gas panel.
+When the system is continuously circulating xenon, the gas returns through an SAES getter, which purifies the gas to 1~ppb $O_2$ equivalent concentration.
+An outside view of the test stand is shown in Fig. \ref{fig:xebra_test_stand}.
+
+The gas panel piping and instrumentation diagram(PID) is shown in Fig. \ref{fig:xebra_pid}.
+The system was designed by Lucie Tvrznikova, then a Yale graduate student.
+As multiple experiments share the lab space, the panel was designed for the possibility of routing the xenon to either XeBrA or another nearby noble liquid experiment.
+The xenon flow path runs from the high pressure storage bottles into the circulation path.
+A regulator (RG01) controls the flow of xenon from the high pressure area (denoted in orange) into the relatively lower pressure area (denoted in green).
+The MV06 valve is in parallel with a Matheson\footnote{www.mathesongas.com/} moisture trap.
+Burst devices are placed in various locations around the panel, designed to vent to the room in the case of an overpressure event.
+A higher maximum pressure (9.4~bar gauge) is asserted on the the section near the circulation pump.
+This is to allow for higher pressures while filling and circulating, which are necessary for higher flow.
+The added impedance of the getter is thus crucial for the protection of the lower-pressure components closer to XeBrA itself.
+Purge lines run from XeBrA to the return path, which help to maintain uniformity of the xenon properties in otherwise stagnant regions like the PMT and the purity monitor.
+
+Overpressure events are dealt with in one of several ways.
+Relatively slow rises are caught in software, in which case a pneumatic valve is opened and the xenon is vented into 450~L, stainless steel storage containers (adapted from propane tanks).
+In the event of a power loss, the burst device connecting the gas panel to the emergency storage vessels will break, venting automatically.
+Due to the desire to recover xenon back in these cases, the storage vessels must be evacuated beforehand. 
+Due to their large size, this is a challenging prospect, and makes smaller overpressure events more costly in terms of contamination.
+If, for some reason, neither of these interventions works to lower the pressure, eventually burst devices will open to the room, venting the xenon.
+This would only occur if some kind of blockage were to prevent the xenon from flowing into the storage containers, as that burst device is designed to break first.
+
+
+
+\begin{sidewaysfigure} 
+    \centering
+    \includegraphics[width=0.9\linewidth]{Assets/XeBrA/70A_gas_system_v11.pdf}
+    \caption{Piping and instrumentation (P\&ID) of the XeBrA experiment.}
+    \label{fig:xebra_pid}
+\end{sidewaysfigure}
+
+
+The interior xenon volume houses the high voltage electrodes.
+These are two circular, stainless steel pieces with a Rogowski\cite{rogowski_elektrische_1923} profile, as seen in Fig.\ref{fig:electrodes}
+A Kimbal sphere with six flanges comprises the core of the ICV, with features branching off in all directions.
+The bottom flange connects to the  ceramic cathode feedthrough.
+On the top a rod which connects to the anode, allowing it to be moved up and down.
+Two of the flanges are left blank for visibility.
+A photomultiplier tube fits into a section at the back, intended to monitor the evolution of the single photon rate over the course of a ramp.
+A  purity monitor occupied the remaining flange.
+The purity monitor is a small drift chamber which measures the attenuation of electrons generated by a xenon flash lamp incident on a gold plated cathode.
+This arrangement is shown in Fig. \ref{fig:cad_side}, along with the associated joints.
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/XeBrA/Photos/XeBrACan.png}
+    \caption[The XeBrA test stand with the OCV in place. ]%
+    {The XeBrA test stand with the OCV in place. 
+    The turbomolecular pump on the top maintains the OCV vacuum. The tubes leading to the left connect to the cryocooler. The black high voltage cable is seen leading downwards from the can. The inlet and outlet hoses can be seen leading from the top to the cable tray to the right.}
+    \label{fig:xebra_test_stand}
+\end{figure}
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.7\textwidth,angle=270]{Assets/XeBrA/Photos/electrodes.jpg}
+    \caption{The XeBrA Rogowski electrodes, in-situ.}
+    \label{fig:electrodes}
+\end{figure}
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.75\textwidth]{Assets/XeBrA/Schematics/CAD_Side.png}
+        \caption[A CAD rendering of the XeBrA ICV cross section.]%
+        {A CAD rendering of the XeBrA ICV cross section.
+    Note the alignment joint on the cathode.
+    The purity monitor extends from the right hand side, and the cathode's ceramic feedthrough approaches from the bottom.
+    The viewport is located on the left, and the anode is held by the adjustable rod from the top.}
+    \label{fig:cad_side}
+\end{figure}
+
+\subsection{Rogowski electrodes}
+\label{sec:rogowski_intro}
+In order to test the area scaling of dielectric breakdown, large surface area electrodes are required.
+Ideally the electric field is uniform across as much of the surface as possible.
+In XeBrA, it is also required that the surface area subject to the largest electric fields is controllable.
+For these reasons, the Rogowski\cite{rogowski_elektrische_1923} profile was chosen.
+The Rogowski profile achieves a highly uniform electric field across the surface, and the stressed electrode area (SEA) scales with gap distance, obviating the need to replace electrodes.
+
+Other choices of profile are possible, e.g. plane parallel, hemispheroidal, and Bruce\cite{brodie_studies_1964}.
+The Rogowski profile curves away from the center according to an exponential function.
+The Bruce profile is a plane center and sinusoidal edge.
+With the plane parallel, Rogowski and Bruce profiles the edges are typically capped with a semi-circular section in order to terminate the function.
+Using the metric $\eta = E_{\text{max}} / E_{\text{avg}}$ to compare the profiles, the Rogowski profile maintains an $\eta \sim 1$ over longer gap distances than any of the profiles above\cite{gandi_effect_2022}.
+
+The reason for the Rogowski profile's excellent uniformity over its surface comes from the way it is generated.
+The exponential curve comes from solving for the equipotentials of a finite plane at fixed voltage a distance $d$ away from an infinite grounded plane.
+This yields the following set of parametric equations\cite{trinh_electrode_1980}:
+
+\begin{align}
+\begin{cases}
+    x = \frac{d}{\pi} ( \phi + e^\phi \cos \psi)\\
+    y = \frac{d}{\pi} ( \psi + e^\phi \sin \psi)
+    \end{cases}\;,
+\end{align}
+
+where $\psi$ parameterizes the distance along field lines, while $\phi$ parameterizes the distance along the equipotential surfaces.
+In principle any value of $\psi$ may be chosen, but $\psi= \pi/2$ is the most common.
+This choice yields:
+\begin{align}
+\begin{cases}
+    x = \frac{d}{\pi} \phi\\
+    y = \frac{d}{\pi}(\frac{\pi}{2} + e^\phi)\;,
+    \end{cases}
+\end{align}
+where the case $\phi=0$ yields the center of the electrode.
+Since the finite plane of radius $R_0$ is not a physical object, it is useful to work with the physical dimensions of the electrode, namely the radius and thickness of the object itself.
+These are given by (with the choice $\psi = \pi /2$:
+\begin{align}
+    T=\frac{d}{\pi}(2 + \sqrt{2})\\
+    R=R_0 +\frac{d}{\pi}\sqrt{2}
+\end{align}
+
+The Rogowski electrodes in XeBrA are thickness 2~cm.
+These were simulated in FENICS, similar to the analysis done in Chapter \ref{chap:fields}.
+The anode radius is $56.6$~mm, while the cathode is $48.4$~mm.
+Both are constructed from 303 steel, polished to a surface roughness of 0.1 $\mu m$.
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Figures/Field_1.0mm_0.0degrees.png}
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Figures/Field_1.0mm_1.0degrees.png}\\
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Figures/Field_3.0mm_0.0degrees.png}
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Figures/Field_3.0mm_1.0degrees.png}
+    \caption[A simulated electric field profile for the XeBrA electrodes.]%
+    {A simulated electric field profile for the XeBrA electrodes.
+    Here, the configurations are: \textbf{Top, Left:} 1~mm separation 0 degrees tilt,
+    \textbf{Top, Right}: 1~mm separation 1 degrees tilt,
+      \textbf{Bottom, Left}: 3~mm separation 0 degrees tilt,
+        \textbf{Bottom, Right}: 3~mm separation 1 degrees tilt.
+    The black lines are the contours of constant electric field magnitude.
+    The field is evaluated over the cathode surface.}
+    \label{fig:field_3mm}
+\end{figure}
+% \subsection{Inner cryostat vessel}
+% \subsection{Circulation}
+\subsection{Upgrades}
+\subsubsection{Heat Exchanger Repair}
+One of the first tasks for the 2020 restart of XeBrA was to replace the heat exchanger (HX) which failed during the initial runs in 2018.
+A weld failed during a period of data taking, due to it not being made for positive pressure.
+It was essentially a brazed connection, and the 2 bar of pressure eventually broke the weld and lead to an emergency recovery, which terminated Run 3.
+Several kilograms of xenon were vented to the outer vacuum and could not be recovered.
+This heat exchanger was re-welded using a different, stronger method and replaced.
+Due to the Covid-19 Pandemic, this required special PPE, namely half-mask respirators as I and project scientist Ethan Bernard had to be within six feet of each other to make these connections.
+
+The operating principle of the heat exchanger is illustrated in Fig. \ref{fig:fridge_cycle}.
+The XeBrA HX consists of an internal bellows surrounded by a stainless steel cylinder.
+Xenon enters through the outer volume, which serves as the condenser, where it is cooled on the walls via the PTR and the bellows by the outgoing cold gas.
+Gas exits through the bellows, which serves as an evaporator.
+The internal liquid xenon volume is separated from the evaporator by an expansion valve, which executes the isenthalpic expansion from points 3 to 4 in the diagram.
+Heat moves from the condenser to the evaporator through the walls of the bellows, causing both streams to undergo phase changes (lines 4-1 and 2-3 in the diagram).
+Eventually the outlet gas makes it to the circulation compressor, where it is adiabatically pumped from pressure $P_1$ to $P_2$ in the diagram.
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/XeBrA/Figures/Pressure-enthalpy-diagram-for-a-standard-vapor-compression-cycle-with-four-thermodynamic.png}
+    \caption[A typical refrigeration cycle plot in pressure-enthalpy space.]%
+    {A typical refrigeration cycle plot in pressure-enthalpy space.
+    The xenon flows through the indicated points as it passes through the HX, XeBrA, and the circulation pump.
+    Figure taken from \cite{jain_thermodynamics-based_2011}}
+    \label{fig:fridge_cycle}
+\end{figure}
+
+One side effect of the loss of xenon is that the liquid level now sits lower in the apparatus when full.
+This leads to some amount of evaporation before the xenon reaches the evaporator, which harms the stability of the system.
+It was noticed that during the subcooling procedure (see \ref{sec:subcooling}) that the liquid level would sit abnormally low, roughly halfway down the viewports, too low to run the experiment.
+However, following raising the set point pressure(and therefore the temperature), the liquid level rose. 
+Frequently, at this time a somewhat heavy ``rain" of liquid xenon was seen on the cathode.
+This is interpreted as liquid xenon condensing in the relatively colder heat exchanger evaporator portion when the system pressure was low.
+When the circulation speed and HX temperature were raised, the liquid xenon began to boil, eventually losing surface tension and falling back into the Kimbal sphere.
+
+\subsubsection{Tilt and SEA Estimation}
+\label{sec:cathode_tilt}
+A significant improvement from the 2018 procedure is that of the improved tilt constraint.
+The 2018 procedure involved pressing the two electrodes together with a piece of contact paper between them.
+The contact paper is a graphite sheet between two pieces of white paper, which reveals a patter of applied pressure.
+A circular pattern indicates that the cathode and anode tangent planes were close to parallel, whereas a smaller, elliptical pattern would indicate the opposite.
+The error on this method was estimated in a somewhat qualitative method.
+Photographs were taken of the electrodes, and the electrodes were rotates by a known, but blinded, amount in an image editing software.
+These pseudo-experiments were used to ``calibrate" the ability of the experimenter to visually distinguish tilts.
+It was determined that an error of $\delta \Theta \sim 1^\circ$ was indistinguishable to the operator, and that was taken as the systematic error.
+
+As this method drove the error in SEA, another method was developed and used for XeBrA-2020.
+As before, contact paper and visual confirmation was used to obtain the initial tilt angle.
+Additionally, a shed-free wipe was inserted between the cathode and anode, and the two electrodes were pressed together with the set screws loose, allowing the cathode to be pushed into place.
+Subtracting the thickness of the wipe, this allowed for calculating the tare of the linear shifter.
+When the electrodes were under sufficient compression, the set screws were tightened to immobilize the cathode.
+The wipe was then removed.
+
+After the setting of the angle as close to zero as possible, the tilt was estimated using photogrammetry.
+Photos were taken from each viewport at a fixed camera perspective.
+The linear shifter was moved, increasing or decreasing the anode-cathode separation distance.
+These photos were then analyzed offline, with an aim of mapping out the contours of the anode and cathode.
+Graphs of separation distance (in pixels) as a function of linear shift setting were found at various points on the surface.
+The y-intercepts of points on either side of the center provide an estimate of the tilt angle from that perspective.
+
+This process is performed for each viewport and the tilt estimation (and uncertainty) is calculated based on adding the angles in quadrature:
+\begin{align}
+    \theta^2 = \theta_L^2 + \theta_R^2\\
+    \delta_\theta = \frac{1}{\theta} \sqrt{(\theta_L\delta_L)^2 + (\theta_R \delta_R)^2}
+    \label{eq:theta_error}
+\end{align}
+The results of these calculations are tabulated in Table \ref{tab:tilts}.
+
+
+While I assisted in the development of the technique, I was not involved in the execution of the fitting procedure.
+I propagated these errors into the SEA using the field simulations from \ref{sec:rogowski_intro}.
+The simulations were performed over a fixed grid of tilt angle and unperturbed separations.
+Since the tilt of the cathode moves the point of minimum distance off-center, the physical separation distance differs from the untilted distance.
+Rather than pre-calculating this perturbation, I instead calculated the fields all at the same starting separation before applying the rotation matrix.
+From the resulting electric field magnitude, I located the peak electric field. 
+As unit voltage was applied, I take the physical separation as 
+\begin{equation}
+    d = V_{\textit{applied}}/E_{max}
+\end{equation}
+\noindent
+Using the valued of $d$ from the simulations, and the estimated tilt angle, I found the SEA as a function of separation distance for all of the estimated angles.
+This procedure was repeated whenever the electrodes were replaced or touched.
+The results of the simulations are shown in Fig. \ref{fig:sim_sea_scan}.
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    Runs & Front  [$^\circ$] & Side  [$^\circ$] & Total   [$^\circ$] \\
+    \hline
+         4-5 & \: 0.1 $\pm$ 0.1  & -0.6 $\pm$ 0.1 & 0.6 $\pm$ 0.1\\
+         6-7 & -0.2 $\pm$ 0.1 & -0.2 $\pm$ 0.1& 0.3 $\pm$ 0.1\\
+         8 & \: 0.3 $\pm$ 0.1 & -1.0 $\pm$ 0.1 & 1.0 $\pm$ 0.1\\
+         9 & \: 1.2 $\pm$ 0.2 & -0.4 $\pm$ 0.1 & 1.3 $\pm$ 0.1\\
+         10 & -0.1 $\pm$ 0.1 & \: 0.5 $\pm$ 0.1& 0.5 $\pm$ 0.1\\
+         \hline
+    \end{tabular}
+    \caption{Estimated cathode tilt angles for different Runs.
+    The front and side tilt labels refer to the tilts of the electrodes in the image plane for images taken from the side and front viewports, respectively, and the total value is obtained from adding those angles in quadrature.}
+    \label{tab:tilts}
+\end{table}
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/RogowskiArea.pdf}
+    \caption[simulated stressed electrode areas vs. cathode-anode distances for each of the tilts which were estimated from the photogrammetric method. ]%
+    {Simulated stressed electrode areas vs. cathode-anode distances for each of the tilts which were estimated from the photogrammetric method. 
+    Notice the vast difference, almost a factor of three, between the SEA at the lowest and highest tilts, at the same separation distance.}
+    \label{fig:sim_sea_scan}
+\end{figure}
+
+\subsubsection{Electronics and Instrumentation}
+One important upgrade from the 2018 setup to the 2020 one was the use of a National Instruments PCIe-6376 DAQ with a 3.571~MHz sample rate, significantly slower than the 250~MHz sample rate in the prototype test.
+This was done so that zero-deadtime data could be acquired, giving insight into the evolution of light and charge production over the course of an entire  ramp, up until the breakdown.
+
+
+The slower sample rate would pose a challenge for directly digitizing the pulses from the new light sensors, the ONSemi 60035C-Series 6x6~mm Silicon Photomultiplier(SiPM) and Hamamatsu model R9228 photomultiplier tube (PMT) pulses which are $\mathcal{O}$(10~ns).
+Because of this, the outputs were amplified with a Gaussian amplifier before digitization.
+The Cremat CR-200 Guassian shaping amplifier was used to transform the (falling exponential profile) output of the CR-11X charge sensitive amplifier into a Gaussian profile of the desired with(2.4~$\mu s$ full-width at half maximum).
+Separate amplifier chains were used for the SiPM and anode current.
+A considerable effort was taken to choose the appropriate charge-sensitive amplifier for the various instruments, as well as the coupling technique.
+The anode was AC coupled to a stock CR-150 test module with a CR-111 amplifier, through a surge protection circuit.
+For the SiPM, a CR-150 base was also used, but with a CR-113 amplifier as recommended by the Cremat specifications.
+The SiPM output was initially DC-coupled directly to the charge amplifier input during the first runs.
+Later, when the SiPM was moved from outside the outer viewport to the vacuum space, the SiPM was AC coupled.
+This means that the power supply is connected to the detector through the bias-in connection of the amplifier, and the signal is instead the current drawn \textit{into} the sensor, rather than exiting it.
+Advantages of this coupling scheme included additional  gain from lower input resistance, and only needing to route one cable into the XeBrA vacuum space.
+
+For the PMT a CR-150 board was modified to be electrically identical to a CR-Z-PMT board, which is coupled through a larger capacitor (1~$\mu F$ vs. 10~$nF$), and in parallel with a smaller resistor (1 vs. 200~M$\Omega$).
+In order to impedance match to the PMT board, a 50~$\Omega$ resistor from the PMT anode to the ground was replaced with a 1~M$\Omega$ resistor.
+
+The XeBrA anode for both the 2018 and 2020 setups was held at a virtual ground which ran through a surge protection circuit.
+A spark gap to ground is connected to the anode cable near the apparatus itself, ensuring that large breakdowns  short to ground.
+A signal splitter box provided additional protection and coupling to ground.
+This circuit consisted of 1~k$\Omega$ resistors in series, with TVS diodes to ground after each.
+A schematic of the full anode charge sensing scheme is shown in Fig. \ref{fig:xebra_charge_sensing}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/XeBrA/Schematics/xebra_charge_sensing.pdf}
+    \caption[The schematic for the XeBrA charge sensing circuit, produced in LTSpice.]%
+    {The schematic for the XeBrA charge sensing circuit, produced in LTSpice.
+    The symbol on the left represents the spark gap.}
+    \label{fig:xebra_charge_sensing}
+\end{figure}
+
+The Cremat CR-200 shaping module is equipped with a a 10x gain switch, an inverting switch, a fine gain adjustment trimpot, and a trimpot for adjusting the pole-zero cancellation of the shaping circuit.
+It is necessary to tune the pole-zero resistor such that the time constant of the charge amplifier is cancelled out, leaving the 
+Gaussian pulse of specified width instead.
+Under-cancellation(too much resistance) leads to the impulse response of the circuit keeping a long time constant, while over-cancellation (too little resistance) results in overshoot, with a decaying signal of opposite polarity to the initial pulse.
+The anode charge signal, SiPM, and PMT were all tuned using the ``test-in" port of the Cremat CR-150 board.
+This technique converts a square wave voltage signal (low impedance) to a delta function current signal (high impedance) by coupling the signal through a 1p$F$ capacitor.
+Results of these calibrations are shown in Table \ref{tab:gains}.
+
+The anode pole-zero and gain were tuned and largely untouched for the duration of testing.
+The SiPM required more troubleshooting, and exact cancellation was hard to achieve due to paracitic capacitances and possible crosstalk.
+After several pole-zero tunings resulted in overshoot in-situ, the SiPM sensing scheme was tuned using an LED flash in a dark box.
+This results in large signals with the actual SiPM response, allowing for accurate tuning of the signal.
+For the PMT, an LED flash in-situ (installed in XeBrA) was used to tune the gains.
+
+Calibrations were generally done between each run, as some experimentation was happening to maximize sensitivity.
+Occasionally the chain was altered slightly, splitting the anode (or SiPM) signal into a NiM differentiatior circuit in order to trigger the high-speed camera acquisition.
+This results in the gain being halved, and is accounted for in the conversion from DAQ to current.
+
+Due to the high dark rate of the SiPM of 50~kHz/mm$^2$\cite{noauthor_silicon_nodate} (translating to $\sim 4$ counts in the 2.4~$\mu$ s shaping time), a single photon threshold was not achievable during ramps.
+Single-photon sensitivity was achieved with the photomultiplier tube due to its lower dark rate.
+The PMT single-photon gain was obtained by pulsing a blue LED.
+A histogram of areas surrounding the LED pulse signal was obtained, and a double Gaussian plus constant function was fit to the data.
+The smaller Gaussian mean was identified as the single-photon gain.
+
+\subsubsection{Purity Monitor Repair}
+During the 2018 runs of XeBrA, the purity monitor became non-functional.
+It was believed that this may have ben due to charring.
+One of my first tasks when reviving XeBrA for the 2020 runs was to disassemble and clean the individual components of the monitor.
+The monitor, built by then undergraduate student Glenn Richardson, consists internally of a series of six brass field shaping rings, a brass anode, a gold plated cathode, and two Frisch grids.
+These components are connected via three PEEK rods which run the length of the cylinder.
+The inter-ring distance is set by ceramic spacers.
+The spacers, along with the internal fiber optic cable which transmits the 177~nm photons to the cathode, were the main areas of concern.
+
+Following careful disassembly, each individual ceramic spacer, and the PEEK rods, were inspected and cleaned.
+Some spacers exhibited charring, much of which washed away with isopropyl alcohol.
+Each 1 G$\Omega$ field cage resistor was similarly cleaned, and the resistances were verified individually.
+Following the reassembly of the internals of the purity monitor, the entire resistor-divider chain was verified with a multimeter / power supply combination.
+A new fiber optic cable was inserted, as well.
+
+An area of concern which became apparent during these checks were the relative proximity of the screws which held the resistors in place.
+These screws all face the same direction, but are slightly proud in either direction.
+While the field shaping rings are 10.2~mm top face to top face, the gaps between the bottom of the screw tops and bottoms are much shorter.
+The shortest gap is the stage between the anode Frisch grid the anode, which creates a large, localized field enhancement.
+
+A modification was done to the readout scheme of the purity monitor for the 2020 runs.
+As before, the cathode and anode signals were AC-coupled to a CR-111 charge amplifier, which measures the current running into those electrodes.
+The relative integrated charge of the cathode and anode signals provides an indication of the charge attenuation over the drift length.
+The previous iteration digitized the charge amplifier output with an oscilloscope, and fit the falling exponential signals to the wave form.
+In the new version, the charge amplifier output is instead fed into a CR-200 shaping amplifier, converting the impulse response into a Gaussian pulse.
+Further details of the analysis may be found in Section \ref{sec:Purity}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Photos/pm_sideview.png}
+    \caption[A photograph of the XeBrA purity monitor field cage.]%
+    {A photograph of the XeBrA purity monitor field cage.
+    Note the slightly shorter inter-stage distance near the top, which creates a high voltage weak point.
+    Plastic sheathes are present to protect the wires, as the cage has a small amount of clearance within the device.}
+    \label{fig:purity_monitor}
+\end{figure}
+
+\subsubsection{High speed photography}
+
+High speed photography has been utilized in liquid argon breakdown experiments\cite{auger_method_2014}, which lent itself well to observation of the method of dielectric breakdown in those setups.
+Streamer-type breakdowns were observed, with an ionizing path being formed between the cathode and anode.
+Streamer mechanisms are a rich phenomenon, with positive (anode-initiated) streamers exhibiting a higher fractal dimension than negative (cathode-initiated) streamers \cite{sun_formation_2016}.
+Cell-phone photography was used in XeBrA-2018 to capture images of breakdown, but it was challenging to obtain detailed images of the development of breakdowns.
+
+It was our goal with the XeBrA-2020 upgrades to look for possible warning signs of breakdowns, particularly bubbles preceding breakdowns.
+To that end, a pair of AOS Technologies PROMON u750 cameras were obtained, capable of capturing 2,146 frames per second.
+These cameras were held in place with a set of 3D printed clamps, designed by then-undergraduate student Eric Deck.
+
+The procedure for these cameras was to acquire a rolling buffer of video prior during breakdown. 
+When a breakdown occur, acquisition would trigger, writing a predefined duration of images before and after the image to disk.
+The total length was typically around 5 seconds, giving the operator ample time to activate the software trigger.
+
+Post-processing analysis of these cameras was performed by Eric Deck and graduate student Jose Soria to obtain reconstructed breakdowns.
+It was hoped that the distribution of such breakdowns would reveal information about the nature of dielectric breakdowns in LXe.
+In particular we wanted to know if the breakdowns happened repeatedly in the same location, or had a preference for the regions of highest electric field.
+Examples of streamers seen in LXe are shown in Fig. \ref{fig:streamers}, which all exhibit a mushroom like quality, and grow from the cathode to anode.
+
+My primary contribution to this component of XeBrA was the attempt to trigger automatically, freeing up person-power for other tasks.
+I attempted to do this by splitting the anode signal and routing the signal through a differentiation circuit which output a NIM signal.
+This NIM signal was then converted to a TTL signal, which was then routed to a linear fan-out.
+This fan-out signal then connected to each camera separately, which then triggered the acquisition and writing to disk.
+
+Problems with the hardware trigger can in the form of unreliability.
+Frequently one camera would trigger, and not the other.
+Other times the cameras would trigger on larger precursors, while missing the visible breakdown a few seconds later because of the long dead time.
+Many attempts were made to rectify this, from replacing the NIM components, re-ordering the proprietary cables, de-straining the connections, and changing the input to the differentiation from the raw anode signal to the charge amplifier output.
+All of these methods proved capable of trigger on GAr breakdowns in a controlled environment, but LXe breakdowns proved finicky.
+Because each breakdown took between 2 and 5 minutes, losing most of the breakdown videos would severely impact the final analysis.
+For this reason manual triggering was the most common setup for these runs.
+I served numerous shifts waiting for the fault signal to arrive.
+Future upgrades may include coupling the camera hardware triggers directly to the fault signal emitted from the HVPS power supply.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Photos/streamers.png}
+    \caption[Three distinct examples of streamers observed using the high speed cameras installed in XeBrA.]%
+    {Three distinct examples of streamers observed using the high speed cameras installed in XeBrA.
+    A bright spot is evident near the anode, while a columnar arc extends upwards from the cathode. These frames precede a frame where the camera is completely saturated.}
+    \label{fig:streamers}
+\end{figure}
+\afterpage{\FloatBarrier}
+\section{Procedure}
+\subsection{Main Procedure}
+The main procedure of XeBrA was carried over from the 2018 procedure \cite{tvrznikova_sub-gev_2019}, with some modifications.
+Each data taking run consisted of the following steps:
+\begin{enumerate}
+\item \textbf{Prepare the system}.
+All components which were previously opened are cleaned with isopropyl alcohol.
+The cathode feedthrough is affixed to the cone if it was not already.
+The high voltage cable is sealed. 
+Using the method described in \ref{sec:cathode_tilt}, the cathode is brought into contact with the anode, and the zero point of the linear shifter and the relative tilt are estimated.
+After the inner and outer volumes are connected, they are pumped out using the turbo pump on the top of the apparatus.
+Liquid nitrogen is obtained for the future recovery.
+All of the electronics are checked.
+If necessary, the gains on certain variable-gain components (such as the shaping amplifiers) are re-measured.
+
+    \item \textbf{Pre-cool the stainless steel} to liquid xenon condensation temperatures.
+    In order to maintain a uniform temperature, and to prevent potential freezing of xenon on the pipes when it is introduced, a small amount of gas xenon is introduced. 
+    2 bar absolute of GXe is introduced into the system while at room temperature.
+    This is filled through the chemical scrubber to remove H$_2$O and O$_2$.
+    After filling, the system is placed in circulation mode, where the path to the bottle is closed, and the circulation pump moves xenon through the system. 
+    In this mode, the GXe passes through the SAES getter, further purifying to ppb O$_2$-equivalent concentrations.
+    At the same time, the cryocooler is activated, starting the process of cooling the stainless steel.
+    The continuous circulation maintains the system temperature above 165~K.
+    This process was typically started on a Friday, allowing an entire weekend (72 hours) for the steel to reach equilibrium.
+    However, it took several attempts to find the correct circulation speed.
+    As the pressure is low, the gas injected through the HX carries less of a heat load, which forces the resistive heaters to output more of their maximum power in order to maintain the heat balance.
+    Initially the strategy was to lower the pressure to 1 bar absolute, which is above the xenon triple point of 0.8 bar and would prevent sublimation.
+    However, the resistive heaters could not balance the heat load at these low pressures.
+    This necessitated keeping the pressure higher, around 1.4 bar absolute.
+    Eventually it was discovered that it was necessary to keep the heater tape on the gas inlet at a high temperature for this technique to work.
+    When done correctly, when the filling procedure starts, condensation begins almost immediately.
+    \item \textbf{Condense the xenon}.
+    This was usually performed on a Monday. 
+    The xenon bottle was opened, and the xenon was condensed through a path passing through either the chemical scrubber (for the initial runs) or the SAES getter (for the final run).
+    The circulation pump was bypassed during filling.
+    Care was taken to disallow the GXe pressure in the ICV from falling below the xenon triple point.
+    This involved keeping a close eye on PT05 and opening the regulator as necessary to keep the pressure sufficiently high.
+    Though the latent heat of vaporization helps to balance the cooling power from the PTR, the pressure drop from the chemical scrubber leads to a reduced flow rate from the bottle to XeBrA.
+    This necessitates additional heating from either the heating tape affixed to the inlet port, or the resistive heaters on the cold finger in the ICV.
+    Over seven hours, 12~kg of xenon are transferred.
+    \item \textbf{Circulate and clean the xenon}.
+    For 12-16 hours the xenon is circulated at a pressure of 1.4 bar absolute.
+    The getter purifies the xenon during this time.
+    Over this time the temperature of the steel reaches a new equilibrium following the changes which resulted from condensation.
+    \item \textbf{Take data}.  Data in the most recent runs (4-10) were taken in circulation mode. Typically the first day of data taking involved opening up the xenon bottle to slowly condense the remaining 4kg of xenon, to a total weight of 16 kg.
+    The linear shifter was moved into the desired separation, and new slow control files were started.
+   The independent variables which were scanned over in each run were the xenon pressure, ramp rate, and separation.
+   The surface condition was tested by swapping out the mechanically polished electrodes for passivated ones.
+   
+    The high voltage was controlled with the LabView slow control.
+    Each ``ramp" consisted of three stages of progressively slower voltage ramps.
+    The first two ramps exist simply to skip over low risk voltages faster, getting to the higher voltages we desire to test.
+    The ramp rate reported in the data is the rate of the third and final ramp.
+    When changing settings, the ramp schedule was tuned in order to prevent premature  trips on the initial surge of current.
+    A breakdown is detected by the HVPS, which tests if the current drawn exceeds a threshold, at which point it sends out a fault signal to the slow control.
+    The threshold was similarly tuned to not trip on the initial surge. 
+    This typically resulted in a trip of 1-5~uA and was set as low as possible.
+    
+    Some form of optical sensor was always active, barring malfunctions.
+    The three possible optical sensors were the SiPM, the high speed cameras, and the PMT.
+    For Runs 4-8, the SiPM and the cameras were alternated, as the SiPM was affixed on the outside of the outer viewport. 
+    In Runs 9-10 a new feedthrough was installed, enabling simultaneous  acquisition of SiPM and camera data.
+    The PMT was only used for static tests, and therefore was never active during a breakdown ramp.
+    This data were digitized with a NI DAQ with a sample rate of 3.571~MHz with 100\% livetime.
+    
+    Periodically during data taking the optical sensors were disabled, in order to check the xenon for bubbles. 
+    Excess bubbling was never observed between the electrodes, only a slow wave pattern on the liquid surface.
+    \item \textbf{Recover the xenon} with cryopumping.
+    The  empty steel xenon bottle is immersed in liquid nitrogen, bringing the container to 77~K. 
+    The valve, at risk of becoming brittle, is kept hot with heater tape pressed tight against the steel bottle.
+    A thermostat is used to prevent overheating.
+    Circulation is stopped, the cryocooler is shut off, and the return path to the xenon bottle is opened. 
+    The boil off heaters on the bottom cone are activate, providing an additional 60W of heating power.
+    This procedure usually only takes around 4-5 hours if done correctly.
+    It was occasionally sped up by softening the outer vacuum with nitrogen.
+    However, the risk of introducing condensation into the electronics was high, so this was only done on the occasions where the boil off heaters were malfunctioning.
+    Near the end of the recovery, the pressure may become dangerously close to the triple point.
+    Because of this, a hands on technique was employed, referred to internally as the ``seesaw trick."
+    Essentially the valve to the bottle was opened and closed such that the pressure in the system oscillated between 1 bar and 1.2 bar absolute. 
+    This maintained the system above the triple point, making sure that no xenon was frozen.
+    At the last cycle, if done correctly, the pressure drops from 1.2 bar to 0 rapidly when the valve is opened.
+    If done incorrectly the pressure becomes stuck at the triple point, and the operator must wait for the ice to vaporize to continue.
+    The vaporization is both time consuming and risky, as the ice may rapidly vaporize and damage the system or blow a burst disk.
+\end{enumerate}
+\subsection{Subcooling}
+\label{sec:subcooling}
+An important modification to the procedure from 2018 was the introduction of a cooling cycle in between working days to mitigate bubble production.
+The original procedure involved filling through the getter, followed by 24 hours of circulation, then slowing circulation and continuously condensing the remaining xenon from the bottle in order to keep the system below the boiling curve.
+With the loss of xenon, less surplus xenon could be kept in the bottle, and therefore continuous condensation would be unsustainable.
+Furthermore, more system parameters were to be scanned over, so multiple days of data taking were necessary for each cycle of filling and recovery.
+Thus, another solution was necessary, which was discovered somewhat accidentally.
+
+The subcooling procedure is conceptually simple.
+After the data were taken for the day, the system set point pressure was lowered to a value below any which we intended to examine.
+When this happened, the heating tape thermostat was also lowered.
+This resulted in a generalized cooling of the system, though the HX temperature rose due to the xenon changing phases.
+The circulation speed was forced to compensate for the lower pressure of the xenon in order to maintain heat balance with the PTR cooling power.
+Over several hours the cone steel cooled, approaching the condensation curve.
+Ideally this would be maintained long enough to achieve system equilibrium, but typically the cone bottom temperature was still falling the next morning.
+
+The next morning (between 8 and 12 hours later), the system pressure was raised, along with the heater tape thermostat increasing. 
+This boiled off xenon at the top of the detector rapidly, raising the temperature at the top of the apparatus without having it translate to the cone steel immediately.
+When the set point pressure was achieved, the heater tape and circulation speed was adjusted to maintain stability.
+The steel ICV was at this point in a temperature inversion: the hottest portions were at the top, while the coldest portions were at the bottom, near the feedthrough.
+Ideally, the cone bottom would be the boiling temperature of xenon at the overnight pressure, while the liquid level would be the boiling point at the current pressure.
+
+With the cathode feedthrough 10s of Kelvin below the boiling point, bubbles could be suppressed for longer than an entire workday.
+Periodically the viewports were checked to make sure that the xenon was placid.
+After subcooling became part of the procedure, the xenon was always placid except for when the pressure was being altered as part of a scan (lowering the setpoint results in boiling off of xenon, carrying heat to other portions of the apparatus).
+
+An example of the slow control data from a subcooling cycle is shown in Fig \ref{fig:subcooling}.
+It took some amount of trial and error to find the correct settings for subcooling.
+Because the PTR has a fixed cooling power, heat must be injected from the resistive heaters and gas xenon in order to achieve balance.
+An issue with the system is that it is naturally unstable, tending towards runaway boiling or condensation.
+This is because the gas xenon being injected through the heat exchanger constitutes a significant portion of the heat load.
+When the gas pressure raises, this leads to a higher density of room-temperature xenon being pushed into the HX, which increases the heat load, which in turn boils off more xenon, raising the gas pressure.
+The inverse cycle is also possible, and is actually more likely to occur due to the inability to throttle the cryocooler.
+The resistive heaters are controlled via the PLC's PID loop in order to achieve the correct heat load to maintain the pressure, and are typically successful in doing so if the 
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=.8\textwidth]{Assets/XeBrA/Figures/subcooling.png}
+    \caption[An example time series of measurements during of a subcooling cycle in Run 7. ]%
+    {An example time series of measurements during of a subcooling cycle in Run 7. 
+    Pressure transducers and thermometers are shown.
+    The primary result of this method is an increase in the separation of the cone bottom and Kimbal sphere RTDs.}
+    \label{fig:subcooling}
+\end{figure}
+
+\section{Run History}
+\label{sec:history}
+\subsection{Introduction}
+The XeBrA experiment is a research and development test stand.
+Many runs were taken in the 2020 iteration, partially due to some trial and error of the procedures and experimental goals.
+A brief history of XeBrA is presented here, along with my contributions to each.
+
+\subsection{XeBrA-2018}
+\subsubsection{Runs}
+XeBrA was constructed between 2016 and 2018.
+While I was not heavily involved in the construction process, my primary contributions in this stage were in machining of parts and the fast DAQ setup and analysis.
+I machined the thermal link to the bottom of the cathode cone out of oxygen-free-copper.
+This kept the temperature of the steel relatively uniform.
+Later on, I set up the CAEN digitizer to analyze anode data.
+While not critical to the analysis for the 2018 analysis, it did form the motivation to focus more heavily on precursor pulses for XeBrA-2020
+
+\begin{enumerate}
+    \item Runs 0-1: liquid argon runs. 
+    These were performed in order to troubleshoot elements of the procedure in a safe  environment, as in case of emergency argon could be thrown away with impunity.
+    \item Run 2: A complete liquid xenon run. 
+    A method of suppressing bubbles by constantly condensing was utilized.
+    It was realized that the xenon was heavily contaminated ($\mathcal{O}$(ppm) O$_2$ equivalent), based on RGA measurements. 
+    This lead to the saturation of the getter cartridge in XeBrA, which required replacement.
+    \item Run 3: A partial liquid xenon run. During data taking, a weld in the heat exchanger failed, leading to a loss of xenon. Before this, due to filling through in-line purifiers, the xenon froze instead of condensed. Rapid changed in pressure as a result most likely put additional stress on the weld.
+\end{enumerate}
+\subsubsection{TPC}
+In order to estimate the liquid purity during Run 3, XeBrA was temporarily turned into a time-projection chamber. 
+In this mode, the electrodes were separated by the maximum possible amount (20~mm) and liquid xenon was filled up to 5~mm below the anode.
+The Hamamatsu PMT collected information on the electroluminescence in the chamber.
+The CAEN DAQ was set up to trigger on the S2s.
+In order to trigger events, thoriated welding rods were affixed to the outside of the outer vessel.
+The Compton scatters from assorted gamma rays were observed to drastically increase the trigger rate.
+
+Due to not being designed for this mode, the light collection efficiency is unknown. 
+Instead of attempting accurate per-event reconstruction, the intention was to obtain the S2/S1 ratio as a function of the drift time.
+As a result of the anode being placed far above the intended height, the field was less uniform than during the breakdown data taking.
+This causes the S2 width to vary as a function of position at the liquid surface.
+
+The function $S2 = S1 g \exp(-dT/\tau_e)$, where $S(i)$ is the S1(S2) pulse area, $dT$ is the drift time, $g$ is the average gain, and $\tau_e$ is the electron lifetime, was fit to the S2-triggered data.
+An electron lifetime $\tau_e=2.21 \pm 0.02\;\mu s$ was obtained.
+From this, the O$_2$-equivalent impurity was estimated as $\sim 200$ ppb. 
+I performed the analysis of this pseudo-TPC data, extracting the lifetime and estimated the uncertainty using jackknife resampling.
+
+\subsection{XeBrA-2020}
+
+All breakdown data in XeBrA-2020 were taken in liquid xenon, though some preliminary electronics testing took place in gas xenon and gas argon.
+
+\begin{enumerate}
+    \item \textbf{Run 4}: The first XeBrA-2020 run.
+    Data were collected up to 6~mm separation, more than other runs. 
+    Relatively straightforward compared to future runs. No SiPM data was taken, and the high speed cameras were tested out.
+    \item \textbf{Run 5}: A failure in filling, resulting in an overpressure event.
+    As it happened previously in XeBrA-2018, the xenon was filled through the in-line purifier, which resulted in some sublimation on the steel. This resulted in some frozen xenon in the system, likely the HX.
+    While attempting to melt the ice, a piece rapidly vaporized, causing a burst disk to break and xenon to be vented into the recovery vessel.
+    This occurred relatively early into the fill, and therefore filling continued.
+    Some data was taken after this, though the reduced quantity of xenon lead to thermal instabilities and bubbles.
+    The xenon was successfully recovered early, with only $\mathcal{O}(100)$g loss of xenon.
+    Afterwards the purity estimated after the fact with a cold trap-RGA method similar to that done in Ref. \cite{leonard_simple_2010}. 
+    The purity was determined to be $<$100 ppb.
+    This run accidentally lead to the development of the subcooling procedure detailed in Section \ref{sec:subcooling}.
+    \item \textbf{ Run 6}: Another aborted run. This time, while beginning the subcooling procedure, which involved slowing the flow rate, the inlet pipe heated up considerably.
+    This is believed to be a result of the reduced cooling power going into the metal, which at this point was not regulated by a thermostat.
+    This hot metal ended up melting the plastic tube which connects the turbopump  to its backing scroll pump.
+    This spoiled the vacuum in the jacket, which while not catastrophic did result in an early, controlled recovery of the Xenon back into the bottle.
+    No xenon was contaminated during this process.
+    Some data were collected prior to this incident.
+    The plastic tube was later replaced.
+    \item \textbf{Run 7}: A successful xenon run.
+    This was the first run where pressure scan data were taken.
+    SiPM and camera data were taken as well, but not simultaneously.
+    \item \textbf{Run 8}: A xenon run with alternate electrodes. Following the conclusion of Run 7 the electrodes were inspected. Between certain runs, the electrodes were cleaned with isopropyl alcohol in order to remove what was thought to be debris.
+    It was later realized that pitting was occurring as a result of very large breakdowns.
+    The electrodes were inspected under a microscope, revealing populations of large and small pits.
+    An alternate set of mechanically polished electrodes were used for this run, which was otherwise uneventful.
+    The original electrodes were sent off to be re-polished.
+    \item \textbf{Run 9}: The original electrodes were swapped back in and another run was done. 
+    This was the first run were ramp speed scan was performed, along with a pressure scan.
+    Additionally, the SiPM was now placed inside the outer vacuum, affixed to the ICV viewport.
+    \item \textbf{Run 10}: A successful run, identical to Run 9, but with passivated electrodes instead.
+\end{enumerate}
+\afterpage{\FloatBarrier}
+\section{Analysis}
+\subsection{Breakdown Field}
+\subsubsection{Selection Criteria}
+At each separation and run dataset, the Weibull parameters described in \ref{sec:hazard_functions} were extracted.
+The breakdowns were initially filtered to remove confounding data.
+The selection criteria were: 
+\begin{enumerate}
+ \item Breakdown voltage must be larger than 4~kV due to occasional spurious trips on the ramp start;
+ \item Pressure must be within 50~mbar of the set point; 
+ \item  the first ten breakdowns of any dataset are vetoed to mitigate possible conditioning effects; 
+ \item the breakdown must occur at least 0.1~s away from a step in voltage, which ensures that we only consider data during periods of quasi-static cathode voltage. 
+\end{enumerate}
+
+Criterion 1 was chosen due to the fact that the ramp control software jumps from 0V to 800V in one step at the beginning of a ramp.
+This appears to be a setting within the HVPS itself and could not be altered.
+An instantaneous jump in current of this size had a tendency of tripping the fault.
+With the assistance of the viewports, it was evident that these events were not breakdowns, as no spark was seen between the electrodes.
+Thus, this criterion was introduced to make sure that these breakdowns were not counted.
+
+Criterion 2 is fairly simple. 
+The xenon pressure in the spark chamber is an independent variable of the tests, and therefore random excursions from the set point must be excluded.
+This is usually only an issue on the first day of testing, were the additional 4kg xenon is condensed, which leads to challenges for the PID loop to control the pressure.
+
+Criterion 3  exists to remove the possible conditioning effect of the electrodes.
+Fresh electrodes have the potential for sharp asperities on their surface.
+These asperities enhance the local electric field, increasing the change for breakdowns at lower bulk fields.
+However, dielectric breakdowns are violent events, and can melt the metal, smoothing out the asperities.
+In fact, this is the process by which electropolishing\cite{noauthor_electropolishing_nodate} occurs.
+Due to the fact that only a small
+(<100)number of breakdowns are taken with each configuration, only 10 breakdowns are vetoed.
+This is repeated for each configuration, rather than each replacement of electrodes, in case new asperities have been introduced.
+
+
+Criterion 4 was introduced to be insensitive to the effect of the current surge from the discrete steps in voltage.
+While a ramp rate is specified in software, the voltage is not adjusted continuously, but rather in 100V increments (the smallest that the HVPS can control).
+The ramp rate, therefore, only controls the time between these discrete steps.
+In order to test the quasi-static DC breakdown conditions, rather than these AC current surges, breakdowns which occur within one slow control sample (10~Hz = 100~ms) of the step are removed.
+The distribution of the length of time at the breakdown voltage is given in Fig. \ref{fig:discrete_pmf}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/discrete_pmf.pdf}
+    \caption[The distribution of the time differences between breakdowns and their associated discrete voltage steps. ] %
+    {The distribution of the time differences between breakdowns and their associated discrete voltage steps. 
+    Events in the first bin(between 0 and 0.1s) are removed by criterion 4.
+    This data is the combination of all runs in XeBrA-2018 and XeBrA-2020}
+    \label{fig:discrete_pmf}
+\end{figure}
+
+\subsubsection{Weibull fit}
+The breakdown fields from the linear ramps were compared against the Weibull distribution.
+The cumulative distribution of breakdown fields can be transformed in such a way to ease the interpretation.
+A two-parameter Weibull cdf $F(E) = 1 - \exp[-(E/E_0)^k]$ can be mapped in such a away as to appear linear: 
+\begin{equation}
+    \log (-\log(1-F(E))) = \log(H(E)) = k \log(E) - k \log(E_0)\;.
+\end{equation}
+
+A distribution of breakdowns will appear linear in this space, with the slope providing the shape parameter, and the y-intercept providing the scale parameter.
+Introducing a location parameter causes the distribution to have nonzero curvature in this space.
+
+The survival function $S(E)$ must be estimated from the finite datasets available.
+There exist several methods for doing so.
+The empirical distribution function is the most straightforward, as is given by the number of entries less than the argument: 
+\begin{equation}
+    \hat{F}_e(E) =\frac{1}{N} \sum_i^N \theta(E- E_i) \;.
+\end{equation}
+Another popular method is the ``median rank" method\cite{nassar_using_2005}.
+Given a series of breakdown fields, they are ranked in ascending order such that $E_1$ is the smallest and $E_N$ is the largest.
+The estimated cumulative distribution is then:
+\begin{equation}
+    \hat{F}_{MR}(E_i) = \frac{ i - 0.3}{n+0.4}\;.
+\end{equation}
+This method has the advantage of being well-defined at the boundaries, but if values are repeated then it requires some corrections.
+The method used in this analysis for diagnostic purposes is the Kaplan-Meier estimator\cite{kaplan_nonparametric_1958}.
+\begin{equation}
+    \hat{S}_{KM}(E) = \prod_{i :E_i \leq E} (1- \frac{d_i}{n_i})\;,
+\end{equation}
+\noindent
+where the parameters $d_i$ refers to the number of breakdowns observed at point $E_i$, and $n_i$ is the number of ramps known to be active up to point $E_i$. 
+The distinction is interesting, as the Kaplan-Meier estimator is frequently used in the medical context, where individuals may drop out of trials at some point.
+In XeBrA the distinction is less crucial, as we always observe a breakdown for a ramp.
+
+It was noticed in XeBrA that the Weibull plots were often a straight line, indicating the validity of the model.
+However, this was not always the case, with some datasets demonstrating one or more ``knees" in the plot.
+In reliability analysis this indicates the presence of several failure modes.
+Two ways to combine hazards are in a simultaneous or transient manner.
+A simultaneous combination indicates a situation where either failure mode can appear at the same time, and the effective hazard function is given by the sum of the individual hazards.
+On the other hand, a transient failure mode would appear as a sum of the respective probability distribution functions (pdfs).
+An example of the simultaneous failure modes is shown in Fig. \ref{fig:weibull_combination}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Assets/XeBrA/Figures/Hazard_combination_1.pdf}
+    \caption[An analytical example of combining two hazard functions.]%
+    {An analytical example of combining two hazard functions.
+    Here $H(x) = H_1(x) + H_2(x)$.
+    The Weibull parameters are $\lambda_1 = 10$, $\mu_1=5$, $k_1=.5$, and $\lambda_2 = 20$, $\mu_2=0$, and $k_2=5$. }
+    \label{fig:weibull_combination}
+\end{figure}
+
+The simultaneous combination was not used for this analysis, but rather the linear combination of the pdfs.
+This choice was in part due to the increased flexibility of being able to weight the two contributions.
+More critically, it was motivated by the apparent auto-correlation of the breakdown voltages within datasets.
+Rather than having the relatively high or low breakdown voltages distributed throughout the dataset, the breakdowns tended to be clustered within their own modality.
+An example of this is shown for dataset 701 in Figure \ref{fig:ramp_locations}.
+These clusters are referred to as ``transient dips" in breakdown field.
+
+Transient dips are not consistently associated with any observable change in thermodynamic conditions (e.g. temperature, pressure, flow rate, etc).
+It is my hypothesis that the dips are due to debris, or persistent bubbles, floating into the stressed volume and weakening the field over multiple breakdowns before dissipating.
+Debris could cause such weakening through the Malter effect\cite{malter_thin_1936}.
+The data is fit by maximizing the likelihood over the following function:
+
+\begin{equation}
+    \ln\mathcal{L} = \sum_i^N \sum_j^M a_j  \frac{k_j}{\lambda_j} \left( \frac{E_i-\mu_j}{\lambda_j} \right)^{k_j-1}\exp\left[-\left(\frac{E_i-\mu_j}{\lambda_j}\right)^k_j\right]\;,
+\end{equation}
+\noindent
+where the $i$ runs over the $N$ data points and $j$ runs over the $M$ components.
+The parameters $E_0$, $E_1$ are replaced with $\lambda$ and $\mu$, respectively in order to not overload the purpose of the superscript in this case.
+For this analysis, only $M=2$ was considered.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.6\textwidth]{Assets/XeBrA/Figures/ramp_locations_701.pdf}
+    \caption[High voltage power supply voltage vs. time, with the identified breakdowns for a representative dataset]%
+    {High voltage power supply voltage vs. time, with the identified breakdowns for a representative dataset(701). 
+    The red stars indicate the breakdowns and serve as a diagnostic for the breakdown finder code.
+    The lower breakdown fields are seemingly clustered together.}
+    \label{fig:ramp_locations}
+\end{figure}
+
+Since not every dataset appeared to contain multiple components, $M=1$ models were initially considered for them.
+A likelihood ratio test was performed, which analyzed the relative increase in the likelihood when adding the additional degrees of freedom to the function.
+The p-value was calculated based on the $\chi^2$ distribution with degrees of freedom equal to the change in free function parameters.
+Two three component Weibull functions with a fractional contribution contains 7 d.o.f, making the likelihood ratio distributed according to \begin{equation}
+    \ln\frac{\mathcal{L}_1}{\mathcal{L}_2} = \sum_i \ln [af_{W1} (E_i) + (1-a) f_{W2} (E_i)] - \ln f_{W0}(E_i) \sim \chi_4^2\;,
+\end{equation}
+\noindent
+where the sum runs over points,  $f_{W1(2)}$ are the probability distribution functions of the components of the double Weibull model, and $f_{W0}$ is the three-parameter, single component model.
+When this p-value was below 0.05, the two-component model was chosen.
+This procedure was also used to select between the two- and three-parameter Weibull functions, i.e. with $E_1=0$ or floating.
+When the two-component model was selected based on the p-value, it was only approved in software if the size of the smaller component, i.e. $\min(a_j)$, was greater than 0.1.
+This was to ensure that there were sufficient breakdowns to constrain the parameters of that component.
+In the case that the two-component, three parameter model was selected as the superior fit, this left the question of which component to compare against the single-component models.
+I decided to use the component with the larger modal value, for the simple reason that a transient dip in performance is a more physically interpretable situation than a transient increase in performance.
+An example of a model with two components preferred is shown in Fig. \ref{fig:weibull_2comp}
+
+\begin{figure}
+\centering
+    \includegraphics[width =0.7\textwidth]{Assets/XeBrA/Figures/weibull_pdf_401_1.0mm_1.0barg_6ramp.pdf}
+    \qquad
+    \centering
+    \includegraphics[width =0.7\textwidth]{Assets/XeBrA/Figures/weibull_401_1.0mm_1.0barg_6ramp.pdf}
+ \caption[An example of a breakdown distribution from a dataset that strongly favors a two component, three-parameter Weibull PDF ]%
+ {An example of a breakdown distribution from a dataset that strongly favors a two component, three-parameter Weibull PDF (i.e.~Model 3, see text). 
+ This is for Run 4 and electrode separation 1~mm. \emph{Top:} Histogram of breakdown fields (blue) and two-parameter Weibull PDF overlaid on top. \emph{Bottom:} The cumulative hazard distribution (black) and the model that provided the best fit to data (orange dash line). $E_2$ is equal to the shifted scale parameter $E_0+E_1$, corresponding to the 63rd quantile of the distribution, and is plotted here for reference (black dash). The cumulative hazard can be interpreted as the expected number of breakdowns that would occur before reaching a given breakdown field, if ramps were restarted at the point of failure.
+ }
+    \label{fig:weibull_2comp}
+\end{figure}
+
+The likelihood minimization was performed with scipy's $\text{minimize}$ function, utilizing the sequential lease squares programming(SLSQP) algorithm.
+The derivative of the Weibull log-likelihood was specified to ensure rapid convergence.
+A hessian(second-derivative) matrix was used to estimate the error on the fit parameters for the two-parameter Weibull function, as the covariance matrix is given by the inverse hessian.
+For the three-parameter(one- and two-component) models, instead of an analytic function the covariance matrix is estimated using jackknife resampling\cite{nisbet_chapter_2018}.
+
+Generally, the uncertainties were $\mathcal{O}$(0.1)-$\mathcal{O}$(1) for the scale $E_0$ and shape $E_1$ parameters.
+This is related to the statistical fact that the moments of the Weibull function (mean, variance, skew) are not functions of only one of the Weibull parameters, but generally all three.
+Because of this, the off-diagonal elements of the correlation matrix are large.
+Instead of reporting $E_0$ or $E_1$ separately for inter-dataset comparisons, I chose to introduce a new parameter,
+\begin{equation}
+E_2 \equiv E_0+E_1    
+\end{equation}
+\noindent
+and perform all comparisons with it instead.
+Other quantities such as the mean and median of the Weibull distribution were explored, but $E_2$ had the advantage of relatively simple error propagation.
+Statistically, $E_2$ is the 63rd percentile of the Weibull distribution (corresponding to a cumulative probability of  $1-1/e$).
+
+
+
+\subsection{Charge and Light Analysis}
+\label{sec:chargeamp_ana}
+The light and charge data from the SiPM and anode current were analyzed using a similar technique to the LZ-CHV prototype data in Chapter \ref{chap:chv}.
+Low frequency noise is removed, followed by removal of chirp signals which were present.
+Then, pulses are located using two passes, one for shorter and one for longer pulses.
+Following large pulses in the SiPM, particularly following breakdowns, the pulsefinder is disabled until the system recovers from the shock.
+Pulses then have their associated charge (and photon count) reconstructed.
+Some selection criterion are then applied to remove spurious pulses.
+The current from each channel is then associated with breakdowns and given a time from the start and end of a breakdown.
+
+Each acquisition is divided into ``events" of length $10^6$ samples per channel by the Polaris software\cite{suerfu_polaris_2018}.
+As the clocks on the DAQ computer and the slow control are not perfectly synchronized, and the sampling rates were different, the breakdown locations were found from the DAQ data, agnostic of the slow control/HVPS data.
+The breakdowns were located by looking within each event for the overshoots from the massive surge of current from a breakdown. 
+A positive pulse of current into the anode was observed coincident with HVPS fault trips.
+It is also occasionally associated with distortions of the cathode voltage which \textit{do not} result in fault trips.
+These ``sub-threshold breakdowns"/``glitches" or trips were disambiguated from true breakdowns(defined as a signal which \textit{does} result in a trip) by the presence of three or more overshoots in a single event window.
+In Fig. \ref{fig:Waveforms} an assortment of event classifications are shown, from an empty event, to an event containing pulses, to a ``glitch" event, to a ``breakdown" event.
+Anode and SiPM pulses within two seconds of a glitch do not count towards future analysis.
+
+
+
+``Chirp" signals in the anode, similar in nature to those found in the CHV prototype testing were filtered out using a sliding window method.
+The root-mean-square (RMS) value within the sliding window of length $N=900$ samples was calculated, and the maximum amplitude of the signal within the same window was compared against it.
+If the RMS is $>20$ analog-to-digital converter counts (ADCC) for more than $L=250$ samples, and the ratio of amplitude to variance is $<0.9$, then the region of the waveform is replaced with a second-order lowpass filter with cutoff frequency of $\omega_c = 2 \pi / 4096$ .
+A representative waveform which has been ``dechirped" is shown in Fig. \ref{fig:dechirp}.
+
+
+The pulsefinder is based around a difference-of-Gaussians (DoG) filter, which is an approximation of the Laplacian operator.
+The filter is a small standard deviation, positive polarity normalized Gaussian function, from which a wider, normalized Gaussian function is subtracted.
+This effectively performs a low pass filter to subtract slower trends and baseline drifts, then identifies regions of significant amplitude on top of these trends.
+\begin{equation}
+    \text{dog}(t;\sigma_1,\sigma_2) = \frac{1}{\sigma_1 \sqrt{2 \pi }} \exp(-\frac{t^2}{2\sigma_1^2}) -\frac{1}{\sigma_2 \sqrt{2 \pi }} \exp(-\frac{t^2}{2\sigma_2^2})
+\end{equation}
+
+Local maxima of the DoG-filtered waveform were identified as pulses if the were above a given threshold.
+Reconstructed quantities(RQs) of the pulses were calculated, such as area, amplitude, width, full-width-at-half-max(fhwm), and rise time.
+In order to further remove chirps, pulses with fwhm$<8.4\;\mu s$ were vetoed.
+As the charge shaping circuits were frequently tuned between runs, the particular pulsefinder parameters, thresholds and gains also varied.
+The $\sigma_1$, $\sigma_2$ of the DoG filter were tuned by identifying large pulses in each channel, and scanning over each parameter to find a global maximum of the signal-to-noise ratio (amplitude over rms).
+While the values differed from dataset to dataset, the values typically were in the range $\sigma_1\in[8,12]$ samples, $\sigma_2 \in [30,40]$ samples, and $H_{min} \in [100,500]$ ADCC.
+
+\begin{figure}
+\centering
+ \includegraphics[scale = .475]{Assets/XeBrA/Figures/Waveforms/Background_91.pdf}\qquad
+\includegraphics[scale = .475]{Assets/XeBrA/Figures/Waveforms/Event_437.pdf} \qquad
+\includegraphics[scale = .475]{Assets/XeBrA/Figures/Waveforms/Glitch_710.pdf}\qquad
+\includegraphics[scale = .475]{Assets/XeBrA/Figures/Waveforms/Breakdown_754.pdf}
+
+ \caption[Various categories of event acquisitions waveforms in XeBrA.]%
+ {Various categories of event acquisitions waveforms.
+  \textit{Top left}: An example of background noise. 
+The oscillatory behaviour is removed through a filtering technique.
+ \textit{Top right}: an example of the coincidence between anode and SiPM pulses. This event was recorded close to the breakdown point.
+ \textit{Bottom left}: A subthreshold discharge. These occasionally occur during a ramp, but did not trigger an HVPS fault signal.
+ \textit{Bottom right}: A true breakdown event, coincident with an HVPS fault signal.
+    }
+    \label{fig:Waveforms}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/Waveforms/dechirp.png}\linebreak
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/Waveforms/dechirp_post.png}
+    \caption[The results of the dechirping procedure on a typical anode signal event waveform.]%
+    {The results of the dechirping procedure on a typical anode signal event waveform.
+    \textit{Top}: before the dechirping, with a low frequency component and regular bursts.
+    \textit{Bottom}: after the dechirping, with the chirps replaced with the results of a lowpass filter.}
+    \label{fig:dechirp}
+\end{figure}
+
+
+\afterpage{\FloatBarrier}
+\section{Results}
+\subsection{Breakdown Risks}
+\subsubsection{Stressed Electrode Area}
+
+The core analysis of XeBrA revolves around the stressed electrode area(SEA) scaling relationship.
+Each run consisted of datasets taken at several separation distances, which correspond to different SEA.
+Due to the varying cathode tilt between certain runs, datasets with the same nominal gap have different areas.
+Though this creates issues for replication of experimental results, it does lead to additional leverage for the eventual fit.
+The $E_2\equiv E_0+E_1$ values were compared between datasets.
+In the case of a two-component model (Model 3) being preferred, the larger component was selected.
+The results of this examination are shown in Fig. \ref{fig:sea_scaling}.
+A power law is fit to the mechanically polished and passivated electrode data separately, producing the parameters in Table \ref{tab:powerlaw_fits}.
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/SEA_best_scaleloc_2020.pdf}
+    \caption[The stressed electrode area scaling relationship inferred from XeBrA.]%
+    {The SEA scaling from XeBrA.
+    XeBra-2020 data is divided into data for passivated and non-passivated electrodes.
+    Points are shown for the XeBrA 2018 data as well.}
+    \label{fig:sea_scaling}
+\end{figure}
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|l|l|l|}
+    \hline
+         Model & C [kV/cm] & b & $\rho_{Cb}$\\
+          \hline 
+         M. Polished (2020)& 169.5 $\pm$ 3 & 0.262 $\pm$ 0.006 & -0.995\\
+         Passivated (2020) & 530 $\pm$ 28 & 0.667 $\pm$ 0.02 & -0.920\\
+         M. Polished (2018) & 171.5 $\pm$ 8& 0.13$ \pm$ 0.02 & -0.995\\
+         \hline
+    \end{tabular}
+    \caption{XeBrA power law fit parameters to $E_2(A) = C(A/\mathrm{~cm}^2)^n$. 
+    $C$ is a multiplicative constant, and $-b$ is the coefficient of the SEA in the power-law scaling. 
+    % $\rho_{Cb}$ is the correlation coefficient between the two in the fit. \highlight{TODO: calculate correlation coefficient for the 2018 data.}
+    }
+    \label{tab:powerlaw_fits}
+\end{table}
+
+As justification for the choice of selecting the larger Weibull mode, I also examined the alternative choice.
+For the single-component models nothing changed, but for the two-component models I calculated the $E_2$ values there, as well.
+The choices of smaller or larger mode lead to $R^2$ values of 0.240 and 0.860, respectively.
+Using the F-statistic\cite{noauthor_165_2019}, a p-value of 0.01 was calculated, resulting in rejection of the null hypothesis that the choices have identical explanatory power.
+
+The effect of passivation can also be seen in the data.
+Passivated configurations consistently demonstrate larger breakdown fields in XeBrA, but with a more severe SEA scaling dependence than the mechanically polished electrodes.
+It is unknown whether this effect will continue indefinitely, so I chose not to extrapolate this pattern to a general recommendation.
+
+\subsubsection{Pressure}
+No significant relationship between pressure as measured by PT05 and breakdown field was observed.
+Changing the pressure occasionally lead to wild swings in electric field strength, but this effect was seemingly unrelated to the sign of the change.
+That is, moving the pressure higher or lower was always associated with larger breakdown fields.
+
+While not definitive, it is interesting that Run 8 was not observed to have as great a change in the breakdown fields for its pressure scan.
+This Run used a different set of mechanically polished electrodes than the rest.
+This makes it challenging to tell whether the change is truly from a change in procedure.
+However, in Run 8, the pressure scan was performed over the course of a single day, and the pressure was monotonically increased.
+It was the only run to do so, with the remaining runs starting the pressure scans later in the day, and usually moving up and down in pressure over two working days.
+It is possible that the choice of performing the pressure scans for Runs 4-7, 9-10 in this way disrupted the system thermodynamics in an unpredictable manner, negating the benefits of subcooling (see Sec \ref{sec:subcooling}).
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/XeBrA/Figures/Pressure.pdf}
+    \caption[XeBrA pressure scan data. ]%
+    {XeBrA pressure scan data. The data is presented per-run to facilitate the intra-run comparisons, without the effect of differing cathode tilt.}
+    \label{fig:pressure scans}
+\end{figure}
+
+\subsubsection{Ramp Rate}
+
+The ramp rate was scanned over in a similar fashion to pressure.
+Each high voltage ramp consists of three stages of progressively slower rates.
+The schedule was prepared such that breakdowns at any point other than the third and final rate were extremely unlikely.
+Comparisons were made over scans of the terminal rates, selected as 100, 150, and 200 V/s.
+All other data present use ramps of 100 V/s.
+Only a small amount of data were taken with these tests, unfortunately resulting in inconclusive results.
+Passivated electrodes demonstrate a positive correlation of breakdown field with ramp speed, as expected from theory.
+Mechanically polished electrodes did not have a significant dependence.
+The results are shown in Fig. \ref{fig:ramp_rate_scans}.
+A linear regression on the passivated and mechanically polished electrodes yields slopes of $2.1\pm0.2$ and $0\pm 4$~minutes/cm, respectively.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/XeBrA/Figures/RampRate.pdf}
+    \caption{XeBrA estimated breakdown voltages vs. ramp rate scan results.}
+    \label{fig:ramp_rate_scans}
+\end{figure}
+
+\subsubsection{Xenon Purity}
+\label{sec:Purity}
+The concentration of oxygen-equivalent impurities contained in the LXe were measured by an in-situ purity monitor.
+The monitor measures the electron lifetime as they drift between a gold-plated cathode and a brass anode.
+The electrons are generated via the photoelectric effect by a xenon flash lamp, with UV photons guided to the cathode by a fiber optic cable. 
+Frisch grids allow for the cathode signal to be distinguished from the anode signal. The pulses are read out by a Cremat CR-111 charge amplifier and CR-200-1$\mu s$ shaping amplifier, generating easily distinguishable Gaussian pulses. Data are digitized using a oscillosope and analyzed offline.
+Then, the electron lifetime is found by filtering the voltage signal with a boxcar filter and taking the ratio of the corresponding pulse heights.
+This method also yields highly accurate timing information for the pulses themselves.
+The ratio is converted into lifetime as
+%
+\begin{equation}
+    \tau = \frac{t}{\log(A_C/A_A)} ,
+    \label{eqn:lifetime}
+\end{equation}
+\noindent
+where $t$ is drift time, $A_C$ is the cathode pulse area and $A_A$ is the anode pulse area. The oxygen-equivalent impurity is calculated utilizing the attachment coefficients found in Ref.~\cite{bakale_effect_1976}, which results in the conversion formula
+%
+\begin{equation}
+%{O_2}  = \frac{\SI{455}{ppb~\us}}{\tau}.
+{O_2}  = \frac{455 \text{ ppb} \cdot \mu \mathrm{s}}{\tau}\;.
+\label{eqn:purity}
+\end{equation}
+%
+
+The oxygen-equivalent impurity measurements for the 2020--21 data-taking runs are shown in \ref{tab:purity}. 
+During Run 5, an overpressure incident led to xenon mixing with residual gas in one of the recovery vessels.
+The purity of the xenon after this incident was estimated using a sampling system and it was found to be less than 100~ppb.
+Run 6 was aborted before a purity measurement could be taken and Run 7 suffered a data corruption issue. 
+
+The uncertainties on the purity monitor pulse areas are found by examining the pre-cathode pulse signal RMS, while the uncertainty on the drift time is taken to be twice the sampling period of the oscilloscope.
+The overall results are tabulated in \ref{tab:purity}.
+The discrepancy in uncertainties is primarily due to inconsistencies in the number of pulses the oscilloscope averaged over.
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|l|l|}
+    \hline
+        Run &  Electron lifetime [$\mu s$] &  O$_2$-equivalent impurity [ppb] \\
+       \hline
+        4 & 19.4480 $\pm$ 0.0007 & 23.3470 $\pm$ 0.0008 \\
+        5-7 & - &  $<$100 \\
+        8 & 34.1 $\pm$ 0.1 &13.34 $\pm$ 0.05 \\
+        9 & 77 $\pm$ 2 & 5.9 $\pm$ 0.1 \\
+        10 & 125 $\pm$ 5 & 3.6 $\pm$ 0.2 \\
+        \hline
+    \end{tabular}
+    \caption{Purity measurements taken during the 2020--21 data-taking runs.
+ A general trend of lower purities are observed between consecutive runs.
+ For Runs 5--7 the purity was inferred from a cold trap method similar to the one described in Ref.~\cite{leonard_simple_2010}.
+ The discrepancy in uncertainties is due to the averaging of the waveforms and inconsistent flash rates.
+ In certain datasets for unknown reasons the purity monitor was able to maintain bias for longer than others, allowing for longer integration periods.
+ This introduces a bias towards shorter lifetimes / higher impurities due to the capacitor in series with the anode requiring recharging.}
+    \label{tab:purity}
+\end{table}
+
+
+\subsubsection{FN plots}
+
+Dielectric breakdown in noble liquids have been analyzed through the lens of field emission for LHe\cite{phan_study_2021}.
+Fowler-Nordheim field emission has also been examined on wire grids for LXe\cite{bodnia_electric_2021}.
+Field emission may provide the Joule heating necessary for gas bubbles to grow until either superheating or percolation occurs\cite{atrazhev_mechanisms_2010}.
+Due to the highly variable precursor current rates, a definitive current vs. voltage could not be obtained.
+A picoammeter was used in XeBrA-2018 to measure DC current, but this piece of equipment was requisitioned for use in LZ cathode high voltage testing and could not be utilized for XeBrA-2020.
+The anode pulse rates correlated better with the time until breakdown, rather than the voltage themselves.
+
+It was attempted to analyze the breakdown hazard data similar to the way it was done in Ref. \cite{phan_study_2021}.
+In short, the cumulative hazard was taken to be proportional to the FN current $H(E) \propto J(E)$,
+with $J(E)$ given by equation \ref{eq:fowler_nordheim}.
+Due to the multiple modes observed in the Weibull analysis, the Fowler-Nordheim plots are also curved.
+FN current form straight lines of negative slope in a plot of $\log(I/E^2)$ vs. $1/E $, from which the values of emitter area and $\beta$, the field enhancement, could be obtained.
+Since the exact proportionality between $H(E)$ and $J(E)$ is not precisely known, the emitter area can not be extracted this way.
+However, knowing the work function of steel to LXe allows one to unambiguously obtain $\beta$ from the slope alone.
+
+Due to the multiple components, the FN model was fit to the quasi-linear region at high field.
+This region was detected automatically by calculating the $\chi^2/NDOF$ as points are progressively added in descending order of $E$.
+When additional points no longer reduce the fit quality, the data is cut off, and the slope of the line is reported.
+Analyzing and extracting the $\beta$ over many data sets reveals a slight correlation $\rho=0.38$ with SEA across all runs, and a slightly higher correlation $\rho=0.51$.
+Significant intra-run variation of $\beta$ was observed.
+From this I conclude that, if the FN model can be utilized, that the asperities can be conditioned away over the course of a run.
+Additionally, sharper asperities are more likely to be found when integrating over larger SEA.
+This analysis was performed for completeness, and the Weibull fit forms the core of the results.
+
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/FNPlot_Run7_withfits.pdf}
+    \caption[Fowler-Nordheim plots from a run of XeBrA.]%
+    {Fowler-Nordheim plots (cumulative hazard divided by squared field magnitude, vs. inverse field magnitude) from Run 7 data.
+    The dotted black lines indicate the regions over which the linear regression $\chi^2$ / NDOF decreases with additional points.}
+    \label{fig:fn_hazard}
+\end{figure}
+
+\afterpage{\FloatBarrier}
+\subsection{Pre-Breakdown phenomena}
+
+
+\subsubsection{Charge Data}
+Since the observation of precursors like those in Fig \ref{fig:precursors} were seen in XeBrA-2018 data, it became a secondary goal of XeBrA-2020 to determine if any warning signs of breakdown could be identified.
+Following the procedures laid out in Section \ref{sec:chargeamp_ana}, data were collected for the assorted runs.
+DAQ saturated  frequently occurred in the anode channel, even for precursor events, though the SiPM channel generally only saturated during actual (fault-triggering) breakdowns.
+Therefore it is sometimes necessary to report rates in terms of physical charge, and compare against the rate of pulses, as if the sensor was a Geiger counter.
+
+The goals of the analysis were to identify patterns of increasing charge and light in the lead up to breakdowns, and to identify whether pre-breakdown current is correlated with any particular features.
+Typically, an increase in anode pulse rate of around a factor of 100 over the background rate was observed in the preceding 60 seconds to a breakdown, as shown in Fig. \ref{fig:Run9_chargetime}.
+The lower detection threshold of the SiPM pulses lead to the rise in pulse rate only being visible in the final few ms.
+The pulse height spectrum was bimodal for the anode pulses, as shown for a representative dataset 901 in Fig. \ref{fig:run_901_height}.
+
+The anode current pulse rate was generally higher in runs with larger SEA, while pressure and ramp speed had no significant effect on the time profile of precursor pulses.
+The precursor rate within any particular ramp did not rise continuously (at least until the last few seconds), but instead appeared to spike in rate several times preceding a breakdown (see an example in \ref{fig:breakdown}).
+Overall, a consistent rise in anode current before breakdown was observed.
+For instance, \ref{fig:Run9_chargetime} shows the average current (as measured by the charge amplifier) over time bins of 1s for the different parameter scans in Run 10.
+These plots show a first surge in current around 50--602 and a rapid increase in current in the last few seconds.
+
+Comparing the polished and the passivated electrodes, we observed that passivation only has a small effect on the preceding activity before a breakdown.
+As \ref{fig:ElectrodeComparison} shows, there is only a moderate suppression in both the anode current and SiPM rate in the immediate few seconds before a breakdowns when comparing Run 9 (mechanically polished electrodes) to Run 10 (passivated electrodes).
+
+The evolution of the average current in a ramp is shown in  \ref{fig:Conditioning_Plot} for Runs 9 and 10.
+The current into the anode was averaged over a time period well separated from either the breakdown itself or the initial ramp.
+The region of 45~s to 120~s from the start of the ramp was chosen to obtain a large window and avoid capturing the immediate few seconds before a breakdown.
+Considerable variance is shown for this quantity, with a slight downward trend for the mechanically polished electrode data.
+The passivated electrodes seemingly fluctuated downwards starting at earlier breakdowns, which points towards the idea that passivated electrodes are pre-conditioned.
+
+This pre-conditioning can also be seen in the pulse rate data for the final 30s in Fig \ref{fig:pulserate_sea}.
+In order to be more resilient against DAQ saturation, the data is presented in the aforementioned Geiger-like mode, and averaged over the final 30s before a breakdown.
+Only pulses above 1000 ADCC were counted.
+Terminal pulse rates appears to scale with increased stressed electrode area.
+The passivated electrodes (Run 10) are slightly lower in terminal pulse rates.
+For the pitted electrodes (Run 7), the SEA scaling is not as clear.
+From these patterns, I infer that the precursor discharge rate in the  final 30s is in part due to asperities, and that these asperities can be conditioned away through repeated breakdowns.
+
+
+In summary, small discharges on the anode were seen preceding breakdowns and grew rapidly in the few tens of seconds previous to a breakdown.
+Also, SiPM pulses were observed in coincidence with large enough anode charge pulses.  
+These precursor discharges flare up considerably as the voltage increases.
+A small conditioning effect is also seen whereby the precursor current diminished over time.
+Strategies for exploiting such observations will depend on the particulars of the experiment.
+
+
+Future work in this regard could add additional SiPMs to obtain position additional position reconstruction data.
+More careful calibration can also help to reconstruct anode current even in the case of DAQ saturation.
+Better thermal coupling between the SiPM and the steel can reduce the dark rate, which will grant additional sensitivity.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/Ramp_54_41569.pdf}
+    \caption[Pulse rate evolution over the courase of a single ramp.]%
+    {
+    \emph{Top:} Pulses found over the course of a single ramp.
+    The anode and SiPM pulses are nearly coincident with one another. 
+    The anode pulses have a better signal-to-noise ratio, and therefore smaller peaks can be resolved on this scale.
+    \emph{Bottom:} Complementary information obtained from the slow control logs for the same ramp. 
+    The burst in current at time 0 is not the breakdown itself, but rather the discharge of current through the HV power supply due to the sudden drop of electric potential energy.
+    %Also seen is a surge in current during the initial, fast portion of the ramp. 
+    }
+    \label{fig:breakdown}
+\end{figure}
+
+\begin{figure} 
+    \centering
+    \includegraphics[width=0.9\textwidth]{Assets/XeBrA/Figures/Precursors.png}
+    \caption[A precursor event window. Dotted lines indicate locations of identified pulses.]%
+    {A precursor event window. Dotted lines indicate locations of identified pulses.
+    Note the coincidence between the anode (top) and SiPM (bottom) waveforms.
+    The relative scale indicates that the SiPM signal to noise ratio is considerably worse than the anode signal.
+    The overshoot of the SiPM signal is also apparent.}
+    \label{fig:precursors}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/XeBrA/Figures/Run10_ave_ramps.pdf}
+    \caption[ Distributions of anode current preceding a breakdown for different parameter scans in Run 10, over time.]%
+    {
+    Distributions of anode current preceding a breakdown for different parameter scans in Run 10, over time. The anode current is averaged over in time bins of 1 second. Pulses within 2 event windows (approximately 750 ms) of a subthreshold breakdown (defined in text) were discarded. A general rise in anode current in the few tens of seconds before breakdown is observed in all cases.
+    %The histograms have been corrected for the fact that ramps vary in length, that is, each time bin averages over ramps for which the ramp was longer than the bin edge. 
+    }
+    \label{fig:Run9_chargetime}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/Electrodes_2mm_Ch0_weighted.pdf} \qquad
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/Electrodes_2mm_Ch1_weighted.pdf}
+    \caption[Comparison of anode current and SiPM rate in the 30 seconds preceding a breakdown between Runs 9 (orange, mechanically polished electrodes) and Run 10 (blue, passivated electrodes).]%
+    {Comparison of anode current and SiPM rate in the 30 seconds preceding a breakdown between Runs 9 (orange, mechanically polished electrodes) and Run 10 (blue, passivated electrodes). The anode current is averaged over in time bins of 1s. An electrode separation of 2~mm is considered in both cases.
+    The two sets of electrodes perform similarly, except for the last few seconds in which the polished cathode exhibits increased activity relative to the passivated cathode. 
+    }
+    \label{fig:ElectrodeComparison}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/XeBrA/Figures/HeightSpectrum.pdf}
+    \caption{Pulse height distribution for Run 9, demonstrating frequent DAQ saturation. }
+    \label{fig:run_901_height}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/XeBrA/Figures/Run9_conditioning.pdf}
+    \caption[Average current between 30~s and 120~s from the beginning of the HV ramps for each breakdown in Run 9. ]%
+    {Average current between 30~s and 120~s from the beginning of the HV ramps for each breakdown in Run 9. 
+    A slight downwards trend is apparent.}
+    \label{fig:Conditioning_Plot}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7\textwidth]{Assets/XeBrA/Figures/SEA_PulseRate.pdf}
+    \caption[Anode pulse Rate vs. stressed electrode area over several runs.]%
+    {Anode pulse Rate vs. stressed electrode area over several runs.
+    Run 7 used the original electrode set, and was later discovered to be pitted heavily.
+    The remaining runs here use fresh electrodes, with Run 8 using an alternate set of mechanically polished electrodes, Run 9 using the original electrodes after re-polishing, and Run 10 using passivated electrodes.}
+    \label{fig:pulserate_sea}
+\end{figure}
+\afterpage{\FloatBarrier}
+\subsubsection{PMT Static}
+
+Although the main focus of the XeBrA analysis was to examine the risk of breakdowns, it was also of concern whether a certain voltage produces excess single photon background.
+To examine this phenomenon, the linear ramps were replaced with a ramp-and-hold scheme for certain datasets.
+These data were always taken after the linear ramp data.
+The high voltage setpoint was assigned a value that was approximately 10~kV below the smallest breakdown observed during the linear ramps.
+The separation distance was set to 5~mm, which gave the power supply considerable room for error.
+
+
+In Fig. \ref{fig:pmt_scan} the results of one test are shown. 
+Despite no breakdowns occurring over the course of the ramp-and-hold procedure, the single-photoelectron rate spikes upwards several times over the ten minute time period.
+An additional spike happened during the ramp down.
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.7 \textwidth]{Assets/XeBrA/Figures/Run9_PMT.pdf}
+    \caption{A representative PMT ramp and hold pattern.}
+    \label{fig:pmt_scan}
+\end{figure}
+
+
+\subsection{Qualitative Results}
+\subsubsection{Index of Refraction}
+With the assistance of the viewports, the xenon could be visually monitored over the course of a ramp.
+An intriguing pattern emerged for separation distances of 3~mm or greater, where a large volume of stressed xenon could be observed.
+As the voltage on the cathode increased, the xenon exhibited a fascinating optical phenomenon.
+It would undergo a ``shimmering" effect, where the background image of the apparatus would appear to ripple.
+The intensity of the ripples would increase in intensity up to the point of breakdown.
+No ripples were ever observed while the electrodes were unbiased.
+A close analog for this effect is the appearance of alcohol being poured into water and subsequently mixing.
+
+A possible explanation for this effect is the change of index of refraction from the heating of liquid xenon.
+Using the Lorentz-Lorenz relationship: 
+\begin{equation}
+    \frac{n^2-1}{n^2+2} = K \rho\;.
+\end{equation}
+\noindent
+Together with the value of $\epsilon_r \approx n^2 = 1.874$ at the triple point\cite{amey_dielectric_1964}, and the thermal contraction of xenon from 2.98~g/cm$^{3}$ 161K to 2.7~g/cm$^{3}$ at 200K\cite{terry_densities_1969}, the temperature dependence of $n$ may be estimated.
+I find that the dependence is given over this temperature range can be approximated as
+\begin{equation}
+    \frac{dn}{dT} = -9.95 \times 10^{-4}~ \text{K}^{-1}\;.
+\end{equation}
+
+The possibility of xenon heating serves as a possible explanation for the breakdown fields in liquid.
+Superheating in liquid was explored in Ref. \cite{atrazhev_mechanisms_2010}, where two mechanisms where identified: burst production and percolation.
+In the former, the liquid superheats until the point of absolute stability at the spinodal line, where bubbles will spontaneously nucleate and trigger a breakdown.
+In the latter, small bubbles nucleate from impurities until a sufficient volume is occupied by the gas phase between the two electrodes.
+Then, a conducting path forms via discharges jumping between the weak gaseous regions.
+Pressure dependence arises in the percolation case from the Joule heating of the liquid needing to balance the surface tension of the bubbles.
+
+Percolation is a potential explanation for some of the sub-threshold breakdowns and precursors.
+At bubble densities below the threshold needed for percolation, (1/3 of the total volume within the path), avalanches or streamers may occur, growing to observable size within a single void, but is not sufficient to trigger a conducting path across the entire gap.
+
+\subsubsection{Bubbles}
+In the high speed camera videos, frames are frequently visible showing bright spots prior to breakdown.
+These are often too small to distinguish from a background glow signally the onset of breakdown.
+On occasion these spots will appear, and then move around before a breakdown occurs in the spot the bubble lands.
+
+Some interesting phenomena were evident in the videos that I hand scanned.
+In multiple cases I observed a bubble drifting \textit{downwards} from the anode to cathode before triggering a breakdown.
+Other times, two distinct bubbles were observed to grow over several frames, before breakdowns were seen at their respective locations.
+After any breakdown, copious bubbles were generally observed.
+These expand and slowly drift off the side of the anode.
+\begin{figure}
+   \centering
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Photos/spark_frame_1.png}
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Photos/spark_frame_2.png}
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Photos/spark_frame_3.png}
+    \includegraphics[width=0.45\textwidth]{Assets/XeBrA/Photos/spark_frame_4.png}
+    
+    \caption[A series of high-framerate photographs of a breakdown containing two apparent discharges. 
+    Four frames are shown in sequential]%
+    {A series of high-framerate photographs of a breakdown containing two apparent discharges. 
+    Four frames are shown in sequential order from top to bottom.
+    Two light spots appear in the center of the frame before a big flash of light is emitted and two bubbles emerge from that location immediately after. 
+    }
+    \label{fig:spark_sequence}
+\end{figure}
+
+It has been pointed out that bubbles may play an important role in the breakdown of insulating liquids \cite{atrazhev_mechanisms_2010, sun_formation_2016}.
+Bubbles can also explain the precursor pulses observed in XeBrA. 
+Small gas bubbles may be sufficient to break down at some fields, but the breakdowns themselves do not open up a conducting ionizing channel from cathode to anode.
+This quenching mechanism causes small breakdowns to become more frequent over time, until the bubbles generated via Joule heating reach a critical density, allowing streamers to jump between voids, leading to a macroscopic breakdown.
+
+A point in favor of this hypothesis is the visual observation of precursors at larger gap separation.
+At 3~mm or higher, breakdown voltages are typically around 30~kV or higher, allowing ample time to observe interesting phenomena (like the ``shimmering").
+Occasionally short sparks were seen in the liquid which \textit{did not} subtend the full gap, and appeared at random distances between the electrodes.
+These had the appearance of a handheld sparkler, and are apparent in videos taken, but are difficult to observe in still photography.
+
+
+\subsubsection{Pitting}
+It was observed after Run 7 that the electrodes were sustaining damage from the hundreds of breakdowns impinging on their surface.
+While this may help initially, due to burning away asperities, the effect of the numerous craters is a factor that we can not easily control for.
+This prompted the replacement of the electrodes with duplicates for Run 8.
+Additional changes were that for Run 9 and onwards, separation distances $>$ 3~mm were not performed.
+This was apparently helpful, as larger craters were absent following the Run 9 to Run 10 swap.
+Examples of pitting are shown in Fig. \ref{fig:pitting}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.5\textwidth]{Assets/XeBrA/Photos/pitting.jpg}
+    \caption{
+    The XeBrA electrodes after hundreds of breakdowns, showing damage in the form of white pits.
+    }
+    \label{fig:pitting}
+\end{figure}
+
+\section{Summary}
+
+\subsection{Conclusion}
+
+The XeBrA experiment, which employed a pair of Rogowski electrodes with adjustable separation distance, we confirmed that breakdown field scales inversely with stressed electrode area in LXe for stressed areas up to 33~cm$^{2}$. 
+No significant, reproducible scaling with LXe pressure was observed between 1.5~bar and 2.2~bar absolute.
+Similarly, no significant dependence was observed with the high voltage ramp speed in the range between 100~V/s and 200~V/s.
+By contrast, a small increase in breakdown field was observed with the passivation of the electrode surfaces.
+% over the SEA values that were tested (3--20 cm$^2$)
+
+The location of a breakdown on the electrode surface was reconstructed from high-speed videos taken by a pair of cameras affixed to the perpendicular viewports.
+They show moderate correlations with FN current as obtained by electric field simulations.
+Moreover, evidence for bubble nucleation initiating breakdown was observed with low-speed videos.
+We hypothesize that the bubble nucleation itself is caused by localized heating due to field emission from field enhancers, such as local asperities. 
+
+Finally, some practical recommendations can be drawn from this work.
+First, significant breakdown precursor activity was observed.
+Small discharges were detected with a SiPM and a charge-sensitive amplifier connected to the anode.
+These discharges slowly increase in intensity in the last 30 seconds before a breakdown and sharply accelerate in the last second. Hence, having the ability to ramp down the voltage on the scale of seconds could be beneficial for avoiding electrical breakdown.
+Second, a downward trend in current collected at the anode was observed over the course of a run, which motivates conducting an initial conditioning campaign prior to the start of any science data-taking campaign.
+Third, the extrapolation from our measured stressed area scaling shows that the breakdown field for the next-generation, LXe TPC experiments, will only be on the order of a few tens of~kV/cm. 
+These results have important implications for the design of the high voltage delivery system of such experiments. 
+ 
+\subsection{Recommendations }
+
+One of the current generation liquid xenon TPCs is the LUX-ZEPLIN (LZ) experiment. 
+The LZ cathode ring has a simulated stressed area of approximately 940~cm$^2$.
+Evaluating the model from this work for the mechanically polished electrodes gives a predicted shifted scaled parameter ($E_2$) of 28.2 $\pm$ 0.5~kV/cm.
+This is a revision downwards from the prediction in Ref.~\cite{tvrznikova_direct_2019}, shown in blue in the top figure of~\ref{fig:sea_scaling}. 
+Using the model from XeBrA's 2018 analysis, the predicted breakdown field at the LZ cathode ring SEA is $70.4 \pm 3$~kV/cm.
+We believe the discrepancy is a result of the following changes: the uncertainty on the cathode tilt angle was taken into account (instead of assuming a 0$^{\circ}$ tilt of the cathode), each run consisted of several days of operation in which the xenon was continuously being circulated (as opposed to one very long day of data-taking), and a new method to mitigate bubble formation in the bulk was introduced. 
+To provide some reference, the maximum design voltage in LZ was set at 50~kV/cm~\cite{mount_lux-zeplin_2017}, which is intermediate between these two extrapolated values.
+In addition, the predicted breakdown voltage for a 40~tonne active volume TPC (e.g.~DARWIN~\cite{aalbers_darwin_2016}), assuming that SEA scales with mass to the power of $2/3$, would be $20.7 \pm 0.4$~kV/cm.
+This is illustrated in the bottom panel of \ref{fig:sea_scaling}, where the estimated stressed area of the cathode ring for LZ and two hypothetical Generation-3 (G3) experiments are shown.
+%169.5 * (940)^-.262 = 28.2
+%169.5 * (940 * (50/7)^(2/3))^-.262 = 20
+%169.5 * (940 * (50/7)^(1/3))^-.262 = 23.7
+Consequently, careful engineering of the electrostatics of any future, large TPC will be critical in achieving the desired fields. 
+This analysis indicates that future LXe experiments of the scale of DARWIN should design around a maximum electric field of 20~kV/cm on their cathode rings in order to have some safety margin. However, we note that improvements on cathode design could raise this threshold.
+\subsection{Future Work}
+It became evident during the 2020 run that certain features of the system required additional controls to make quality inter-run comparisons.
+
+The main source of error on the SEA comes from the tilt of the cathode.
+While the photogrammetric method constrains the cathode tilt to within $\pm 0.1^\circ$, this still leads to considerable error on the SEA, especially at lower separation distances.
+For this reason, future runs of XeBrA will utilize a set of molds which fits the Rogowski profiles of the cathode and anode.
+When squeezed together, these molds will force the cathode into a specified angle.
+I designed these molds, which were then 3D printed.
+I then confirmed that they fit the electrodes and fit within the ICV.
+On this front the work which remains is to estimate, and possibly correct for, the level of the molds.
+Even if the molds do not force the electrodes into a parallel configuration, being able to have a consistent tilt when the electrodes are swapped will vastly reduce the systematic error.
+
+Due to the changes in pressure over the course of a run, the circulation rate is frequently altered.
+The placement of PT05, which measures the gas pressure within XeBrA, is on the HX inlet port.
+The XeBrA interior constitutes a significant impedance, leading to a pressure drop.
+As a result, the system pressure is always measured in a flow state, leading to the PT05 being biased upwards from the gas pressure at the liquid surface.
+Future runs of XeBrA will benefit from a change in location of PT05.
+It has been moved from the inlet port to the bellows which connects the inner and outer volumes for pumpout.
+This allows the pressure to be measured, and therefore moderated by the PLC, in a neutral flow state.
+Care had to be taken to make sure that the emergency recovery system will still operate under this condition.
+
+The pressure conditions were quite challenging to deal with. 
+No definitive relationship with xenon pressure was observed, but significant variance in breakdown field was observed with changes in pressure.
+I, along with the rest of the XeBrA team, believe that this is due to the methodology of how the pressure was changed.
+There was a lack of consistency with what order the pressure data was taken (e.g. increasing, decreasing, monotonic, same or different days).
+The only run where the breakdown field was relatively consistent across the scan was Run 8, where the pressure was monotonically increased over the course of a single day.
+Future XeBrA runs will take greater care to test the exact same sequence of pressure adjustments during each run.
+
+Finally, an additional goal of future analysis will be conducting time-to-failure analysis.
+While the linear ramp results in many breakdowns over a fixed window of time, it does not answer the primary concern of LXe-TPCs, which is which breakdown field can be held over year plus time scales.
+Ideally a test up to and including the peak fields for a given experiment would be conducted. 
+Then, the voltage would be held until a breakdown occurs, and is then recorded.
+The disadvantage of this method is that each data point will take a long amount of time, potentially.
+This means that alternative conditions such as pressure will be difficult to examine.
+
+PTFE is known to fluoresce\cite{shaw_ultraviolet_2007} due to the hydrocarbon contaminants.
+This may constitute a background to LXe-TPCs. 
+Future work with XeBrA may include measurements of the PTFE fluorescence over long timescales.

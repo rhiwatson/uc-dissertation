@@ -1,0 +1,41 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {3.1}{\ignorespaces Test results for the CHV feedthrough Runs 1 and 2. The ``highest voltage" column is the actual recorded voltage from the HVPS, while ``target voltage" indicates the voltage necessary to achieve -100\nobreakspace {}kV on the LZ cathode, when correcting for surface area and purity.}}{80}{table.3.1}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {4.1}{\ignorespaces Parameters used in the LZ electrostatics simulation. The electrode biases are a parameter which was explored as part of this work.}}{92}{table.4.1}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {7.1}{\ignorespaces Summary of the contributions to Isolated S1 pulses in LZ.}}{190}{table.7.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {7.2}{\ignorespaces S1-only shape selection criteria; parameters for Eq. \ref {eq:expconst}.}}{205}{table.7.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {7.3}{\ignorespaces Results of the electrode grid scan as applied to the isolated S1 rates. All rates are presented after the relevant cuts, and potential changes to the ROI and extra exclusion regions are tabulated. A general trend towards lower values was seen over the course of the test.}}{219}{table.7.3}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {8.1}{\ignorespaces Estimated cathode tilt angles for different Runs. The front and side tilt labels refer to the tilts of the electrodes in the image plane for images taken from the side and front viewports, respectively, and the total value is obtained from adding those angles in quadrature.}}{249}{table.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {8.2}{\ignorespaces XeBrA power law fit parameters to $E_2(A) = C(A/\mathrm {\nobreakspace {}cm}^2)^n$. $C$ is a multiplicative constant, and $-b$ is the coefficient of the SEA in the power-law scaling. }}{269}{table.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {8.3}{\ignorespaces Purity measurements taken during the 2020--21 data-taking runs. A general trend of lower purities are observed between consecutive runs. For Runs 5--7 the purity was inferred from a cold trap method similar to the one described in Ref.\nobreakspace {}\cite {leonard_simple_2010}. The discrepancy in uncertainties is due to the averaging of the waveforms and inconsistent flash rates. In certain datasets for unknown reasons the purity monitor was able to maintain bias for longer than others, allowing for longer integration periods. This introduces a bias towards shorter lifetimes / higher impurities due to the capacitor in series with the anode requiring recharging.}}{274}{table.8.3}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces Calibrated Sensor gains for each run.}}{290}{table.Alph0.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {2}{\ignorespaces XeBrA dataset results for the Weibull fits.}}{291}{table.Alph0.2}%

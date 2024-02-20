@@ -1,0 +1,489 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Contents}{iv}{section*.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{List of Figures}{vii}{section*.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{List of Tables}{xiv}{section*.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {1}Dark Matter}{1}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Introduction}{1}{section.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.2}Evidence for Dark Matter}{2}{section.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Galaxy Clusters}{2}{section*.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Galactic Rotation Curves}{2}{section*.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Bullet Cluster}{3}{section*.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Big Bang Nucleosynthesis}{3}{section*.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Cosmic Microwave Background Radiation}{4}{section*.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Big Bang Cosmology}{4}{section*.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{CMB Anisotropies}{6}{section*.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Large Scale Structure}{7}{section*.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.3}Dark Matter Models}{9}{section.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Thermal Relics}{9}{section*.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{MSSM}{12}{section*.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Axions and axion-like-particles}{13}{section*.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Sterile Neutrinos}{14}{section*.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Primordial Black Holes}{14}{section*.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Dark Sector}{15}{section*.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Ultraheavy Dark Matter}{16}{section*.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.4}Experiments}{16}{section.1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Production}{16}{section*.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Indirect Detection}{16}{section*.20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Direct Detection}{17}{section*.21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Recoil Rates}{17}{section*.22}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Halo Model}{18}{section*.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Crystal Experiments}{19}{section*.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Noble Liquid Experiments}{20}{section*.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Directional Detection}{20}{section*.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {2}The LUX-ZEPLIN Experiment}{21}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Overview}{21}{section.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Time Projection Chambers}{22}{section.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.3}Xenon}{23}{section.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Advantages of Xenon}{23}{section*.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Microphysics}{25}{section*.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.4}Backgrounds and Mitigation}{27}{section.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Sources}{27}{section*.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Recoil Discrimination}{28}{section*.30}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Multiple Scatters}{28}{section*.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Fiducialization}{29}{section*.32}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.5}Veto System}{30}{section.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Skin}{30}{section*.33}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{OD}{30}{section*.34}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.6}Calibrations}{30}{section.2.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.7}Analysis}{34}{section.2.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Data collection}{34}{section*.35}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Detection Threshold}{35}{section*.36}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Profile Likelihood}{35}{section*.37}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.8}Physics searches}{37}{section.2.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{WIMPs}{37}{section*.38}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Neutrinoless Double Beta Decay}{37}{section*.39}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Boron-8}{38}{section*.40}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Transient Signals}{38}{section*.41}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {3}Cathode High Voltage for LZ}{40}{chapter.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Introduction}{40}{section.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Design Considerations}{41}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Structure}{41}{section*.42}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Electroluminescence}{45}{section*.43}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}LAr Prototype Test}{46}{section.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Purpose and overview}{46}{section*.44}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Grading Structure}{47}{section*.45}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Test Stand}{47}{section*.46}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Spring connection}{50}{section*.47}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Signal Processing}{52}{section*.48}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Strategy}{52}{section*.49}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Noise filtering}{53}{section*.50}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Pulse Finder}{55}{section*.51}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Pulse Merging}{58}{section*.52}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Data selection criteria}{61}{section*.53}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Calibration}{64}{section*.54}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{LED Calibration}{64}{section*.55}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Triplet lifetime}{68}{section*.56}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Purity Monitor}{69}{section*.57}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.4}Prototype Testing Results}{71}{section.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Run 1}{71}{section*.58}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Run 2}{72}{section*.59}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{The Gaseous Argon Test}{76}{section*.60}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Summary}{79}{section*.61}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.5}Deployment}{80}{section.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Clean room build}{80}{section*.62}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Production Grading Structure}{80}{section*.63}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Cable Routing}{81}{section*.64}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Delivery and Installation}{83}{section*.65}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.6}Conclusion}{87}{section.3.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {4}Electric Field Simulations for LZ}{88}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}Introduction}{88}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}Finite Element Simulation}{88}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Maxwell's Equations}{88}{section*.66}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{LZ Axisymmetric model}{89}{section*.67}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Resistor chain optimization}{92}{section*.68}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Anode Correction}{96}{section*.69}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Cathode Voltage Simulation}{97}{section*.70}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}LZElectricField simulations package}{97}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Drift simulation}{97}{section*.71}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Runge-Kutta Method}{101}{section*.72}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Interpolation}{102}{section*.73}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Wall Attachment}{104}{section*.74}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Charge Loss Simulations}{104}{section*.75}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Comparison to data}{105}{section*.76}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Cancellation}{106}{section*.77}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Grids}{108}{section*.78}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Superposition}{111}{section*.79}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.4}Comparisons to SR1 data}{112}{section.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Cathode Voltages}{112}{section*.80}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Wall Charge}{114}{section*.81}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Wall Positions}{114}{section*.82}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Impact of wall charge on TPC Field}{115}{section*.83}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Electron lifetime}{116}{section*.84}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.5}Handoff}{118}{section.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {5}Multiple Scatter Dark Matter Search}{123}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}Introduction}{123}{section.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Models}{124}{section.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Composite Asymmetric Dark Matter}{124}{section*.85}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Freeze-in}{127}{section*.86}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{SIMPs}{128}{section*.87}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Quark Nuggets}{129}{section*.88}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.3}Backgrounds}{129}{section.5.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.4}Upper Bounds}{131}{section.5.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.5}Projected Limits}{134}{section.5.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.6}Simulation}{136}{section.5.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Monte Carlo}{136}{section*.89}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Pulse Merging}{138}{section*.90}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Contact Interactions}{138}{section*.91}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Overburden}{140}{section*.92}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Attenuation from Earth Shielding}{140}{section*.93}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{ Density profile }{141}{section*.94}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Modified Velocity Distribution}{144}{section*.95}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Reduced Cross Section Scaling}{145}{section*.96}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Incident Velocity Vector}{147}{section*.97}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.7}Testing on LUX Run03 Data}{149}{section.5.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.8}Analysis on LZ SR1 Data}{150}{section.5.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Introduction}{150}{section*.98}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Selection Criteria}{152}{section*.99}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Modification of prominence algorithm}{156}{section*.100}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Area Corrections}{158}{section*.101}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Count Prediction}{158}{section*.102}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Signal Acceptance}{160}{section*.103}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Limit}{161}{section*.104}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Dark Matter Radius}{163}{section*.105}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.9}Summary}{164}{section.5.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {6}Simulations}{166}{chapter.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.1}Introduction}{166}{section.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.2}DMCalc}{166}{section.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Purpose}{166}{section*.106}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Design}{166}{section*.107}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Halo Distributions}{168}{section*.108}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Bindings}{170}{section*.109}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Future Work}{171}{section*.110}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.3}LZLAMA}{171}{section.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Purpose}{171}{section*.111}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Design}{171}{section*.112}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Resolution}{173}{section*.113}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Transverse}{174}{section*.114}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Longitudinal}{175}{section*.115}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.4}BACCARAT }{176}{section.6.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Description}{176}{section*.116}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{PTFE Pockets}{179}{section*.117}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Code Reviewer}{179}{section*.118}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {7}Accidental Coincidence Backgrounds in LZ}{183}{chapter.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.1}Introduction}{183}{section.7.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.2}Sources of Isolated Pulses}{185}{section.7.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Dark Count Pileup}{185}{section*.119}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Reverse Field Region}{186}{section*.120}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Field Fringing}{187}{section*.121}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Summary}{189}{section*.122}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.3}Analysis of SR1 Data}{191}{section.7.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Rate estimation}{191}{section*.123}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Selection Criteria}{193}{section*.124}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{High-Single Channel Pulses}{196}{section*.125}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Background}{196}{section*.126}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Cut Development}{196}{section*.127}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{DPE Effect}{199}{section*.128}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{PMT Distribution}{200}{section*.129}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Top Bottom Asymmetry}{201}{section*.130}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{S1 Pulse Shape}{203}{section*.131}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.4}Isolated S1 Locations}{208}{section.7.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.5}Creation of accidentals model}{210}{section.7.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Introduction}{210}{section*.132}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Isolated Pulse Extraction}{211}{section*.133}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Chopstitch}{212}{section*.134}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{UDT Normalization}{215}{section*.135}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.6}Grid Voltage Scan}{215}{section.7.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Overview and Results}{215}{section*.136}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Light Bursts}{218}{section*.137}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.7}Machine Learning}{219}{section.7.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Problem}{219}{section*.138}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Decision Tree Learning}{223}{section*.139}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Results}{225}{section*.140}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Feature Importance}{225}{section*.141}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.8}Single Scatter Contamination}{229}{section.7.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.9}Summary}{230}{section.7.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {8}The Xenon Breakdown Apparatus}{232}{chapter.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.1}Introduction}{232}{section.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.2}Dielectric Breakdown Theory}{232}{section.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Streamers}{233}{section*.142}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Fowler-Nordheim theory}{235}{section*.143}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Reliability Analysis}{236}{section*.144}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Factors Affecting Breakdown}{238}{section*.145}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.3}Apparatus}{239}{section.8.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Terminology}{239}{section*.146}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Overview}{240}{section*.147}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Rogowski electrodes}{241}{section*.148}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Upgrades}{247}{section*.149}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Heat Exchanger Repair}{247}{section*.150}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Tilt and SEA Estimation}{248}{section*.151}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Electronics and Instrumentation}{249}{section*.152}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Purity Monitor Repair}{252}{section*.153}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{High speed photography}{253}{section*.154}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.4}Procedure}{255}{section.8.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Main Procedure}{255}{section*.155}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Subcooling}{258}{section*.156}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.5}Run History}{259}{section.8.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Introduction}{259}{section*.157}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{XeBrA-2018}{259}{section*.158}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Runs}{259}{section*.159}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{TPC}{260}{section*.160}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{XeBrA-2020}{260}{section*.161}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.6}Analysis}{262}{section.8.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Breakdown Field}{262}{section*.162}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Selection Criteria}{262}{section*.163}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Weibull fit}{263}{section*.164}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Charge and Light Analysis}{268}{section*.165}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.7}Results}{269}{section.8.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Breakdown Risks}{269}{section*.166}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Stressed Electrode Area}{269}{section*.167}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Pressure}{272}{section*.168}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Ramp Rate}{273}{section*.169}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Xenon Purity}{273}{section*.170}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{FN plots}{275}{section*.171}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Pre-Breakdown phenomena}{275}{section*.172}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Charge Data}{275}{section*.173}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{PMT Static}{277}{section*.174}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Qualitative Results}{284}{section*.175}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Index of Refraction}{284}{section*.176}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Bubbles}{284}{section*.177}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Pitting}{285}{section*.178}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.8}Summary}{286}{section.8.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Conclusion}{286}{section*.179}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Recommendations }{287}{section*.180}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{Future Work}{287}{section*.181}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Conclusion}{289}{chapter*.182}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{XeBrA}{290}{appendix*.183}%
